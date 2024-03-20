@@ -1,0 +1,26 @@
+server:
+  port: 8011
+
+field: Test
+
+mail:
+  #Simple properties
+  hostname: host@mail.com
+  port: 9000
+  from: mailer@mail.com
+
+  #List properties
+  defaultRecipients[0]: admin@mail.com
+  defaultRecipients[1]: owner@mail.com
+
+  #Map Properties
+  additionalHeaders:
+    redelivery: true
+    secure: true
+
+  #Object properties
+  credentials:
+    username: john
+    password: password
+    authMethod: SHA1
+
