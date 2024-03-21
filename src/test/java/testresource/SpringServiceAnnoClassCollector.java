@@ -4,8 +4,8 @@ import spoon.reflect.declaration.CtElement;
 
 import java.util.function.Predicate;
 
-public class SpringMainClassCollector<E extends CtElement> extends AbstractElementCollector<E> {
-    private final static String SPRING_ANNOTATION = "org.springframework.boot.autoconfigure.SpringBootApplication";
+public class SpringServiceAnnoClassCollector<E extends CtElement> extends AbstractElementCollector<E> {
+    private final static String SPRING_ANNOTATION = "org.springframework.stereotype.Service";
 
     @Override
     public Predicate<E> defaultPredictor() {

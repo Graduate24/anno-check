@@ -3,6 +3,7 @@ import spoon.Launcher;
 import spoon.reflect.declaration.CtClass;
 import testresource.ResourceScanner;
 import testresource.SpringMainClassCollector;
+import testresource.SpringServiceAnnoClassCollector;
 
 public class TestResource {
 
@@ -15,8 +16,15 @@ public class TestResource {
         ResourceScanner processor = new ResourceScanner();
         var c1 = new SpringMainClassCollector<CtClass<?>>();
         processor.addCollector(c1);
+        var c2 = new SpringServiceAnnoClassCollector<CtClass<?>>();
+        processor.addCollector(c2);
         processor.scan(launcher.getModel().getRootPackage());
+        System.out.println("Main class: ");
         c1.elements().forEach(e->{
+            System.out.println(e.getQualifiedName());
+        });
+        System.out.println("Service class: ");
+        c2.elements().forEach(e->{
             System.out.println(e.getQualifiedName());
         });
     }

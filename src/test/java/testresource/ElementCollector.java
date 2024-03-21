@@ -15,7 +15,7 @@ public interface ElementCollector<E extends CtElement> {
 
     Predicate<E> getPredictor();
 
-    default void collect(Object e){
+    default void collect(Object e) {
         if (getPredictor().test((E) e)) {
             elements().add((E) e);
         }
