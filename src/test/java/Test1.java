@@ -1,11 +1,8 @@
+import analysis.processor.ResourceScanner;
 import org.junit.Test;
 import spoon.Launcher;
-import spoon.reflect.code.CtLocalVariable;
 import spoon.reflect.declaration.*;
 import spoon.reflect.visitor.filter.TypeFilter;
-
-import java.util.List;
-import java.util.Map;
 
 public class Test1 {
     @Test
@@ -28,6 +25,15 @@ public class Test1 {
         launcher.getModel().getElements(new TypeFilter<>(CtClass.class)).forEach(c->{
             System.out.println(c.getSimpleName()+", "+c.getSuperclass()+", "+ c.getSuperInterfaces());
         });
+    }
 
+    @Test
+    public void test3(){
+        Launcher launcher = new Launcher();
+        launcher.addInputResource("src/test/resources/demo/src/main/java/");
+        launcher.buildModel();
+        launcher.process();
+        ResourceScanner processor = new ResourceScanner();
+        processor.scan(launcher.getModel().getRootPackage());
     }
 }
