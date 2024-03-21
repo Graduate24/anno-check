@@ -1,5 +1,6 @@
-package testresource;
+package analysis.collector;
 
+import analysis.processor.ResourceRole;
 import spoon.reflect.declaration.CtElement;
 
 import java.util.Collection;

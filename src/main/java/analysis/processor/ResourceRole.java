@@ -1,4 +1,4 @@
-package testresource;
+package analysis.processor;
 
 public enum ResourceRole {
     METHOD,

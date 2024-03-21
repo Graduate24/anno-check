@@ -1,4 +1,4 @@
-package testresource;
+package analysis.collector;
 
 import spoon.reflect.declaration.CtElement;
 

@@ -1,9 +1,9 @@
+import analysis.collector.SpringMainClassCollector;
+import analysis.collector.SpringServiceAnnoClassCollector;
+import analysis.processor.ResourceScanner;
 import org.junit.Test;
 import spoon.Launcher;
 import spoon.reflect.declaration.CtClass;
-import testresource.ResourceScanner;
-import testresource.SpringMainClassCollector;
-import testresource.SpringServiceAnnoClassCollector;
 
 public class TestResource {
 
