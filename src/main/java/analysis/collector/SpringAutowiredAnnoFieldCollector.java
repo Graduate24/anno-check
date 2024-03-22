@@ -5,8 +5,8 @@ import spoon.reflect.declaration.CtElement;
 
 import java.util.function.Predicate;
 
-public class SpringValueAnnoFieldCollector<E extends CtElement> extends AbstractElementCollector<E> {
-    private final static String SPRING_ANNOTATION = "org.springframework.beans.factory.annotation.Value";
+public class SpringAutowiredAnnoFieldCollector<E extends CtElement> extends AbstractElementCollector<E> {
+    private final static String SPRING_ANNOTATION = "org.springframework.beans.factory.annotation.Autowired";
 
     @Override
     public Predicate<E> defaultPredictor() {
@@ -18,5 +18,6 @@ public class SpringValueAnnoFieldCollector<E extends CtElement> extends Abstract
     public ResourceRole role() {
         return ResourceRole.FIELD;
     }
+
 
 }
