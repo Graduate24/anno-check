@@ -36,20 +36,24 @@ public class TestResource {
         processor.addCollector(c8);
         var c9 = new AspectAnnoClassCollector<CtClass<?>>();
         processor.addCollector(c9);
-        var c10 = new  AfterAnnoMethodCollector<CtMethod<?>>();
+        var c10 = new AfterAnnoMethodCollector<CtMethod<?>>();
         processor.addCollector(c10);
-        var c11 = new  AfterReturningAnnoMethodCollector<CtMethod<?>>();
+        var c11 = new AfterReturningAnnoMethodCollector<CtMethod<?>>();
         processor.addCollector(c11);
-        var c12 = new  AfterThrowingAnnoMethodCollector<CtMethod<?>>();
+        var c12 = new AfterThrowingAnnoMethodCollector<CtMethod<?>>();
         processor.addCollector(c12);
-        var c13 = new  AroundAnnoMethodCollector<CtMethod<?>>();
+        var c13 = new AroundAnnoMethodCollector<CtMethod<?>>();
         processor.addCollector(c13);
-        var c14 = new  BeforeAnnoMethodCollector<CtMethod<?>>();
+        var c14 = new BeforeAnnoMethodCollector<CtMethod<?>>();
         processor.addCollector(c14);
-        var c15 = new  PointcutMethodCollector<CtMethod<?>>();
+        var c15 = new PointcutMethodCollector<CtMethod<?>>();
         processor.addCollector(c15);
-        var c16 = new  SpringConfigurationClassCollector<CtClass<?>>();
+        var c16 = new SpringConfigurationClassCollector<CtClass<?>>();
         processor.addCollector(c16);
+        var c17 = new SpringControllerClassCollector<CtClass<?>>();
+        processor.addCollector(c17);
+        var c18 = new SpringMappingMethodCollector<CtMethod<?>>();
+        processor.addCollector(c18);
 
         processor.scan(launcher.getModel().getRootPackage());
 
@@ -132,6 +136,16 @@ public class TestResource {
         c16.elements().forEach(e -> {
             System.out.print("    ");
             System.out.println(e.getQualifiedName());
+        });
+        System.out.println("Controller class: ");
+        c17.elements().forEach(e -> {
+            System.out.print("    ");
+            System.out.println(e.getQualifiedName());
+        });
+        System.out.println("Mapping method: ");
+        c18.elements().forEach(e -> {
+            System.out.print("    ");
+            System.out.println(e.getDeclaringType().getQualifiedName() + "." + e.getSignature());
         });
     }
 }
