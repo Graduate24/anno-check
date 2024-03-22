@@ -1,11 +1,15 @@
 import analysis.collector.*;
+import analysis.processor.ResourceRole;
 import analysis.processor.ResourceScanner;
 import org.junit.Test;
 import spoon.Launcher;
+import spoon.reflect.code.CtLiteral;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtField;
 import spoon.reflect.declaration.CtInterface;
 import spoon.reflect.declaration.CtMethod;
+
+import java.util.function.Predicate;
 
 public class TestResource {
 
@@ -147,5 +151,37 @@ public class TestResource {
             System.out.print("    ");
             System.out.println(e.getDeclaringType().getQualifiedName() + "." + e.getSignature());
         });
+
+
+        System.out.println("-----------");
+        System.out.println("Point cuts:");
+        // point cuts
+        c15.elements().forEach(e -> {
+            System.out.print("    ");
+            e.getAnnotations().stream().filter(v -> v.getAnnotationType().getQualifiedName()
+                            .equals("org.aspectj.lang.annotation.Pointcut"))
+                    .findFirst().ifPresent(o -> {
+                        var exp = o.getValue("value");
+                        if (exp instanceof CtLiteral<?> literal) {
+                            String value = (String) literal.getValue();
+                            System.out.println("Annotation value: " + value);
+                        }
+                    });
+
+        });
+
+        Predicate<CtMethod<?>> p = (e)-> e.getAnnotations().stream().anyMatch(a -> "edu.tsinghua.demo.aop.Log".
+                equals(a.getAnnotationType().getPackage() + "." + a.getAnnotationType().getSimpleName()));
+
+        var customCollector = CustomCollector.newCollector(p, ResourceRole.METHOD);
+        var ret = processor.scanOnceFor(launcher.getModel().getRootPackage(),customCollector);
+        System.out.println("@Log method:");
+        ret.forEach(e -> {
+            System.out.print("    ");
+            System.out.println(e.getDeclaringType().getQualifiedName() + "." + e.getSignature());
+        });
+
     }
+
+
 }

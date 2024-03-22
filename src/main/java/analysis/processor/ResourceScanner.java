@@ -4,9 +4,7 @@ import analysis.collector.ElementCollector;
 import spoon.reflect.declaration.*;
 import spoon.reflect.visitor.CtScanner;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class ResourceScanner extends CtScanner {
@@ -59,5 +57,17 @@ public class ResourceScanner extends CtScanner {
                 c.forEach(co -> co.collect(e));
             }
         }
+    }
+
+    public <E extends CtElement> Collection<E> scanOnceFor(CtPackage ctPackage, ElementCollector<E> collector) {
+        var oldCollectorMap = collectorMap;
+        var oldCollectors = collectors;
+        collectors = Collections.singletonList(collector);
+        collectorMap = this.collectors.stream().collect(Collectors.groupingBy(ElementCollector::role));
+        this.scan(ctPackage);
+        var result = collector.elements();
+        collectors = oldCollectors;
+        collectorMap = oldCollectorMap;
+        return result;
     }
 }

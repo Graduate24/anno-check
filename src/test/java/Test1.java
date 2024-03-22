@@ -1,8 +1,14 @@
 import analysis.processor.ResourceScanner;
+import org.aspectj.weaver.tools.PointcutExpression;
+import org.aspectj.weaver.tools.PointcutParser;
+import org.aspectj.weaver.tools.ShadowMatch;
 import org.junit.Test;
 import spoon.Launcher;
 import spoon.reflect.declaration.*;
+import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.filter.TypeFilter;
+
+import java.lang.reflect.Method;
 
 public class Test1 {
     @Test
@@ -36,4 +42,31 @@ public class Test1 {
         ResourceScanner processor = new ResourceScanner();
         processor.scan(launcher.getModel().getRootPackage());
     }
+    public Method getReflectionMethod(CtMethod<?> ctMethod) {
+        try {
+            // Get the declaring class of the CtMethod
+            Class<?> clazz = Class.forName(ctMethod.getDeclaringType().getQualifiedName());
+
+            // Get parameter types for the method
+            Class<?>[] parameterTypes = ctMethod.getParameters().stream()
+                    .map(param -> convertToClass(param.getType()))
+                    .toArray(Class<?>[]::new);
+
+            // Use reflection to find the matching method
+            return clazz.getDeclaredMethod(ctMethod.getSimpleName(), parameterTypes);
+        } catch (ClassNotFoundException | NoSuchMethodException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    private static Class<?> convertToClass(CtTypeReference<?> typeReference) {
+        try {
+            return Class.forName(typeReference.getQualifiedName());
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }
