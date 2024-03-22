@@ -4,6 +4,7 @@ import org.junit.Test;
 import spoon.Launcher;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtField;
+import spoon.reflect.declaration.CtInterface;
 import spoon.reflect.declaration.CtMethod;
 
 public class TestResource {
@@ -27,6 +28,10 @@ public class TestResource {
         processor.addCollector(c4);
         var c5 = new SpringValueAnnoFieldCollector<CtField<?>>();
         processor.addCollector(c5);
+        var c6 = new SpringRepositoryAnnoInterfaceCollector<CtInterface<?>>();
+        processor.addCollector(c6);
+        var c7 = new SpringRepositoryMethodCollector<CtMethod<?>>();
+        processor.addCollector(c7);
 
         processor.scan(launcher.getModel().getRootPackage());
 
@@ -53,6 +58,16 @@ public class TestResource {
         });
         System.out.println("Value field: ");
         c5.elements().forEach(e -> {
+            System.out.print("    ");
+            System.out.println(e.getDeclaringType().getQualifiedName() + "." + e.getSimpleName());
+        });
+        System.out.println("Repository interface: ");
+        c6.elements().forEach(e -> {
+            System.out.print("    ");
+            System.out.println(e.getQualifiedName() + "." + e.getSimpleName());
+        });
+        System.out.println("Repository method: ");
+        c7.elements().forEach(e -> {
             System.out.print("    ");
             System.out.println(e.getDeclaringType().getQualifiedName() + "." + e.getSimpleName());
         });
