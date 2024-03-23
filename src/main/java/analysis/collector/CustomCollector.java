@@ -1,6 +1,6 @@
 package analysis.collector;
 
-import analysis.processor.ResourceRole;
+import analysis.processor.resource.ResourceRole;
 import spoon.reflect.declaration.CtElement;
 
 import java.util.function.Predicate;
@@ -8,7 +8,7 @@ import java.util.function.Predicate;
 public class CustomCollector {
 
     public static <E extends CtElement> ElementCollector<E> newCollector(Predicate<E> predicate, ResourceRole role) {
-        return new AbstractElementCollector<E>() {
+        return new AbstractElementCollector<>() {
             @Override
             public Predicate<E> defaultPredictor() {
                 return predicate;

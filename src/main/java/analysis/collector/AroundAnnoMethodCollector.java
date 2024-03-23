@@ -1,8 +1,7 @@
 package analysis.collector;
 
-import analysis.processor.ResourceRole;
+import analysis.processor.resource.ResourceRole;
 import spoon.reflect.declaration.CtElement;
-import spoon.reflect.declaration.CtMethod;
 
 import java.util.function.Predicate;
 

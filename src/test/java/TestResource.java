@@ -1,6 +1,6 @@
 import analysis.collector.*;
-import analysis.processor.ResourceRole;
-import analysis.processor.ResourceScanner;
+import analysis.processor.resource.ResourceRole;
+import analysis.processor.resource.ResourceScanner;
 import org.junit.Test;
 import spoon.Launcher;
 import spoon.reflect.code.CtLiteral;
@@ -58,6 +58,8 @@ public class TestResource {
         processor.addCollector(c17);
         var c18 = new SpringMappingMethodCollector<CtMethod<?>>();
         processor.addCollector(c18);
+        var c19 = new SpringAutowiredAnnoMethodCollector<CtMethod<?>>();
+        processor.addCollector(c19);
 
         processor.scan(launcher.getModel().getRootPackage());
 
@@ -148,6 +150,11 @@ public class TestResource {
         });
         System.out.println("Mapping method: ");
         c18.elements().forEach(e -> {
+            System.out.print("    ");
+            System.out.println(e.getDeclaringType().getQualifiedName() + "." + e.getSignature());
+        });
+        System.out.println("Autowired method: ");
+        c19.elements().forEach(e -> {
             System.out.print("    ");
             System.out.println(e.getDeclaringType().getQualifiedName() + "." + e.getSignature());
         });

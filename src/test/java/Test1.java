@@ -1,7 +1,4 @@
-import analysis.processor.ResourceScanner;
-import org.aspectj.weaver.tools.PointcutExpression;
-import org.aspectj.weaver.tools.PointcutParser;
-import org.aspectj.weaver.tools.ShadowMatch;
+import analysis.processor.resource.ResourceScanner;
 import org.junit.Test;
 import spoon.Launcher;
 import spoon.reflect.declaration.*;
