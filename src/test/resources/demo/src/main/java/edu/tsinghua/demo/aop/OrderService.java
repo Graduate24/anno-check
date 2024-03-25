@@ -11,14 +11,15 @@ public class OrderService {
 
     public String orderStuff() {
         System.out.println("Ordering stuff");
-		return "Order";
+        return "Order";
     }
+
     public void cancelStuff() {
         System.out.println("Canceling stuff");
     }
 
     @Log
-    public void callOuter(){
+    public void callOuter() {
         shipmentService.outerCheck();
         shipmentService.innerCheck();
         System.out.println("call outer");

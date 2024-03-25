@@ -1,9 +1,7 @@
 package edu.tsinghua.demo;
 
 import edu.tsinghua.demo.config.ValidatingComponent;
-import jakarta.annotation.Nullable;
 import jakarta.validation.ConstraintViolationException;
-import jakarta.validation.constraints.NotNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,8 +28,6 @@ public class Tests {
         // jakarta.validation.ConstraintViolationException: getNotNullableValue.<return value>: 不能为null
         component.getNotNullableValue(null);
     }
-
-
 
 
 }

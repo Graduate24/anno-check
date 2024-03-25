@@ -1,4 +1,5 @@
 package edu.tsinghua.demo.service.demo1;
+
 import org.springframework.stereotype.Service;
 
 @Service("good")

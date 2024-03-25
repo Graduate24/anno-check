@@ -10,7 +10,7 @@ public class BillService {
     }
 
     public String sendBill(String address, Double fee) {
-        String text =  "address: " + address + ", fee: " + fee;
+        String text = "address: " + address + ", fee: " + fee;
         System.out.println(text);
         return text;
     }

@@ -4,7 +4,7 @@ import spoon.reflect.declaration.CtElement;
 
 import java.util.function.Predicate;
 
-public class AspectAnnoClassCollector <E extends CtElement> extends AbstractElementCollector<E>{
+public class AspectAnnoClassCollector<E extends CtElement> extends AbstractElementCollector<E> {
     private final static String ASPECT_ANNOTATION = "org.aspectj.lang.annotation.Aspect";
 
     @Override

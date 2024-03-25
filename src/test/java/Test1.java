@@ -1,7 +1,9 @@
-import resource.ResourceScanner;
 import org.junit.Test;
+import resource.ResourceScanner;
 import spoon.Launcher;
-import spoon.reflect.declaration.*;
+import spoon.reflect.declaration.CtClass;
+import spoon.reflect.declaration.CtInterface;
+import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.reference.CtTypeReference;
 import spoon.reflect.visitor.filter.TypeFilter;
 
@@ -16,22 +18,22 @@ public class Test1 {
     }
 
     @Test
-    public void test2(){
+    public void test2() {
         Launcher launcher = new Launcher();
         launcher.addInputResource("src/test/resources/demo/src/main/java/");
         launcher.buildModel();
         System.out.println("interfaces: ");
-        launcher.getModel().getElements(new TypeFilter<>(CtInterface.class)).forEach(c->{
-            System.out.println(c.getSimpleName()+", "+c.getQualifiedName()+", "+c.getSuperInterfaces());
+        launcher.getModel().getElements(new TypeFilter<>(CtInterface.class)).forEach(c -> {
+            System.out.println(c.getSimpleName() + ", " + c.getQualifiedName() + ", " + c.getSuperInterfaces());
         });
         System.out.println("classes: ");
-        launcher.getModel().getElements(new TypeFilter<>(CtClass.class)).forEach(c->{
-            System.out.println(c.getSimpleName()+", "+c.getSuperclass()+", "+ c.getSuperInterfaces());
+        launcher.getModel().getElements(new TypeFilter<>(CtClass.class)).forEach(c -> {
+            System.out.println(c.getSimpleName() + ", " + c.getSuperclass() + ", " + c.getSuperInterfaces());
         });
     }
 
     @Test
-    public void test3(){
+    public void test3() {
         Launcher launcher = new Launcher();
         launcher.addInputResource("src/test/resources/demo/src/main/java/");
         launcher.buildModel();
@@ -39,6 +41,7 @@ public class Test1 {
         ResourceScanner processor = new ResourceScanner();
         processor.scan(launcher.getModel().getRootPackage());
     }
+
     public Method getReflectionMethod(CtMethod<?> ctMethod) {
         try {
             // Get the declaring class of the CtMethod

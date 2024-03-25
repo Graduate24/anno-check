@@ -11,6 +11,6 @@ import java.util.List;
 public interface UserRepository extends JpaRepository<User, Long> {
     List<User> findByName(String name);
 
-    @Query(value="SELECT * FROM user WHERE name LIKE ?",nativeQuery=true)
+    @Query(value = "SELECT * FROM user WHERE name LIKE ?", nativeQuery = true)
     List<User> searchUser(String name);
 }

@@ -12,7 +12,7 @@ public class SpringRepositoryMethodCollector<E extends CtElement> extends Abstra
     @Override
     public Predicate<E> defaultPredictor() {
 
-        return (e) -> ((CtMethod<?>)e).getDeclaringType().getAnnotations().stream().anyMatch(a -> SPRING_ANNOTATION.
+        return (e) -> ((CtMethod<?>) e).getDeclaringType().getAnnotations().stream().anyMatch(a -> SPRING_ANNOTATION.
                 equals(a.getAnnotationType().getPackage() + "." + a.getAnnotationType().getSimpleName()));
     }
 

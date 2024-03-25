@@ -45,7 +45,7 @@ public abstract class AbstractBeanLoader implements BeanLoader {
         return anno == null ? null : (Boolean) anno.getValue();
     }
 
-    public String getAnnoValue(CtElement element,String anno) {
+    public String getAnnoValue(CtElement element, String anno) {
         return getValueOfAnnotationAsString(element, anno);
     }
 

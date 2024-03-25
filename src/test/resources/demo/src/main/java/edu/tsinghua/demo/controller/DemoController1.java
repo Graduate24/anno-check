@@ -8,7 +8,6 @@ import edu.tsinghua.demo.service.demo1.MediumService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -39,6 +38,7 @@ public class DemoController1 {
     private UserRepository userRepository;
 
     private Map<String, Demo1Service> serviceMapNew = new HashMap<>();
+
     {
         serviceMapNew.put("good", new GoodService());
         serviceMapNew.put("medium", new MediumService());
@@ -83,7 +83,7 @@ public class DemoController1 {
 
     @GetMapping("/test8")
     public List<User> test8(@RequestParam String name) {
-        List<User> userList =  userRepository.findByName(name);
+        List<User> userList = userRepository.findByName(name);
         return userList;
     }
 

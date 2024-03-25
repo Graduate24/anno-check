@@ -5,7 +5,6 @@ import edu.tsinghua.demo.config.FieldValueTestBean;
 import edu.tsinghua.demo.entity.MyBean;
 import edu.tsinghua.demo.entity.MyBeanConsumer;
 import edu.tsinghua.demo.service.demo1.Demo1Service;
-import edu.tsinghua.demo.service.demo1.MediumService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -55,11 +54,10 @@ public class BeanTest {
         assertThat(mail.getCredentials().getUsername()).isEqualTo("john");
 
 
-
     }
 
     @Test
-    public void test4(){
+    public void test4() {
         assertThat(mail).isNotEqualTo(mail2);
         assertThat(mail.getCredentials()).isNotEqualTo(mail2.getCredentials());
     }

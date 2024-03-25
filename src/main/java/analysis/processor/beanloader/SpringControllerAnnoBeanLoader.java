@@ -16,7 +16,7 @@ public class SpringControllerAnnoBeanLoader extends AbstractBeanLoader {
     @Override
     public BeanDefinitionModel load(Set<CtElement> contextResource, CtElement currentResource) {
         var bd = new BeanDefinitionModel();
-        String comName = getAnnoValue(currentResource,CONTROLLER);
+        String comName = getAnnoValue(currentResource, CONTROLLER);
         bd.setName(comName == null ? defaultBeanNameFromClass(currentResource) : comName);
         bd.setScope(bd.fromString(getScopeValue(currentResource)));
         bd.setType((CtClass<?>) currentResource);

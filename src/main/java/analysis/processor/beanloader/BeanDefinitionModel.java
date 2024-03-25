@@ -3,7 +3,6 @@ package analysis.processor.beanloader;
 import spoon.reflect.declaration.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class BeanDefinitionModel {
 

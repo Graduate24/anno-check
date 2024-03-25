@@ -1,16 +1,11 @@
 package analysis.processor.beanregistor;
 
 import analysis.processor.beanloader.BeanDefinitionModel;
-import org.codehaus.plexus.util.CollectionUtils;
 import resource.CachedElementFinder;
-import spoon.reflect.CtModel;
-import spoon.reflect.declaration.CtClass;
-import spoon.reflect.declaration.CtInterface;
-import spoon.reflect.declaration.CtType;
-import spoon.reflect.visitor.filter.TypeFilter;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 
 public class BeanRegister {
 

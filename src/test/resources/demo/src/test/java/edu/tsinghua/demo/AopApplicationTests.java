@@ -1,10 +1,6 @@
 package edu.tsinghua.demo;
 
-import edu.tsinghua.demo.aop.BillService;
-import edu.tsinghua.demo.aop.MathCalculator;
-import edu.tsinghua.demo.aop.OrderService;
-import edu.tsinghua.demo.aop.ShipmentService;
-import edu.tsinghua.demo.aop.UserService;
+import edu.tsinghua.demo.aop.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -57,6 +53,7 @@ class AopApplicationTests {
     void testCancelWithLogicalOperator() {
         orderService.cancelStuff();
     }
+
     @Test
     void test() {
         String result = billService.sendBill("beijing", 100.00);
@@ -64,12 +61,12 @@ class AopApplicationTests {
     }
 
     @Test
-    void testAroundAop(){
-        mathCalculator.add(1,2);
+    void testAroundAop() {
+        mathCalculator.add(1, 2);
     }
 
     @Test
-    void test2(){
+    void test2() {
         orderService.callOuter();
     }
 

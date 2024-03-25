@@ -15,11 +15,11 @@ public class ShipmentService {
         System.out.println("shipStuffWithBill In Service");
     }
 
-    public void innerCheck(){
+    public void innerCheck() {
         System.out.println("inner check");
     }
 
-    public void outerCheck(){
+    public void outerCheck() {
         System.out.println("outer check");
     }
 

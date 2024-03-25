@@ -1,7 +1,7 @@
 import analysis.collector.*;
+import org.junit.Test;
 import resource.ResourceRole;
 import resource.ResourceScanner;
-import org.junit.Test;
 import spoon.Launcher;
 import spoon.reflect.code.CtLiteral;
 import spoon.reflect.declaration.CtClass;
@@ -177,11 +177,11 @@ public class TestResource {
 
         });
 
-        Predicate<CtMethod<?>> p = (e)-> e.getAnnotations().stream().anyMatch(a -> "edu.tsinghua.demo.aop.Log".
+        Predicate<CtMethod<?>> p = (e) -> e.getAnnotations().stream().anyMatch(a -> "edu.tsinghua.demo.aop.Log".
                 equals(a.getAnnotationType().getPackage() + "." + a.getAnnotationType().getSimpleName()));
 
         var customCollector = CustomCollector.newCollector(p, ResourceRole.METHOD);
-        var ret = processor.scanOnceFor(launcher.getModel().getRootPackage(),customCollector);
+        var ret = processor.scanOnceFor(launcher.getModel().getRootPackage(), customCollector);
         System.out.println("@Log method:");
         ret.forEach(e -> {
             System.out.print("    ");
