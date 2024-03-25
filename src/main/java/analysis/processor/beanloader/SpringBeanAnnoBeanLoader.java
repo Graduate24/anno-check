@@ -1,7 +1,5 @@
 package analysis.processor.beanloader;
 
-import analysis.processor.ioccontainermodel.BeanDefinitionModel;
-import org.eclipse.jdt.internal.compiler.ast.QualifiedAllocationExpression;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtMethod;

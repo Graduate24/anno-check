@@ -1,4 +1,4 @@
-package analysis.processor.ioccontainermodel;
+package analysis.processor.beanloader;
 
 import spoon.reflect.declaration.*;
 
@@ -133,8 +133,8 @@ public class BeanDefinitionModel {
                 ", type=" + type.getQualifiedName() +
                 ", scope=" + scope + ", fromSource=" + fromSource +
                 ", constructorArguments=" + constructorArguments +
-                ", initializeMethod=" + (initializeMethod==null?"":initializeMethod.getSimpleName()) +
-                ", constructor=" + constructor +
+                ", initializeMethod=" + (initializeMethod == null ? "" : initializeMethod.getSimpleName()) +
+                ", constructor=" + (constructor == null ? "" : constructor.getSignature()) +
                 ", properties=" + (properties != null ? properties.stream().map(CtNamedElement::getSimpleName).toList() : "") +
                 ", lazyInit=" + lazyInit +
                 '}';

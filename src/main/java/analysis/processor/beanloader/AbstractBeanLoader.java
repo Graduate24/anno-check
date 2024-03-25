@@ -15,9 +15,7 @@ public abstract class AbstractBeanLoader implements BeanLoader {
     protected final static String CONTROLLER = "org.springframework.stereotype.Controller";
     protected final static String SCOPE = "org.springframework.context.annotation.Scope";
     protected final static String LAZY = "org.springframework.context.annotation.Lazy";
-
     protected final static String QUALIFIER = "org.springframework.beans.factory.annotation.Qualifier";
-
     protected final static String BEAN = "org.springframework.context.annotation.Bean";
     protected final static String VALUE = "value";
 

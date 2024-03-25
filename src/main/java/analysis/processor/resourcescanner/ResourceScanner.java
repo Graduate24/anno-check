@@ -1,4 +1,4 @@
-package analysis.processor.resource;
+package analysis.processor.resourcescanner;
 
 import analysis.collector.ElementCollector;
 import spoon.reflect.declaration.*;

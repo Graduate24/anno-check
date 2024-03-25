@@ -1,6 +1,5 @@
 package analysis.processor.beanloader;
 
-import analysis.processor.ioccontainermodel.BeanDefinitionModel;
 import spoon.reflect.declaration.CtElement;
 
 import java.util.Set;

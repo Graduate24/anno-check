@@ -6,17 +6,11 @@ import analysis.processor.beanloader.SpringBeanAnnoBeanLoader;
 import analysis.processor.beanloader.SpringComponentAnnoBeanLoader;
 import analysis.processor.beanloader.SpringControllerAnnoBeanLoader;
 import analysis.processor.beanloader.SpringServiceAnnoBeanLoader;
-import analysis.processor.resource.ResourceScanner;
+import analysis.processor.resourcescanner.ResourceScanner;
 import org.junit.Test;
 import spoon.Launcher;
-import spoon.reflect.code.CtLiteral;
 import spoon.reflect.declaration.CtClass;
-import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtMethod;
-import spoon.support.reflect.declaration.CtAnnotationImpl;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class TestBeanLoader {
 
