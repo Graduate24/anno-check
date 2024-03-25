@@ -56,7 +56,9 @@ public class CachedElementFinder implements ElementFinder {
         }
 
         result = ModelFactory.getModel().getAllTypes().stream()
-                .filter(t -> (t.getSuperclass() != null && t.getSuperclass().getTypeDeclaration().getQualifiedName().equals(qualifiedName)
+                .filter(t -> (t.getSuperclass() != null
+                        && t.getSuperclass().getTypeDeclaration() != null
+                        && t.getSuperclass().getTypeDeclaration().getQualifiedName().equals(qualifiedName)
                         || (t.getSuperInterfaces().stream().anyMatch(i -> i.getQualifiedName().equals(qualifiedName))))
                 ).collect(Collectors.toSet());
         cachedSubType.put(qualifiedName, result);

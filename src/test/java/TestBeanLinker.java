@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 public class TestBeanLinker {
     public List<BeanDefinitionModel> collectBeanModel() {
-        CtModel model = ModelFactory.init("src/test/resources/demo/src/main/java/");
+        CtModel model = ModelFactory.init("D:\\edgedownload\\mall-master");
         ResourceScanner processor = new ResourceScanner();
 
         var c1 = new SpringComponentAnnoClassCollector<CtClass<?>>();
