@@ -1,4 +1,4 @@
-package analysis.processor.resourcescanner;
+package resource;
 
 public enum ResourceRole {
     METHOD,

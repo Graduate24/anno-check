@@ -1,6 +1,6 @@
 import analysis.collector.*;
-import analysis.processor.resourcescanner.ResourceRole;
-import analysis.processor.resourcescanner.ResourceScanner;
+import resource.ResourceRole;
+import resource.ResourceScanner;
 import org.junit.Test;
 import spoon.Launcher;
 import spoon.reflect.code.CtLiteral;

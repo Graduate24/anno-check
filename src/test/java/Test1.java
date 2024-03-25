@@ -1,4 +1,4 @@
-import analysis.processor.resourcescanner.ResourceScanner;
+import resource.ResourceScanner;
 import org.junit.Test;
 import spoon.Launcher;
 import spoon.reflect.declaration.*;
