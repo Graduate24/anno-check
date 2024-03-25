@@ -21,8 +21,8 @@ public class BeanRegister {
     /**
      * get bean definition by type
      *
-     * @param type
-     * @return
+     * @param type type qualified name
+     * @return Bean Definition set
      */
     public static Set<BeanDefinitionModel> getBeanByTypeAndSunType(String type) {
         Set<BeanDefinitionModel> result = new HashSet<>();
@@ -47,8 +47,8 @@ public class BeanRegister {
     /**
      * get bean definition by name
      *
-     * @param name
-     * @return
+     * @param name name
+     * @return  Bean Definition set
      */
     public static Set<BeanDefinitionModel> getBeanByName(String name) {
         return IoCContainerModel.INSTANCE.getBeanFromName(name);

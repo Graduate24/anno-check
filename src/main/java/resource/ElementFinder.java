@@ -1,8 +1,6 @@
 package resource;
 
-import spoon.reflect.declaration.CtClass;
-import spoon.reflect.declaration.CtInterface;
-import spoon.reflect.declaration.CtType;
+import spoon.reflect.declaration.*;
 
 import java.util.Set;
 
