@@ -1,11 +1,9 @@
 package analysis.processor.ioccontainermodel;
 
-import spoon.reflect.declaration.CtClass;
-import spoon.reflect.declaration.CtConstructor;
-import spoon.reflect.declaration.CtField;
-import spoon.reflect.declaration.CtMethod;
+import spoon.reflect.declaration.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class BeanDefinitionModel {
 
@@ -18,18 +16,24 @@ public class BeanDefinitionModel {
 
     }
 
+    public enum FromSource {
+        COMPONENT_ANNOTATION,
+        BEAN_ANNOTATION,
+        SERVICE_ANNOTATION,
+        CONTROLLER_ANNOTATION,
+    }
+
     public BeanScope fromString(String scope) {
-        if ("prototype".equals(scope)) {
-            return BeanScope.PROTOTYPE;
-        } else if ("singleton".equals(scope)) {
+        if (scope == null) {
             return BeanScope.SINGLETON;
-        } else if ("request".equals(scope)) {
-            return BeanScope.REQUEST;
-        } else if ("session".equals(scope)) {
-            return BeanScope.SESSION;
-        } else {
-            return BeanScope.GLOBAL_SESSION;
         }
+        return switch (scope) {
+            case "prototype" -> BeanScope.PROTOTYPE;
+            case "singleton" -> BeanScope.SINGLETON;
+            case "request" -> BeanScope.REQUEST;
+            case "session" -> BeanScope.SESSION;
+            default -> BeanScope.GLOBAL_SESSION;
+        };
     }
 
     static public class ConstructorArgument {
@@ -46,6 +50,8 @@ public class BeanDefinitionModel {
     private CtConstructor<?> constructor;
     private List<CtField<?>> properties;
     private boolean lazyInit = false;
+
+    private FromSource fromSource;
 
     public String getName() {
         return name;
@@ -111,16 +117,25 @@ public class BeanDefinitionModel {
         this.constructor = constructor;
     }
 
+    public FromSource getFromSource() {
+        return fromSource;
+    }
+
+    public void setFromSource(FromSource fromSource) {
+        this.fromSource = fromSource;
+    }
+
+
     @Override
     public String toString() {
         return "BeanDefinitionModel{" +
-                "name=" + (name != null ? name : "")  +
+                "name=" + (name != null ? name : "") +
                 ", type=" + type.getQualifiedName() +
-                ", scope=" + scope +
+                ", scope=" + scope + ", fromSource=" + fromSource +
                 ", constructorArguments=" + constructorArguments +
-                ", initializeMethod=" + initializeMethod +
+                ", initializeMethod=" + (initializeMethod==null?"":initializeMethod.getSimpleName()) +
                 ", constructor=" + constructor +
-                ", properties=" + properties +
+                ", properties=" + (properties != null ? properties.stream().map(CtNamedElement::getSimpleName).toList() : "") +
                 ", lazyInit=" + lazyInit +
                 '}';
     }
