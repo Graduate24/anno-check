@@ -7,7 +7,7 @@ import analysis.processor.beanregistor.BeanRegister;
 import analysis.processor.beanregistor.IoCContainerModel;
 import org.junit.Test;
 import resource.ModelFactory;
-import resource.ResourceScanner;
+import resource.JavaResourceScanner;
 import spoon.reflect.CtModel;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtMethod;
@@ -23,7 +23,7 @@ public class TestBeanRegister {
 
     public List<BeanDefinitionModel> collectBeanModel() {
         CtModel model = ModelFactory.init("src/test/resources/demo/src/main/java/");
-        ResourceScanner processor = new ResourceScanner();
+        JavaResourceScanner processor = new JavaResourceScanner();
 
         var c1 = new SpringComponentAnnoClassCollector<CtClass<?>>();
         processor.addCollector(c1);

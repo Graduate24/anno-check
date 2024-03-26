@@ -1,7 +1,7 @@
 import analysis.collector.*;
 import org.junit.Test;
 import resource.ResourceRole;
-import resource.ResourceScanner;
+import resource.JavaResourceScanner;
 import spoon.Launcher;
 import spoon.reflect.code.CtLiteral;
 import spoon.reflect.declaration.CtClass;
@@ -19,7 +19,7 @@ public class TestResource {
         launcher.addInputResource("src/test/resources/demo/src/main/java/");
         launcher.buildModel();
         launcher.process();
-        ResourceScanner processor = new ResourceScanner();
+        JavaResourceScanner processor = new JavaResourceScanner();
 
 
         var c1 = new SpringMainClassCollector<CtClass<?>>();

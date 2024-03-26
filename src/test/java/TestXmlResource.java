@@ -1,52 +1,14 @@
-package resource;
-
+import org.junit.Test;
 import org.w3c.dom.Document;
-import spoon.Launcher;
-import spoon.reflect.CtModel;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
-public class ModelFactory {
-    private static CtModel model;
-    private static String filePath;
-
-    private static Set<String> mapper;
-
-    public static CtModel init(String path) {
-        if (model == null) {
-            Launcher launcher = new Launcher();
-            launcher.addInputResource(path);
-            model = launcher.buildModel();
-            filePath = path;
-        }
-        if (mapper == null) {
-            mapper = new HashSet<>();
-            Map<String, String> mappers = findMyBatisMappers(ModelFactory.getFilePath());
-            mappers.forEach((p, namespace) -> mapper.add(namespace));
-        }
-
-        return model;
-    }
-
-    public static CtModel getModel() {
-        return model;
-    }
-
-    public static String getFilePath() {
-        return filePath;
-    }
-
-    public static Set<String> getMybatisMapper(){
-        return mapper;
-    }
-
+public class TestXmlResource {
     private static Map<String, String> findMyBatisMappers(String directoryPath) {
         Map<String, String> mapperNamespaces = new HashMap<>();
         try {
@@ -73,4 +35,12 @@ public class ModelFactory {
         }
         return mapperNamespaces;
     }
+
+    @Test
+    public void test1(){
+        String project = "D:\\edgedownload\\mall-master";
+        Map<String, String> mappers = findMyBatisMappers(project);
+        mappers.forEach((path, namespace) -> System.out.println("Mapper: " + path + ", Namespace: " + namespace));
+    }
+
 }

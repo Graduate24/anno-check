@@ -1,5 +1,5 @@
 import org.junit.Test;
-import resource.ResourceScanner;
+import resource.JavaResourceScanner;
 import spoon.Launcher;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtInterface;
@@ -38,7 +38,7 @@ public class Test1 {
         launcher.addInputResource("src/test/resources/demo/src/main/java/");
         launcher.buildModel();
         launcher.process();
-        ResourceScanner processor = new ResourceScanner();
+        JavaResourceScanner processor = new JavaResourceScanner();
         processor.scan(launcher.getModel().getRootPackage());
     }
 

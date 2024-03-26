@@ -7,7 +7,7 @@ import analysis.processor.beanloader.SpringComponentAnnoBeanLoader;
 import analysis.processor.beanloader.SpringControllerAnnoBeanLoader;
 import analysis.processor.beanloader.SpringServiceAnnoBeanLoader;
 import org.junit.Test;
-import resource.ResourceScanner;
+import resource.JavaResourceScanner;
 import spoon.Launcher;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtMethod;
@@ -24,7 +24,7 @@ public class TestBeanLoader {
         Launcher launcher = new Launcher();
         launcher.addInputResource("src/test/resources/demo/src/main/java/");
         launcher.buildModel();
-        ResourceScanner processor = new ResourceScanner();
+        JavaResourceScanner processor = new JavaResourceScanner();
 
         var c1 = new SpringComponentAnnoClassCollector<CtClass<?>>();
         processor.addCollector(c1);

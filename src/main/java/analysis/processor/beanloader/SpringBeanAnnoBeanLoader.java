@@ -28,7 +28,7 @@ public class SpringBeanAnnoBeanLoader extends AbstractBeanLoader {
         }
         bd.setName(comName);
         bd.setScope(bd.fromString(getScopeValue(currentMethod)));
-        bd.setType((CtClass<?>) currentMethod.getDeclaringType());
+        bd.setType(currentMethod.getDeclaringType());
         bd.setLazyInit(getLazyValue(currentMethod));
         bd.setInitializeMethod(currentMethod);
         bd.setFromSource(BeanDefinitionModel.FromSource.BEAN_ANNOTATION);

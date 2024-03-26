@@ -1,10 +1,7 @@
 package analysis.processor.beanloader;
 
 import spoon.reflect.code.CtLiteral;
-import spoon.reflect.declaration.CtClass;
-import spoon.reflect.declaration.CtConstructor;
-import spoon.reflect.declaration.CtElement;
-import spoon.reflect.declaration.CtField;
+import spoon.reflect.declaration.*;
 import spoon.support.reflect.declaration.CtAnnotationImpl;
 
 import java.util.List;
@@ -17,6 +14,9 @@ public abstract class AbstractBeanLoader implements BeanLoader {
     protected final static String LAZY = "org.springframework.context.annotation.Lazy";
     protected final static String QUALIFIER = "org.springframework.beans.factory.annotation.Qualifier";
     protected final static String BEAN = "org.springframework.context.annotation.Bean";
+    protected final static String REPOSITORY = "org.springframework.stereotype.Repository";
+
+    protected final static String MAPPER = "org.apache.ibatis.annotations.Mapper";
     protected final static String VALUE = "value";
 
     public CtLiteral<?> getValueOfAnnotation(CtElement element, String annotationName) {
@@ -71,12 +71,12 @@ public abstract class AbstractBeanLoader implements BeanLoader {
     }
 
     public List<CtField<?>> getFields(CtElement element) {
-        CtClass<?> clazz = (CtClass<?>) element;
+        CtType<?> clazz = (CtType<?>) element;
         return clazz.getFields();
     }
 
     public String defaultBeanNameFromClass(CtElement element) {
-        CtClass<?> clazz = (CtClass<?>) element;
+        CtType<?> clazz = (CtType<?>) element;
         String name = clazz.getSimpleName();
 
         char[] cs = name.toCharArray();

@@ -20,6 +20,9 @@ public class BeanDefinitionModel {
         BEAN_ANNOTATION,
         SERVICE_ANNOTATION,
         CONTROLLER_ANNOTATION,
+        REPOSITORY_ANNOTATION,
+
+        MYBATIS_MAPPER,
     }
 
     public BeanScope fromString(String scope) {
@@ -42,7 +45,7 @@ public class BeanDefinitionModel {
     }
 
     private String name;
-    private CtClass<?> type;
+    private CtType<?> type;
     private BeanScope scope = BeanScope.SINGLETON;
     private List<ConstructorArgument> constructorArguments;
     private CtMethod<?> initializeMethod;
@@ -60,11 +63,11 @@ public class BeanDefinitionModel {
         this.name = name;
     }
 
-    public CtClass<?> getType() {
+    public CtType<?> getType() {
         return type;
     }
 
-    public void setType(CtClass<?> type) {
+    public void setType(CtType<?> type) {
         this.type = type;
     }
 

@@ -1,13 +1,14 @@
 package resource;
 
 import analysis.collector.ElementCollector;
+import spoon.reflect.CtModel;
 import spoon.reflect.declaration.*;
 import spoon.reflect.visitor.CtScanner;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class ResourceScanner extends CtScanner {
+public class JavaResourceScanner extends CtScanner {
 
     private List<ElementCollector<? extends CtElement>> collectors;
     private Map<ResourceRole, List<ElementCollector<? extends CtElement>>> collectorMap;
@@ -35,11 +36,11 @@ public class ResourceScanner extends CtScanner {
         collect(ResourceRole.CLASS, ctClass);
         CachedElementFinder.getInstance().addType(ctClass);
         if (ctClass.getSuperclass() != null) {
-            CachedElementFinder.getInstance().addSuperClass(ctClass,  ctClass.getSuperclass().getQualifiedName());
+            CachedElementFinder.getInstance().addSuperClass(ctClass, ctClass.getSuperclass().getQualifiedName());
         }
         if (!ctClass.getSuperInterfaces().isEmpty()) {
             ctClass.getSuperInterfaces().forEach(i -> {
-                CachedElementFinder.getInstance().addSuperClass(ctClass,  i.getQualifiedName());
+                CachedElementFinder.getInstance().addSuperClass(ctClass, i.getQualifiedName());
             });
         }
         super.visitCtClass(ctClass);
