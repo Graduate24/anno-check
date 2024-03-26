@@ -37,6 +37,9 @@ public class TestBeanLinker {
         var c6 = new MybatisMapperInterfaceCollector<CtInterface<?>>();
         processor.addCollector(c6);
 
+        var c7 = new SpringMongoRepoInterfaceCollector<CtInterface<?>>();
+        processor.addCollector(c7);
+
         processor.scan(model.getRootPackage());
 
         var list = new ArrayList<BeanDefinitionModel>();
@@ -73,6 +76,12 @@ public class TestBeanLinker {
         var my = new MybatisMapperBeanLoader();
         c6.elements().forEach(e -> {
             var bd = my.load(null, e);
+            list.add(bd);
+        });
+
+        var mo = new SpringMongoRepoBeanLoader();
+        c7.elements().forEach(e -> {
+            var bd = mo.load(null, e);
             list.add(bd);
         });
         return list;

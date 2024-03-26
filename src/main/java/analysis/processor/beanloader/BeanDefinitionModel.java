@@ -23,6 +23,8 @@ public class BeanDefinitionModel {
         REPOSITORY_ANNOTATION,
 
         MYBATIS_MAPPER,
+
+        MONGODB_REPOSITORY
     }
 
     public BeanScope fromString(String scope) {
