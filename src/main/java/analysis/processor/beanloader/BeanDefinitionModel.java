@@ -29,6 +29,7 @@ public class BeanDefinitionModel {
 
         CONFIGURATION_ANNOTATION,
         CONFIGURATION_PROPERTIES_ANNOTATION,
+        VALUE_ANNOTATION,
 
     }
 

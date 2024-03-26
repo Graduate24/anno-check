@@ -44,7 +44,7 @@ public class SpringAutowiredAnnoFieldLinker implements Linker {
 
     @Override
     public Set<BeanDefinitionModel> findLink(CtElement element) {
-        return link.get(element);
+        return link.getOrDefault(element,new HashSet<>());
     }
 
 

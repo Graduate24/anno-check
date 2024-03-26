@@ -2,6 +2,7 @@ import analysis.collector.*;
 import analysis.processor.beanloader.*;
 import analysis.processor.beanregistor.BeanRegister;
 import analysis.processor.linker.SpringAutowiredAnnoFieldLinker;
+import analysis.processor.linker.SpringValueAnnoFieldLinker;
 import org.junit.Test;
 import resource.ModelFactory;
 import resource.JavaResourceScanner;
@@ -39,6 +40,15 @@ public class TestBeanLinker {
 
         var c7 = new SpringMongoRepoInterfaceCollector<CtInterface<?>>();
         processor.addCollector(c7);
+
+        var c8 = new SpringConfigurationPropertiesClassCollector<CtClass<?>>();
+        processor.addCollector(c8);
+
+        var c9 = new SpringConfigurationClassCollector<CtClass<?>>();
+        processor.addCollector(c9);
+
+        var c10 = new SpringValueAnnoFieldCollector<CtField<?>>();
+        processor.addCollector(c10);
 
         processor.scan(model.getRootPackage());
 
@@ -84,13 +94,32 @@ public class TestBeanLinker {
             var bd = mo.load(null, e);
             list.add(bd);
         });
+
+        var cp = new SpringConfigurationPropertiesBeanLoader();
+        c8.elements().forEach(e -> {
+            var bd = cp.load(null, e);
+            list.add(bd);
+        });
+
+        var c = new SpringConfigurationBeanLoader();
+        c9.elements().forEach(e -> {
+            var bd = c.load(null, e);
+            list.add(bd);
+        });
+
+        var v = new SpringValueAnnoBeanLoader();
+        c10.elements().forEach(e -> {
+            var bd = v.load(null, e);
+            list.add(bd);
+        });
+
         return list;
     }
 
     @Test
     public void test1() {
-         String project = "D:\\edgedownload\\mall-master";
-//        String project = "src/test/resources/demo/src/main/java/";
+//         String project = "D:\\edgedownload\\mall-master";
+        String project = "src/test/resources/demo/";
         // load bean and register bean
         collectBeanModel(project).forEach(BeanRegister::register);
 
@@ -98,13 +127,28 @@ public class TestBeanLinker {
         JavaResourceScanner processor = new JavaResourceScanner();
         var c1 = new SpringAutowiredAnnoFieldCollector<CtField<?>>();
         processor.addCollector(c1);
+
+        var c2 = new SpringValueAnnoFieldCollector<CtField<?>>();
+        processor.addCollector(c2);
         processor.scan(ModelFactory.getModel().getRootPackage());
 
         var linker = new SpringAutowiredAnnoFieldLinker();
         // link
+        System.out.println("---------@Autowired-----------\n\n");
         c1.elements().forEach(e -> {
             linker.link(e);
             var bs = linker.findLink(e);
+            System.out.println(e.getDeclaringType().getQualifiedName() + "#" + e.getSimpleName() + "\n     -->  " +
+                    bs.size() + "| " + bs);
+        });
+
+        System.out.println("\n\n---------@Value-----------\n\n");
+
+        var linker2 = new SpringValueAnnoFieldLinker();
+        // link
+        c2.elements().forEach(e -> {
+            linker2.link(e);
+            var bs = linker2.findLink(e);
             System.out.println(e.getDeclaringType().getQualifiedName() + "#" + e.getSimpleName() + "\n     -->  " +
                     bs.size() + "| " + bs);
         });

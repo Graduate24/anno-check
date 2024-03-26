@@ -115,7 +115,7 @@ public abstract class AbstractBeanLoader implements BeanLoader {
             String value = getAnnoValue(f, VALUE_ANNO);
             // TODO only handle "${ }" placeholder for now
             if (value != null) {
-                String keys = getValue(value);
+                String keys = get$placeholder(value);
                 if (keys != null) {
                     var v = ModelFactory.getConfigFromName(keys);
                     if (v != null) {
@@ -142,8 +142,20 @@ public abstract class AbstractBeanLoader implements BeanLoader {
         return values;
     }
 
-    public String getValue(String input) {
+    public String get$placeholder(String input) {
         String regex = "\\$\\{([^}]+)}";
+
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(input);
+
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+        return null;
+    }
+
+    public String getExpressionValue(String input) {
+        String regex = "#\\{([^}]+)}";
 
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(input);

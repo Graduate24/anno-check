@@ -10,8 +10,10 @@ import java.util.Set;
 public class BeanRegister {
 
     public static void register(BeanDefinitionModel beanDefinitionModel) {
-        IoCContainerModel.INSTANCE.addToNameToBeanMap(beanDefinitionModel.getName(), beanDefinitionModel);
-        IoCContainerModel.INSTANCE.addToTypeToBeanMap(beanDefinitionModel.getType().getQualifiedName(), beanDefinitionModel);
+        if (beanDefinitionModel != null) {
+            IoCContainerModel.INSTANCE.addToNameToBeanMap(beanDefinitionModel.getName(), beanDefinitionModel);
+            IoCContainerModel.INSTANCE.addToTypeToBeanMap(beanDefinitionModel.getType().getQualifiedName(), beanDefinitionModel);
+        }
     }
 
     private static boolean isEmpty(Collection<?> e) {
@@ -48,7 +50,7 @@ public class BeanRegister {
      * get bean definition by name
      *
      * @param name name
-     * @return  Bean Definition set
+     * @return Bean Definition set
      */
     public static Set<BeanDefinitionModel> getBeanByName(String name) {
         return IoCContainerModel.INSTANCE.getBeanFromName(name);

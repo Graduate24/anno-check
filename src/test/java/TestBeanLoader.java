@@ -6,6 +6,7 @@ import resource.ModelFactory;
 import spoon.Launcher;
 import spoon.reflect.CtModel;
 import spoon.reflect.declaration.CtClass;
+import spoon.reflect.declaration.CtField;
 import spoon.reflect.declaration.CtMethod;
 
 public class TestBeanLoader {
@@ -37,6 +38,9 @@ public class TestBeanLoader {
 
         var c6 = new SpringConfigurationClassCollector<CtClass<?>>();
         processor.addCollector(c6);
+
+        var c7 = new SpringValueAnnoFieldCollector<CtField<?>>();
+        processor.addCollector(c7);
 
         processor.scan(model.getRootPackage());
 
@@ -83,6 +87,14 @@ public class TestBeanLoader {
         var c = new SpringConfigurationBeanLoader();
         c6.elements().forEach(e -> {
             var bd = c.load(null, e);
+            System.out.println(bd);
+        });
+
+        System.out.println();
+        System.out.println("@Value");
+        var v = new SpringValueAnnoBeanLoader();
+        c7.elements().forEach(e -> {
+            var bd = v.load(null, e);
             System.out.println(bd);
         });
 
