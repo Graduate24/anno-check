@@ -2,15 +2,12 @@ package resource;
 
 import spoon.reflect.declaration.*;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class CachedElementFinder implements ElementFinder {
     private static final Map<String, CtType<?>> cachedType = new HashMap<>();
-    private static final Map<String, Set<CtType<?>>> cachedSubType = new HashMap<>();
+    private static final Map<String, Set<String>> cachedSubType = new HashMap<>();
     private static CachedElementFinder cachedElementFinder;
 
     public static CachedElementFinder getInstance() {
@@ -19,6 +16,30 @@ public class CachedElementFinder implements ElementFinder {
         }
         return cachedElementFinder;
     }
+
+    @Override
+    public void addType(CtType<?> type) {
+        cachedType.putIfAbsent(type.getQualifiedName(), type);
+    }
+
+    @Override
+    public void addSuperClass(CtType<?> type, String superClass) {
+        addType(type);
+        var children = cachedSubType.get(superClass);
+        if (children == null) {
+            Set<String> c = new HashSet<>();
+            c.add(type.getQualifiedName());
+            cachedSubType.put(superClass, c);
+        } else {
+            children.add(type.getQualifiedName());
+        }
+    }
+
+    @Override
+    public void addSuperInterfaces(CtType<?> type, Set<String> superInterfaces) {
+        superInterfaces.forEach(i -> addSuperClass(type, i));
+    }
+
 
     @Override
     public CtType<?> findType(String qualifiedName) {
@@ -52,16 +73,9 @@ public class CachedElementFinder implements ElementFinder {
         if (type == null) return result;
 
         if (cachedSubType.containsKey(qualifiedName)) {
-            return cachedSubType.get(qualifiedName);
+            var cs = cachedSubType.get(qualifiedName);
+            result = cs.stream().map(cachedType::get).filter(Objects::nonNull).collect(Collectors.toSet());
         }
-
-        result = ModelFactory.getModel().getAllTypes().stream()
-                .filter(t -> (t.getSuperclass() != null
-                        && t.getSuperclass().getTypeDeclaration() != null
-                        && t.getSuperclass().getTypeDeclaration().getQualifiedName().equals(qualifiedName)
-                        || (t.getSuperInterfaces().stream().anyMatch(i -> i.getQualifiedName().equals(qualifiedName))))
-                ).collect(Collectors.toSet());
-        cachedSubType.put(qualifiedName, result);
         return result;
     }
 

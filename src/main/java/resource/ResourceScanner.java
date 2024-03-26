@@ -33,12 +33,25 @@ public class ResourceScanner extends CtScanner {
     @Override
     public <T> void visitCtClass(CtClass<T> ctClass) {
         collect(ResourceRole.CLASS, ctClass);
+        CachedElementFinder.getInstance().addType(ctClass);
+        if (ctClass.getSuperclass() != null) {
+            CachedElementFinder.getInstance().addSuperClass(ctClass,  ctClass.getSuperclass().getQualifiedName());
+        }
+        if (!ctClass.getSuperInterfaces().isEmpty()) {
+            ctClass.getSuperInterfaces().forEach(i -> {
+                CachedElementFinder.getInstance().addSuperClass(ctClass,  i.getQualifiedName());
+            });
+        }
         super.visitCtClass(ctClass);
     }
 
     @Override
     public <T> void visitCtInterface(CtInterface<T> ctInterface) {
         collect(ResourceRole.INTERFACE, ctInterface);
+        CachedElementFinder.getInstance().addType(ctInterface);
+        if (!ctInterface.getSuperInterfaces().isEmpty()) {
+            ctInterface.getSuperInterfaces().forEach(i -> CachedElementFinder.getInstance().addSuperClass(ctInterface, i.getQualifiedName()));
+        }
         super.visitCtInterface(ctInterface);
     }
 
