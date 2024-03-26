@@ -1,14 +1,10 @@
-import analysis.collector.SpringBeanAnnoMethodCollector;
-import analysis.collector.SpringComponentAnnoClassCollector;
-import analysis.collector.SpringControllerClassCollector;
-import analysis.collector.SpringServiceAnnoClassCollector;
-import analysis.processor.beanloader.SpringBeanAnnoBeanLoader;
-import analysis.processor.beanloader.SpringComponentAnnoBeanLoader;
-import analysis.processor.beanloader.SpringControllerAnnoBeanLoader;
-import analysis.processor.beanloader.SpringServiceAnnoBeanLoader;
+import analysis.collector.*;
+import analysis.processor.beanloader.*;
 import org.junit.Test;
 import resource.JavaResourceScanner;
+import resource.ModelFactory;
 import spoon.Launcher;
+import spoon.reflect.CtModel;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtMethod;
 
@@ -21,9 +17,7 @@ public class TestBeanLoader {
 
     @Test
     public void test2() {
-        Launcher launcher = new Launcher();
-        launcher.addInputResource("src/test/resources/demo/src/main/java/");
-        launcher.buildModel();
+        CtModel model = ModelFactory.init("src/test/resources/demo/");
         JavaResourceScanner processor = new JavaResourceScanner();
 
         var c1 = new SpringComponentAnnoClassCollector<CtClass<?>>();
@@ -38,7 +32,13 @@ public class TestBeanLoader {
         var c4 = new SpringBeanAnnoMethodCollector<CtMethod<?>>();
         processor.addCollector(c4);
 
-        processor.scan(launcher.getModel().getRootPackage());
+        var c5 = new SpringConfigurationPropertiesClassCollector<CtClass<?>>();
+        processor.addCollector(c5);
+
+        var c6 = new SpringConfigurationClassCollector<CtClass<?>>();
+        processor.addCollector(c6);
+
+        processor.scan(model.getRootPackage());
 
         var com = new SpringComponentAnnoBeanLoader();
         System.out.println("@Component");
@@ -67,6 +67,22 @@ public class TestBeanLoader {
         var be = new SpringBeanAnnoBeanLoader();
         c4.elements().forEach(e -> {
             var bd = be.load(null, e);
+            System.out.println(bd);
+        });
+
+        System.out.println();
+        System.out.println("@ConfigurationProperties");
+        var cp = new SpringConfigurationPropertiesBeanLoader();
+        c5.elements().forEach(e -> {
+            var bd = cp.load(null, e);
+            System.out.println(bd);
+        });
+
+        System.out.println();
+        System.out.println("@Configuration");
+        var c = new SpringConfigurationBeanLoader();
+        c6.elements().forEach(e -> {
+            var bd = c.load(null, e);
             System.out.println(bd);
         });
 

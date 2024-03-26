@@ -106,7 +106,7 @@ public class TestBeanLinker {
             linker.link(e);
             var bs = linker.findLink(e);
             System.out.println(e.getDeclaringType().getQualifiedName() + "#" + e.getSimpleName() + "\n     -->  " +
-                    bs.size() + "| " + bs.stream().map(b -> b.getType().getQualifiedName()).toList());
+                    bs.size() + "| " + bs);
         });
 
 

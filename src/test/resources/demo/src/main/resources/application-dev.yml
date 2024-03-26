@@ -5,7 +5,7 @@ field: Test
 
 mail:
   #Simple properties
-  hostname: host@mail.com
+  hostName: host@mail.com
   port: 9000
   from: mailer@mail.com
 

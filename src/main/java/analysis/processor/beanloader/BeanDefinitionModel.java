@@ -3,6 +3,7 @@ package analysis.processor.beanloader;
 import spoon.reflect.declaration.*;
 
 import java.util.List;
+import java.util.Map;
 
 public class BeanDefinitionModel {
 
@@ -24,7 +25,11 @@ public class BeanDefinitionModel {
 
         MYBATIS_MAPPER,
 
-        MONGODB_REPOSITORY
+        MONGODB_REPOSITORY,
+
+        CONFIGURATION_ANNOTATION,
+        CONFIGURATION_PROPERTIES_ANNOTATION,
+
     }
 
     public BeanScope fromString(String scope) {
@@ -41,7 +46,7 @@ public class BeanDefinitionModel {
     }
 
     static public class ConstructorArgument {
-        private CtClass<?> type;
+        private CtType<?> type;
         private String name;
         private String value;
     }
@@ -53,6 +58,7 @@ public class BeanDefinitionModel {
     private CtMethod<?> initializeMethod;
     private CtConstructor<?> constructor;
     private List<CtField<?>> properties;
+    private Map<String, Object> propertyValue;
     private boolean lazyInit = false;
 
     private FromSource fromSource;
@@ -129,6 +135,13 @@ public class BeanDefinitionModel {
         this.fromSource = fromSource;
     }
 
+    public Map<String, Object> getPropertyValue() {
+        return propertyValue;
+    }
+
+    public void setPropertyValue(Map<String, Object> propertyValue) {
+        this.propertyValue = propertyValue;
+    }
 
     @Override
     public String toString() {
@@ -140,6 +153,7 @@ public class BeanDefinitionModel {
                 ", initializeMethod=" + (initializeMethod == null ? "" : initializeMethod.getSimpleName()) +
                 ", constructor=" + (constructor == null ? "" : constructor.getSignature()) +
                 ", properties=" + (properties != null ? properties.stream().map(CtNamedElement::getSimpleName).toList() : "") +
+                ", propertiesValue=" + (propertyValue) +
                 ", lazyInit=" + lazyInit +
                 '}';
     }
