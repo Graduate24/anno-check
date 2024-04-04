@@ -86,6 +86,13 @@ public class Scanner {
                     throw new ScannerError("unexpected character: " + peek());
                 }
             }
+            case '@' -> {
+                if (match("annotation")) {
+                    addToken(ANNOTATION);
+                } else {
+                    throw new ScannerError("unexpected character: " + peek());
+                }
+            }
             case ' ', '\r', '\t', '\n' -> {
             }
             default -> {
@@ -107,7 +114,7 @@ public class Scanner {
             if (cur == '*' && prev == '*') {
                 throw new ScannerError("can't have consecutive '*'s ");
             }
-            if(cur=='*'){
+            if (cur == '*') {
                 regexIdentifier = true;
             }
             prev = cur;
@@ -148,19 +155,33 @@ public class Scanner {
         return true;
     }
 
-    private char peek() {
-        if (isAtEnd()) {
-            return '\0';
+    private boolean match(String expected) {
+        if (isAtEnd()) return false;
+
+        char[] arr = expected.toCharArray();
+        for (int i = 0; i < arr.length; i++) {
+            if (peek(i) != arr[i]) {
+                return false;
+            }
         }
-        return source.charAt(current);
+        current += expected.length();
+        return true;
+    }
+
+    private char peek() {
+        return peek(0);
     }
 
 
     private char peekNext() {
-        if (current + 1 >= source.length()) {
+        return peek(1);
+    }
+
+    private char peek(int dis) {
+        if (current + dis >= source.length()) {
             return '\0';
         }
-        return source.charAt(current + 1);
+        return source.charAt(current + dis);
     }
 
     private char advance() {

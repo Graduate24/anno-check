@@ -184,6 +184,7 @@ public class TestAop {
     @Test
     public void test5(){
         String[] patterns = {
+                "@annotation(auditable) || within(com.xyz.service..*.*)",
                 "edu.tsinghua.demo.aop.ShipmentService.outerCheck()",
                 "execution( public * *(..)) || execution(* set*(..))",
                 "execution(* set*(..))",

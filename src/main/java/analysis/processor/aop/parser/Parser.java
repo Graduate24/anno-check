@@ -57,11 +57,15 @@ public class Parser {
             consume(RIGHT_PAREN, "Expect ')' after execution.");
             return expr;
         } else if (match(WITHIN)) {
-            // TODO
-            throw new ParseError("within not implemented.");
+            consume(LEFT_PAREN, "Expect '(' before within.");
+            Expr expr = within();
+            consume(RIGHT_PAREN, "Expect ')' after within.");
+            return expr;
         } else if (match(ANNOTATION)) {
-            // TODO
-            throw new ParseError("annotation not implemented.");
+            consume(LEFT_PAREN, "Expect '(' before annotation.");
+            Expr expr = annotation();
+            consume(RIGHT_PAREN, "Expect ')' after annotation.");
+            return expr;
         } else if (match(LEFT_PAREN)) {
             Expr expr = expression();
             consume(RIGHT_PAREN, "Expect ')' after expression.");
@@ -91,6 +95,26 @@ public class Parser {
         return names;
     }
 
+    private Expr annotation() {
+        return new Expr.Annotation(qualifiedName(false, DOT));
+    }
+
+    private Expr within() {
+        List<Token> declaringType = new ArrayList<>();
+        consume(IDENTIFIER, "within type must starts with identifier");
+        declaringType.add(previous());
+        while (match(DOT, DOT_DOT)) {
+            // add dots
+            declaringType.add(previous());
+            if (match(IDENTIFIER, STAR)) {
+                declaringType.add(previous());
+            } else {
+                throw new ParseError("identifier or star must follow dot");
+            }
+        }
+        return new Expr.Within(declaringType);
+    }
+
     private Expr execution() {
         Token modifier = null;
         if (match(PUBLIC, PROTECTED, PRIVATE)) {
@@ -108,7 +132,6 @@ public class Parser {
             // must be name pattern and no declaring type pattern
             namePattern = previous();
         } else {
-
             consume(IDENTIFIER, "declaring type must starts with identifier");
             declaringTypeAndName.add(previous());
             while (match(DOT, DOT_DOT)) {
@@ -159,7 +182,6 @@ public class Parser {
         List<Token> throwsList = new ArrayList<>();
         if (match(THROWS)) {
             throwsList.addAll(qualifiedName(false, DOT));
-
             while (match(COMMA)) {
                 // add comma
                 throwsList.add(previous());

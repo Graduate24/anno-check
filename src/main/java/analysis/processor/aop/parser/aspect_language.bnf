@@ -5,7 +5,7 @@ expression ::= term (("||" term)*)
 term ::= factor (("&&" factor)*)
 
 factor ::= "execution" "(" method_pattern ")"
-          | "within" "(" type_pattern ")"
+          | "within" "(" declaring_type_pattern ")"
           | "@annotation" "(" annotation_pattern ")"
           | qualified_name "(" ")"
           | "(" expression ")"

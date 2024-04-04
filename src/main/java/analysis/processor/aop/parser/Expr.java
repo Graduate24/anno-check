@@ -79,6 +79,30 @@ public class Expr {
 
     }
 
+    static class Within extends Expr{
+        Within(List<Token> declaringType){
+            this.declaringType = declaringType;
+        }
+        final List<Token> declaringType;
+
+        @Override
+        public String toString() {
+            return new Gson().toJson(this);
+        }
+    }
+
+    static class Annotation extends Expr{
+        Annotation(List<Token> qualifiedName){
+            this.qualifiedName = qualifiedName;
+        }
+        final List<Token> qualifiedName;
+
+        @Override
+        public String toString() {
+            return new Gson().toJson(this);
+        }
+    }
+
     static class PointcutMethod extends Expr {
         PointcutMethod(List<Token> qualifiedName) {
             this.qualifiedName = qualifiedName;
