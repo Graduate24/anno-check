@@ -118,8 +118,8 @@ public class TestBeanLinker {
 
     @Test
     public void test1() {
-//         String project = "D:\\edgedownload\\mall-master";
-        String project = "src/test/resources/demo/";
+         String project = "D:\\edgedownload\\mall-master";
+//        String project = "src/test/resources/demo/";
         // load bean and register bean
         collectBeanModel(project).forEach(BeanRegister::register);
 

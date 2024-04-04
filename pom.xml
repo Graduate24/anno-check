@@ -61,6 +61,15 @@
             <artifactId>spoon-core</artifactId>
             <version>${spoon.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/io.github.azagniotov/ant-style-path-matcher -->
+        <dependency>
+            <groupId>io.github.azagniotov</groupId>
+            <artifactId>ant-style-path-matcher</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+
+
+
         <dependency>
             <groupId>org.yaml</groupId>
             <artifactId>snakeyaml</artifactId>

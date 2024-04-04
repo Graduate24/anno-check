@@ -1,0 +1,31 @@
+pointcut ::= expression
+
+expression ::= term (("||" term)*)
+
+term ::= factor (("&&" factor)*)
+
+factor ::= "execution" "(" method_pattern ")"
+          | "within" "(" type_pattern ")"
+          | "@annotation" "(" annotation_pattern ")"
+          | qualified_name "(" ")"
+          | "(" expression ")"
+          | "!" factor
+
+method_pattern ::= modifier_pattern? ret_type (declaring_type_pattern ".")? name_pattern "(" param_pattern? ")" throws_pattern?
+
+modifier_pattern ::= "public" | "protected" | "private"
+ret_type ::= "*" | qualified_name
+
+declaring_type_pattern ::= identifier ( ("."|"..") (identifier|"*"))*
+
+name_pattern ::= "*" | regex_identifier | identifier
+param_pattern ::= type_pattern_list | ".."
+throws_pattern ::= "throws"  qualified_name ("," qualified_name)*
+
+type_pattern_list ::= qualified_name ("," qualified_name)*
+type_pattern ::= qualified_name | "*"
+annotation_pattern ::= qualified_name
+
+qualified_name ::= identifier ("." identifier)*
+identifier ::= "[a-zA-Z_][a-zA-Z0-9_]*"
+regex_identifier ::= "[a-zA-Z_*][a-zA-Z0-9_*]*"
