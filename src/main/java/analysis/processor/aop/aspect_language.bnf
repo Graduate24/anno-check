@@ -10,6 +10,7 @@ factor ::= "execution" "(" method_pattern ")"
           | qualified_name "(" ")"
           | "(" expression ")"
           | "!" factor
+          // TODO more to support. https://docs.spring.io/spring-framework/docs/2.5.5/reference/aop.html
 
 method_pattern ::= modifier_pattern? ret_type (declaring_type_pattern ".")? name_pattern "(" param_pattern? ")" throws_pattern?
 
