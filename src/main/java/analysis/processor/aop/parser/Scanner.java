@@ -1,11 +1,11 @@
-package analysis.processor.aop;
+package analysis.processor.aop.parser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static analysis.processor.aop.TokenType.*;
+import static analysis.processor.aop.parser.TokenType.*;
 
 public class Scanner {
     private final String source;

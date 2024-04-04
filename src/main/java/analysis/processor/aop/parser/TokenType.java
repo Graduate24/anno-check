@@ -1,4 +1,4 @@
-package analysis.processor.aop;
+package analysis.processor.aop.parser;
 
 public enum TokenType {
     // single-character tokens
