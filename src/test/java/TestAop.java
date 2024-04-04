@@ -179,12 +179,13 @@ public class TestAop {
     public void test4(){
         AntPathMatcher antPathMatcher = new AntPathMatcher.Builder().build();
         System.out.println(antPathMatcher.isMatch("com/xyz/**/*","com/xyz/a/f/g/cded"));
+        System.out.println(antPathMatcher.isMatch("set*","setId"));
     }
 
     @Test
     public void test5(){
         String[] patterns = {
-                "@annotation(auditable) || within(com.xyz.service..*.*)",
+                "@annotation(auditable.asdf) || within(com.xyz.service..*.*)",
                 "edu.tsinghua.demo.aop.ShipmentService.outerCheck()",
                 "execution( public * *(..)) || execution(* set*(..))",
                 "execution(* set*(..))",
