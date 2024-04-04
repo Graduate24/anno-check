@@ -193,7 +193,7 @@ public class TestAop {
                 "execution(public * edu.tsinghua.demo.aop.MathCalculator.add(String, Object))",
                 "execution(* com.xyz.service..*.*(java.lang.String, int)) && execution(public void " +
                         "edu.tsinghua.demo.aop.ShipmentService.outerCheck()) " +
-                        "||execution(* set*(..))&& (!execution( public * *(..)  )) "
+                        "||(execution(* set*(..))&& (!execution( public * *(..)  )) )"
         };
 
         for (String pattern : patterns) {

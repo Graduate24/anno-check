@@ -24,6 +24,7 @@ public class Parser {
         Expr ret = null;
         try {
             ret = expression();
+            if (!isAtEnd()) throw new ParseError("Expect EOF after parse finished.");
         } catch (ParseError e) {
             hasError = true;
             e.printStackTrace();
