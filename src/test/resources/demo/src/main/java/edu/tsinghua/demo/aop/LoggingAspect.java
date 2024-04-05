@@ -5,6 +5,9 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.After;
+import org.aspectj.lang.annotation.AfterThrowing;
+import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.stereotype.Component;
 
@@ -56,6 +59,21 @@ public class LoggingAspect {
     public void logMethodCallsWithExecutionAdvice() {
         System.out.println("In Aspect from execution");
     }
+    @After("logPointcutWithExecution()")
+    public void after() {
+        System.out.println("In Aspect from execution");
+    }
+
+    @AfterReturning("logPointcutWithExecution()||logPointcutWithLogicalOperator()")
+    public void afterReturn() {
+        System.out.println("In Aspect from execution");
+    }
+
+    @AfterThrowing("outerCheck()||innerCheck()")
+    public void afterThrowing() {
+        System.out.println("In Aspect from execution");
+    }
+
 
     @Before("logPointcutWithLogicalOperator()")
     public void logPointcutWithLogicalOperatorAdvice() {

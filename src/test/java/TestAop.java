@@ -4,7 +4,7 @@ import analysis.processor.aop.parser.Parser;
 import analysis.processor.aop.parser.Scanner;
 import analysis.processor.aop.parser.Token;
 import analysis.processor.aop.resolver.PredictorResolver;
-import analysis.processor.aop.resolver.builder.CachedPredictPointcutResolverBuilder;
+import analysis.processor.aop.resolver.builder.*;
 import io.github.azagniotov.matcher.AntPathMatcher;
 import org.junit.Test;
 import resource.CachedElementFinder;
@@ -12,6 +12,7 @@ import spoon.reflect.declaration.CtMethod;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -230,7 +231,7 @@ public class TestAop extends BaseTest {
 
     @Test
     public void test6() {
-        getResource("src/test/resources/demo/");
+        getResource("D:\\edgedownload\\mall-master");
         var builder = new CachedPredictPointcutResolverBuilder<CtMethod<?>>();
         List<Predicate<CtMethod<?>>> predictors = new ArrayList<>();
         pointcutMethod.forEach(m -> {
@@ -249,6 +250,34 @@ public class TestAop extends BaseTest {
             }
         }
 
+        var before = new BeforeAspectResolverBuilder<CtMethod<?>>();
+        matchTarget(before, beforeAnnoMethod, methods);
+
+        var after = new AfterAspectResolverBuilder<CtMethod<?>>();
+        matchTarget(after, afterAnnoMethod, methods);
+
+        var afterReturning = new AfterReturningAspectResolverBuilder<CtMethod<?>>();
+        matchTarget(afterReturning, afterReturningAnnoMethod, methods);
+
+        var afterThrowing = new AfterThrowingAspectResolverBuilder<CtMethod<?>>();
+        matchTarget(afterThrowing, afterThrowingAnnoMethod, methods);
+
+        var around = new AroundAspectResolverBuilder<CtMethod<?>>();
+        matchTarget(around, aroundAnnoMethod, methods);
+
+    }
+
+    private void matchTarget(AbstractPredictResolverBuilder<CtMethod<?>> builder, List<CtMethod<?>> aspectMethods, Set<CtMethod<?>> methods) {
+        for (CtMethod<?> m : aspectMethods) {
+            Predicate<CtMethod<?>> p = builder.build(null, m);
+            if (p != null) {
+                for (CtMethod<?> method : methods) {
+                    if (p.test(method)) {
+                        System.out.println(builder.name() + " aspect target: " + method.getDeclaringType().getQualifiedName() + "." + method.getSignature());
+                    }
+                }
+            }
+        }
     }
 
     @Test
