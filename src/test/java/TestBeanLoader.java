@@ -1,9 +1,8 @@
 import analysis.collector.*;
-import analysis.processor.beanloader.*;
+import analysis.processor.ioc.beanloader.*;
 import org.junit.Test;
 import resource.JavaResourceScanner;
 import resource.ModelFactory;
-import spoon.Launcher;
 import spoon.reflect.CtModel;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtField;

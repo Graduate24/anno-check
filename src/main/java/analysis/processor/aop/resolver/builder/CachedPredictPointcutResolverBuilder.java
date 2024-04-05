@@ -14,14 +14,15 @@ import java.util.function.Predicate;
 
 import static resource.ElementUtil.getValueOfAnnotationAsString;
 
-public class CachedPredictPointcutResolverBuilder implements PointcutResolverBuilder<CtMethod<?>, Predicate<CtMethod<?>>> {
+public class CachedPredictPointcutResolverBuilder<E> implements PointcutResolverBuilder<CtMethod<?>, Predicate<E>> {
 
     private final PointcutPredictorCache pointcutResolverCache = PointcutPredictorCache.getInstance();
 
     @Override
-    public Predicate<CtMethod<?>> build(Set<CtMethod<?>> contextResource, CtMethod<?> currentResource) {
+    @SuppressWarnings("unchecked")
+    public Predicate<E> build(Set<CtMethod<?>> contextResource, CtMethod<?> currentResource) {
         if (pointcutResolverCache.contains(currentResource)) {
-            return pointcutResolverCache.getPredictor(currentResource);
+            return (Predicate<E>) pointcutResolverCache.getPredictor(currentResource);
         }
         String value = getValueOfAnnotationAsString(currentResource, "org.aspectj.lang.annotation.Pointcut");
         Scanner scanner = new Scanner(value);
@@ -41,6 +42,6 @@ public class CachedPredictPointcutResolverBuilder implements PointcutResolverBui
         if (predictor == null) return null;
         pointcutResolverCache.addPredictor(currentResource, predictor);
         pointcutResolverCache.addPredictor(value, predictor);
-        return predictor;
+        return (Predicate<E>) predictor;
     }
 }

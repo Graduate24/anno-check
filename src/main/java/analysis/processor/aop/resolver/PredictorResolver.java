@@ -3,11 +3,14 @@ package analysis.processor.aop.resolver;
 import analysis.processor.aop.parser.Expr;
 import analysis.processor.aop.parser.Token;
 import analysis.processor.aop.parser.TokenType;
+import analysis.processor.aop.resolver.builder.CachedPredictPointcutResolverBuilder;
 import io.github.azagniotov.matcher.AntPathMatcher;
 import resource.CachedElementFinder;
 import resource.PointcutPredictorCache;
 import spoon.reflect.declaration.ModifierKind;
 import spoon.support.reflect.declaration.CtMethodImpl;
+
+import static resource.ElementUtil.*;
 
 import java.util.ArrayList;
 import java.util.function.Predicate;
@@ -167,6 +170,7 @@ public class PredictorResolver<T> implements Expr.ExprVisitor<Predicate<T>> {
 
     @Override
     public Predicate<T> visitPointcutMethodExpr(Expr.PointcutMethod expr) {
+        // TODO
         String methodName;
         if (expr.qualifiedName.size() == 1) {
             methodName = base + "." + declaringClass + "." + expr.qualifiedName.get(0);
@@ -178,7 +182,8 @@ public class PredictorResolver<T> implements Expr.ExprVisitor<Predicate<T>> {
             throw new ResolverError("Can't find method:[" + methodName + "]");
         }
 
-        return null;
+        var builder = new CachedPredictPointcutResolverBuilder<T>();
+        return builder.build(null, method);
     }
 
     private String removeLastPeriod(String str) {

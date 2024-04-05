@@ -1,6 +1,6 @@
-package analysis.processor.beanregistor;
+package analysis.processor.ioc.beanregistor;
 
-import analysis.processor.beanloader.BeanDefinitionModel;
+import analysis.processor.ioc.beanloader.BeanDefinitionModel;
 import resource.CachedElementFinder;
 
 import java.util.Collection;

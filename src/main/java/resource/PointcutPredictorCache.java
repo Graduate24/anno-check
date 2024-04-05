@@ -8,7 +8,7 @@ import java.util.function.Predicate;
 
 public class PointcutPredictorCache {
 
-    private static final Map<CtMethod<?>, Predicate<CtMethod<?>>> methodResolverMap = new HashMap<>();
+    private static final Map<CtMethod<?>, Predicate<?>> methodResolverMap = new HashMap<>();
 
     private static final Map<String, Predicate<CtMethod<?>>> pointcutStringResolverMap = new HashMap<>();
 
@@ -36,7 +36,7 @@ public class PointcutPredictorCache {
         methodResolverMap.put(method, resolver);
     }
 
-    public Predicate<CtMethod<?>> getPredictor(CtMethod<?> method) {
+    public Predicate<?> getPredictor(CtMethod<?> method) {
         return methodResolverMap.get(method);
     }
 

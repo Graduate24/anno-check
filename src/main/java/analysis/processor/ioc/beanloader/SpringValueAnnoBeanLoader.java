@@ -1,4 +1,4 @@
-package analysis.processor.beanloader;
+package analysis.processor.ioc.beanloader;
 
 import resource.ModelFactory;
 import spoon.reflect.declaration.*;

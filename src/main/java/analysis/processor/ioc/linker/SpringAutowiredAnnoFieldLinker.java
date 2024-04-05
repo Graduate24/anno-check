@@ -1,7 +1,7 @@
-package analysis.processor.linker;
+package analysis.processor.ioc.linker;
 
-import analysis.processor.beanloader.BeanDefinitionModel;
-import analysis.processor.beanregistor.BeanRegister;
+import analysis.processor.ioc.beanloader.BeanDefinitionModel;
+import analysis.processor.ioc.beanregistor.BeanRegister;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtField;
 

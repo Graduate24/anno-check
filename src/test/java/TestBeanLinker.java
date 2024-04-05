@@ -1,8 +1,9 @@
 import analysis.collector.*;
-import analysis.processor.beanloader.*;
-import analysis.processor.beanregistor.BeanRegister;
-import analysis.processor.linker.SpringAutowiredAnnoFieldLinker;
-import analysis.processor.linker.SpringValueAnnoFieldLinker;
+import analysis.processor.ioc.beanloader.*;
+import analysis.processor.ioc.beanloader.*;
+import analysis.processor.ioc.beanregistor.BeanRegister;
+import analysis.processor.ioc.linker.SpringAutowiredAnnoFieldLinker;
+import analysis.processor.ioc.linker.SpringValueAnnoFieldLinker;
 import org.junit.Test;
 import resource.ModelFactory;
 import resource.JavaResourceScanner;

@@ -1,15 +1,8 @@
-package analysis.processor.beanloader;
+package analysis.processor.ioc.beanloader;
 
-import resource.ModelFactory;
-import spoon.reflect.code.CtLiteral;
-import spoon.reflect.declaration.*;
-import spoon.support.reflect.declaration.CtAnnotationImpl;
+import spoon.reflect.declaration.CtElement;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.Set;
 
 public abstract class AbstractBeanLoader implements BeanLoader {
     protected final static String COMPONENT = "org.springframework.stereotype.Component";
@@ -27,4 +20,5 @@ public abstract class AbstractBeanLoader implements BeanLoader {
     protected final static String VALUE_ANNO = "org.springframework.beans.factory.annotation.Value";
 
 
+    public abstract BeanDefinitionModel load(Set<CtElement> contextResource, CtElement currentResource);
 }

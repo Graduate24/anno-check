@@ -1,6 +1,6 @@
-package analysis.processor.linker;
+package analysis.processor.ioc.linker;
 
-import analysis.processor.beanloader.BeanDefinitionModel;
+import analysis.processor.ioc.beanloader.BeanDefinitionModel;
 import spoon.reflect.code.CtLiteral;
 import spoon.reflect.declaration.CtAnnotation;
 import spoon.reflect.declaration.CtElement;
