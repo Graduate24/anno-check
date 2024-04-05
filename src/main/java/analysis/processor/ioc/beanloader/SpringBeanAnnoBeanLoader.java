@@ -12,6 +12,9 @@ import static resource.ElementUtil.*;
  * To do this with the same @Bean annotation used to define bean metadata within @Configuration annotated classes.
  * <p>
  * This class only handles configuration metadata that's annotated by '@Bean'.
+ * <p>
+ * Created by: zhang ran
+ * 2024-03-15
  */
 public class SpringBeanAnnoBeanLoader extends AbstractBeanLoader {
 

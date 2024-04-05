@@ -5,6 +5,10 @@ import spoon.reflect.declaration.CtElement;
 
 import java.util.function.Predicate;
 
+/**
+ * Created by: zhang ran
+ * 2024-03-05
+ */
 public class SpringAutowiredAnnoMethodCollector<E extends CtElement> extends AbstractElementCollector<E> {
     private final static String SPRING_ANNOTATION = "org.springframework.beans.factory.annotation.Autowired";
 

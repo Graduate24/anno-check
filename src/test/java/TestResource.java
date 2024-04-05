@@ -1,9 +1,8 @@
 import analysis.collector.*;
 import org.junit.Test;
+import resource.JavaResourceScanner;
 import resource.ModelFactory;
 import resource.ResourceRole;
-import resource.JavaResourceScanner;
-import spoon.Launcher;
 import spoon.reflect.CtModel;
 import spoon.reflect.code.CtLiteral;
 import spoon.reflect.declaration.CtClass;
@@ -13,6 +12,10 @@ import spoon.reflect.declaration.CtMethod;
 
 import java.util.function.Predicate;
 
+/**
+ * Created by: zhang ran
+ * 2024-03-05
+ */
 public class TestResource {
 
     @Test

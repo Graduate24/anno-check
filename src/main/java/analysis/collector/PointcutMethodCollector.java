@@ -7,6 +7,10 @@ import spoon.reflect.declaration.CtMethod;
 
 import java.util.function.Predicate;
 
+/**
+ * Created by: zhang ran
+ * 2024-03-05
+ */
 public class PointcutMethodCollector<E extends CtElement> extends AbstractElementCollector<E> {
     private final static String ANNOTATION = "org.aspectj.lang.annotation.Pointcut";
 

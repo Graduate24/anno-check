@@ -5,6 +5,10 @@ import spoon.reflect.declaration.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Created by: zhang ran
+ * 2024-03-16
+ */
 public class CachedElementFinder implements ElementFinder {
     private static final Map<String, CtType<?>> cachedType = new HashMap<>();
     private static final Map<String, Set<String>> cachedSubType = new HashMap<>();

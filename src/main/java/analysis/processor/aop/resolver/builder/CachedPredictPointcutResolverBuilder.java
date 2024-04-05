@@ -14,6 +14,10 @@ import java.util.function.Predicate;
 
 import static resource.ElementUtil.getValueOfAnnotationAsString;
 
+/**
+ * Created by: zhang ran
+ * 2024-04-05
+ */
 public class CachedPredictPointcutResolverBuilder<E> implements PointcutResolverBuilder<CtMethod<?>, Predicate<E>> {
 
     private final PointcutPredictorCache pointcutResolverCache = PointcutPredictorCache.getInstance();

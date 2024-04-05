@@ -4,6 +4,10 @@ import com.google.gson.Gson;
 
 import java.util.List;
 
+/**
+ * Created by: zhang ran
+ * 2024-04-04
+ */
 public abstract class Expr {
     public interface ExprVisitor<R> {
         R visitOrExpr(Or expr);

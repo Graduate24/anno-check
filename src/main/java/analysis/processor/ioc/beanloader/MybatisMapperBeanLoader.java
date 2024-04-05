@@ -9,9 +9,12 @@ import static resource.ElementUtil.*;
 
 /**
  * A Spring IoC container manages one or more beans. These beans are created with the configuration metadata
- * that supply to the container, for example, in the form of XML <bean/> definitions.
+ * * that supply to the container, for example, in the form of XML <bean/> definitions.
+ * * <p>
+ * * This class only handles configuration metadata that's annotated by '@Mapper' or configurations in mybatis xml.
  * <p>
- * This class only handles configuration metadata that's annotated by '@Mapper' or configurations in mybatis xml.
+ * Created by: zhang ran
+ * 2024-03-15
  */
 public class MybatisMapperBeanLoader extends AbstractBeanLoader {
 

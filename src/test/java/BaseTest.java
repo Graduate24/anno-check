@@ -1,9 +1,7 @@
 import analysis.collector.*;
 import resource.JavaResourceScanner;
 import resource.ModelFactory;
-import resource.ResourceRole;
 import spoon.reflect.CtModel;
-import spoon.reflect.code.CtLiteral;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtField;
 import spoon.reflect.declaration.CtInterface;
@@ -11,8 +9,15 @@ import spoon.reflect.declaration.CtMethod;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
+/**
+ * Created by: zhang ran
+ * 2024-04-05
+ */
 
+/**
+ * Created by: zhang ran
+ * 2024-04-05
+ */
 public class BaseTest {
 
     protected List<CtClass<?>> springMainClass = new ArrayList<>();

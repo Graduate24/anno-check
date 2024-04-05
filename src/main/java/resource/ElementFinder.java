@@ -1,9 +1,16 @@
 package resource;
 
-import spoon.reflect.declaration.*;
+import spoon.reflect.declaration.CtClass;
+import spoon.reflect.declaration.CtInterface;
+import spoon.reflect.declaration.CtMethod;
+import spoon.reflect.declaration.CtType;
 
 import java.util.Set;
 
+/**
+ * Created by: zhang ran
+ * 2024-03-16
+ */
 public interface ElementFinder {
 
     void addType(CtType<?> type);

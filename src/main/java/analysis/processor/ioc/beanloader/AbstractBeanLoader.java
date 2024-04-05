@@ -4,6 +4,10 @@ import spoon.reflect.declaration.CtElement;
 
 import java.util.Set;
 
+/**
+ * Created by: zhang ran
+ * 2024-03-15
+ */
 public abstract class AbstractBeanLoader implements BeanLoader {
     protected final static String COMPONENT = "org.springframework.stereotype.Component";
     protected final static String SERVICE = "org.springframework.stereotype.Service";

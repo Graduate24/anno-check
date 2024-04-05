@@ -8,6 +8,10 @@ import spoon.support.reflect.declaration.CtAnnotationImpl;
 
 import java.util.Set;
 
+/**
+ * Created by: zhang ran
+ * 2024-03-18
+ */
 public interface Linker {
     void link(CtElement element);
 

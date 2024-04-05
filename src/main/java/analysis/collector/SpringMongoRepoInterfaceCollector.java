@@ -11,7 +11,7 @@ public class SpringMongoRepoInterfaceCollector<E extends CtElement> extends Abst
 
     @Override
     public Predicate<E> defaultPredictor() {
-        return (e) -> ((CtInterface<?>)e).getSuperInterfaces().stream().anyMatch(s -> s.getQualifiedName().equals(SUPER));
+        return (e) -> ((CtInterface<?>) e).getSuperInterfaces().stream().anyMatch(s -> s.getQualifiedName().equals(SUPER));
     }
 
     @Override

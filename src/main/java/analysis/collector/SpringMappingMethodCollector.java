@@ -6,6 +6,10 @@ import spoon.reflect.declaration.CtElement;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
+/**
+ * Created by: zhang ran
+ * 2024-03-05
+ */
 public class SpringMappingMethodCollector<E extends CtElement> extends AbstractElementCollector<E> {
     private final static String patternString = "org\\.springframework\\.web\\.bind\\.annotation\\..*Mapping";
 

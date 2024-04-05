@@ -3,15 +3,18 @@ package analysis.processor.ioc.beanloader;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtType;
 
-import static resource.ElementUtil.*;
-
 import java.util.Set;
+
+import static resource.ElementUtil.*;
 
 /**
  * A Spring IoC container manages one or more beans. These beans are created with the configuration metadata
  * that supply to the container, for example, in the form of XML <bean/> definitions.
  * <p>
  * This class only handles configuration metadata that's annotated by '@Repository'.
+ * <p>
+ * Created by: zhang ran
+ * 2024-03-15
  */
 public class SpringRepositoryAnnoBeanLoader extends AbstractBeanLoader {
 

@@ -6,19 +6,18 @@ import analysis.processor.aop.parser.TokenType;
 import analysis.processor.aop.resolver.builder.CachedPredictPointcutResolverBuilder;
 import io.github.azagniotov.matcher.AntPathMatcher;
 import resource.CachedElementFinder;
-import resource.PointcutPredictorCache;
 import spoon.reflect.declaration.ModifierKind;
 import spoon.support.reflect.declaration.CtMethodImpl;
-
-import static resource.ElementUtil.*;
 
 import java.util.ArrayList;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+/**
+ * Created by: zhang ran
+ * 2024-04-05
+ */
 public class PredictorResolver<T> implements Expr.ExprVisitor<Predicate<T>> {
-
-    private final PointcutPredictorCache cache = PointcutPredictorCache.getInstance();
     private final CachedElementFinder finder = CachedElementFinder.getInstance();
 
     public Expr expr;
@@ -56,13 +55,14 @@ public class PredictorResolver<T> implements Expr.ExprVisitor<Predicate<T>> {
         return p1.negate();
     }
 
+    /**
+     * Due to the proxy-based nature of Spring’s AOP framework, protected methods are by definition not intercepted,
+     * neither for JDK proxies (where this isn’t applicable) nor for CGLIB proxies (where this is technically
+     * possible but not recommendable for AOP purposes).
+     */
     @Override
     public Predicate<T> visitExecutionExpr(Expr.Execution expr) {
-        /**
-         * Due to the proxy-based nature of Spring’s AOP framework, protected methods are by definition not intercepted,
-         * neither for JDK proxies (where this isn’t applicable) nor for CGLIB proxies (where this is technically
-         * possible but not recommendable for AOP purposes).
-         */
+
         // ignore modifier, only test public methods
         boolean ignoreRetType;
         boolean qualifiedPattern;
@@ -170,7 +170,6 @@ public class PredictorResolver<T> implements Expr.ExprVisitor<Predicate<T>> {
 
     @Override
     public Predicate<T> visitPointcutMethodExpr(Expr.PointcutMethod expr) {
-        // TODO
         String methodName;
         if (expr.qualifiedName.size() == 1) {
             methodName = base + "." + declaringClass + "." + expr.qualifiedName.get(0);

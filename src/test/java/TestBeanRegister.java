@@ -6,8 +6,8 @@ import analysis.processor.ioc.beanloader.*;
 import analysis.processor.ioc.beanregistor.BeanRegister;
 import analysis.processor.ioc.beanregistor.IoCContainerModel;
 import org.junit.Test;
-import resource.ModelFactory;
 import resource.JavaResourceScanner;
+import resource.ModelFactory;
 import spoon.reflect.CtModel;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtMethod;
@@ -15,6 +15,10 @@ import spoon.reflect.declaration.CtMethod;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Created by: zhang ran
+ * 2024-03-5
+ */
 public class TestBeanRegister {
     @Test
     public void test1() {

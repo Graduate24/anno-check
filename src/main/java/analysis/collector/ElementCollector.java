@@ -6,6 +6,10 @@ import spoon.reflect.declaration.CtElement;
 import java.util.Collection;
 import java.util.function.Predicate;
 
+/**
+ * Created by: zhang ran
+ * 2024-03-05
+ */
 public interface ElementCollector<E extends CtElement> {
 
     ResourceRole role();

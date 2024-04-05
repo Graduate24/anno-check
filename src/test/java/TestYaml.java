@@ -9,6 +9,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 
+/**
+ * Created by: zhang ran
+ * 2024-03-15
+ */
 public class TestYaml {
 
     public Object getConfigFromName(Map<String, Object> obj, String name) {
@@ -37,8 +41,8 @@ public class TestYaml {
         InputStream inputStream = new FileInputStream(path);
         Map<String, Object> obj = yaml.load(inputStream);
         System.out.println(obj);
-        System.out.println(getConfigFromName(obj,"mail.hostname"));
-        System.out.println(getConfigFromName(obj,"mail"));
+        System.out.println(getConfigFromName(obj, "mail.hostname"));
+        System.out.println(getConfigFromName(obj, "mail"));
     }
 
     @Test

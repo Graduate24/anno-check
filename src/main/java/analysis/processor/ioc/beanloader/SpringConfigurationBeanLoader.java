@@ -7,6 +7,10 @@ import java.util.Set;
 
 import static resource.ElementUtil.*;
 
+/**
+ * Created by: zhang ran
+ * 2024-03-15
+ */
 public class SpringConfigurationBeanLoader extends AbstractBeanLoader {
     @Override
     public BeanDefinitionModel load(Set<CtElement> contextResource, CtElement currentResource) {

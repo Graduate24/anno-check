@@ -1,13 +1,16 @@
 package resource;
 
 import analysis.collector.ElementCollector;
-import spoon.reflect.CtModel;
 import spoon.reflect.declaration.*;
 import spoon.reflect.visitor.CtScanner;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * Created by: zhang ran
+ * 2024-03-05
+ */
 public class JavaResourceScanner extends CtScanner {
 
     private List<ElementCollector<? extends CtElement>> collectors;

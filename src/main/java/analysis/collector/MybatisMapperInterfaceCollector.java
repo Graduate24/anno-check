@@ -7,6 +7,10 @@ import spoon.reflect.declaration.CtInterface;
 
 import java.util.function.Predicate;
 
+/**
+ * Created by: zhang ran
+ * 2024-03-05
+ */
 public class MybatisMapperInterfaceCollector<E extends CtElement> extends AbstractElementCollector<E> {
 
     private static final String ANNOTATION = "org.apache.ibatis.annotations.Mapper";

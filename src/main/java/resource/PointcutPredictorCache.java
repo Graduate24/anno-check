@@ -6,6 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Predicate;
 
+/**
+ * Created by: zhang ran
+ * 2024-04-05
+ */
 public class PointcutPredictorCache {
 
     private static final Map<CtMethod<?>, Predicate<?>> methodResolverMap = new HashMap<>();

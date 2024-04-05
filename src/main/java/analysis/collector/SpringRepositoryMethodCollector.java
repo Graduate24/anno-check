@@ -6,6 +6,10 @@ import spoon.reflect.declaration.CtMethod;
 
 import java.util.function.Predicate;
 
+/**
+ * Created by: zhang ran
+ * 2024-03-05
+ */
 public class SpringRepositoryMethodCollector<E extends CtElement> extends AbstractElementCollector<E> {
     private final static String SPRING_ANNOTATION = "org.springframework.stereotype.Repository";
 

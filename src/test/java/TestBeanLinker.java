@@ -1,12 +1,11 @@
 import analysis.collector.*;
 import analysis.processor.ioc.beanloader.*;
-import analysis.processor.ioc.beanloader.*;
 import analysis.processor.ioc.beanregistor.BeanRegister;
 import analysis.processor.ioc.linker.SpringAutowiredAnnoFieldLinker;
 import analysis.processor.ioc.linker.SpringValueAnnoFieldLinker;
 import org.junit.Test;
-import resource.ModelFactory;
 import resource.JavaResourceScanner;
+import resource.ModelFactory;
 import spoon.reflect.CtModel;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtField;
@@ -16,6 +15,10 @@ import spoon.reflect.declaration.CtMethod;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Created by: zhang ran
+ * 2024-03-15
+ */
 public class TestBeanLinker {
     public List<BeanDefinitionModel> collectBeanModel(String project) {
         CtModel model = ModelFactory.init(project);
@@ -119,7 +122,7 @@ public class TestBeanLinker {
 
     @Test
     public void test1() {
-         String project = "D:\\edgedownload\\mall-master";
+        String project = "D:\\edgedownload\\mall-master";
 //        String project = "src/test/resources/demo/";
         // load bean and register bean
         collectBeanModel(project).forEach(BeanRegister::register);

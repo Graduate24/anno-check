@@ -8,6 +8,10 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Created by: zhang ran
+ * 2024-03-15
+ */
 public class TestXmlResource {
     private static Map<String, String> findMyBatisMappers(String directoryPath) {
         Map<String, String> mapperNamespaces = new HashMap<>();
@@ -37,7 +41,7 @@ public class TestXmlResource {
     }
 
     @Test
-    public void test1(){
+    public void test1() {
         String project = "D:\\edgedownload\\mall-master";
         Map<String, String> mappers = findMyBatisMappers(project);
         mappers.forEach((path, namespace) -> System.out.println("Mapper: " + path + ", Namespace: " + namespace));

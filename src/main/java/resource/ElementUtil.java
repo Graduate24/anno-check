@@ -10,6 +10,10 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Created by: zhang ran
+ * 2024-03-16
+ */
 public class ElementUtil {
     private final static String SCOPE = "org.springframework.context.annotation.Scope";
     private final static String LAZY = "org.springframework.context.annotation.Lazy";

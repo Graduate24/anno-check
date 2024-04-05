@@ -7,6 +7,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Predicate;
 
+/**
+ * Created by: zhang ran
+ * 2024-03-05
+ */
 public abstract class AbstractElementCollector<E extends CtElement> implements ElementCollector<E> {
 
     private Predicate<E> predicate;

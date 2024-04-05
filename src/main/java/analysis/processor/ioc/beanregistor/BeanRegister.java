@@ -7,6 +7,10 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Created by: zhang ran
+ * 2024-03-15
+ */
 public class BeanRegister {
 
     public static void register(BeanDefinitionModel beanDefinitionModel) {

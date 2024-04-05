@@ -5,6 +5,10 @@ import spoon.reflect.declaration.*;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Created by: zhang ran
+ * 2024-03-15
+ */
 public class BeanDefinitionModel {
 
     public enum BeanScope {

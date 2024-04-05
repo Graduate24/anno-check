@@ -9,7 +9,45 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+/**
+ * Created by: zhang ran
+ * 2024-03-18
+ * <p>
+ * Created by: zhang ran
+ * 2024-03-18
+ * <p>
+ * Created by: zhang ran
+ * 2024-03-18
+ * <p>
+ * Created by: zhang ran
+ * 2024-03-18
+ * <p>
+ * Created by: zhang ran
+ * 2024-03-18
+ * <p>
+ * Created by: zhang ran
+ * 2024-03-18
+ *//**
+ * Created by: zhang ran
+ * 2024-03-18
+ *//**
+ * Created by: zhang ran
+ * 2024-03-18
+ *//**
+ * Created by: zhang ran
+ * 2024-03-18
+ *//**
+ * Created by: zhang ran
+ * 2024-03-18
+ *//**
+ * Created by: zhang ran
+ * 2024-03-18
+ */
 
+/**
+ * Created by: zhang ran
+ * 2024-03-18
+ */
 public class SpringAutowiredAnnoFieldLinker implements Linker {
 
     private final Map<CtElement, Set<BeanDefinitionModel>> link = new HashMap<>();
@@ -44,7 +82,7 @@ public class SpringAutowiredAnnoFieldLinker implements Linker {
 
     @Override
     public Set<BeanDefinitionModel> findLink(CtElement element) {
-        return link.getOrDefault(element,new HashSet<>());
+        return link.getOrDefault(element, new HashSet<>());
     }
 
 

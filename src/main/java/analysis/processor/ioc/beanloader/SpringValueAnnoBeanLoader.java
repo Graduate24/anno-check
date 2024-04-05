@@ -1,19 +1,24 @@
 package analysis.processor.ioc.beanloader;
 
 import resource.ModelFactory;
-import spoon.reflect.declaration.*;
-
-import static resource.ElementUtil.*;
+import spoon.reflect.declaration.CtElement;
+import spoon.reflect.declaration.CtField;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+
+import static resource.ElementUtil.get$placeholder;
+import static resource.ElementUtil.getAnnoValue;
 
 /**
  * Spring components can also contribute bean definition metadata to the container.
  * To do this with the same @Bean annotation used to define bean metadata within @Configuration annotated classes.
  * <p>
  * This class only handles configuration metadata that's annotated by '@Value'.
+ * <p>
+ * Created by: zhang ran
+ * 2024-03-15
  */
 public class SpringValueAnnoBeanLoader extends AbstractBeanLoader {
 
