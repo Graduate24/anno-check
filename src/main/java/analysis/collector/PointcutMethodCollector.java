@@ -1,7 +1,9 @@
 package analysis.collector;
 
+import resource.CachedElementFinder;
 import resource.ResourceRole;
 import spoon.reflect.declaration.CtElement;
+import spoon.reflect.declaration.CtMethod;
 
 import java.util.function.Predicate;
 
@@ -18,5 +20,14 @@ public class PointcutMethodCollector<E extends CtElement> extends AbstractElemen
     @Override
     public ResourceRole role() {
         return ResourceRole.METHOD;
+    }
+
+    @Override
+    public void collect(Object e) {
+        if (getPredictor().test((E) e)) {
+            elements().add((E) e);
+            // cache pointcut methods.
+            CachedElementFinder.getInstance().addPointcutMethod((CtMethod<?>) e);
+        }
     }
 }

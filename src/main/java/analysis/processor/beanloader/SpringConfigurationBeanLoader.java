@@ -1,16 +1,11 @@
 package analysis.processor.beanloader;
 
-import resource.ModelFactory;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
-import spoon.reflect.declaration.CtField;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+
+import static resource.ElementUtil.*;
 
 public class SpringConfigurationBeanLoader extends AbstractBeanLoader {
     @Override

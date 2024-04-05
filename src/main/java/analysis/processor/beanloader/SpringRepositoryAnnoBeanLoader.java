@@ -4,6 +4,8 @@ import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtType;
 
+import static resource.ElementUtil.*;
+
 import java.util.Set;
 
 /**

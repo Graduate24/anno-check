@@ -1,10 +1,11 @@
 package analysis.processor.beanloader;
 
-import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtInterface;
 
 import java.util.Set;
+
+import static resource.ElementUtil.*;
 
 /**
  * A Spring IoC container manages one or more beans. These beans are created with the configuration metadata

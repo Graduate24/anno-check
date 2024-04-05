@@ -4,7 +4,8 @@ import analysis.processor.aop.parser.Expr;
 import analysis.processor.aop.parser.Token;
 import analysis.processor.aop.parser.TokenType;
 import io.github.azagniotov.matcher.AntPathMatcher;
-import spoon.reflect.declaration.CtMethod;
+import resource.CachedElementFinder;
+import resource.PointcutPredictorCache;
 import spoon.reflect.declaration.ModifierKind;
 import spoon.support.reflect.declaration.CtMethodImpl;
 
@@ -12,19 +13,24 @@ import java.util.ArrayList;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
-public class Resolver<T> implements Expr.ExprVisitor<Predicate<T>> {
+public class PredictorResolver<T> implements Expr.ExprVisitor<Predicate<T>> {
+
+    private final PointcutPredictorCache cache = PointcutPredictorCache.getInstance();
+    private final CachedElementFinder finder = CachedElementFinder.getInstance();
 
     public Expr expr;
-    public String basePackage;
+    public String base;
 
-    public Resolver(Expr expr, String basePackage) {
+    public String declaringClass;
+
+    public PredictorResolver(Expr expr, String basePackage, String declaringClass) {
         this.expr = expr;
-        this.basePackage = basePackage;
+        this.base = basePackage;
+        this.declaringClass = declaringClass;
     }
 
-    public boolean resolve(T t) {
-        return this.expr.accept(this).test(t);
-
+    public Predicate<T> resolvePredictor() {
+        return this.expr.accept(this);
     }
 
     @Override
@@ -137,7 +143,7 @@ public class Resolver<T> implements Expr.ExprVisitor<Predicate<T>> {
             if (!m.getModifiers().contains(ModifierKind.PUBLIC)) return false;
             return m.getAnnotations().stream().map(a -> a.getType().getQualifiedName())
                     .collect(Collectors.toSet())
-                    .contains(expr.qualifiedName.size() == 1 ? basePackage + expr.qualifiedName.get(0) :
+                    .contains(expr.qualifiedName.size() == 1 ? base + "." + expr.qualifiedName.get(0) :
                             expr.qualifiedName.stream()
                                     .map(Token::getLexeme).collect(Collectors.joining(".")));
         };
@@ -161,7 +167,17 @@ public class Resolver<T> implements Expr.ExprVisitor<Predicate<T>> {
 
     @Override
     public Predicate<T> visitPointcutMethodExpr(Expr.PointcutMethod expr) {
-        // TODO
+        String methodName;
+        if (expr.qualifiedName.size() == 1) {
+            methodName = base + "." + declaringClass + "." + expr.qualifiedName.get(0);
+        } else {
+            methodName = expr.qualifiedName.stream().map(Token::getLexeme).collect(Collectors.joining("."));
+        }
+        var method = finder.findPointcutMethod(methodName);
+        if (method == null) {
+            throw new ResolverError("Can't find method:[" + methodName + "]");
+        }
+
         return null;
     }
 

@@ -1,8 +1,10 @@
 import analysis.collector.*;
 import org.junit.Test;
+import resource.ModelFactory;
 import resource.ResourceRole;
 import resource.JavaResourceScanner;
 import spoon.Launcher;
+import spoon.reflect.CtModel;
 import spoon.reflect.code.CtLiteral;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtField;
@@ -15,12 +17,8 @@ public class TestResource {
 
     @Test
     public void test1() {
-        Launcher launcher = new Launcher();
-        launcher.addInputResource("src/test/resources/demo/src/main/java/");
-        launcher.buildModel();
-        launcher.process();
+        CtModel model = ModelFactory.init("src/test/resources/demo/src/main/java/");
         JavaResourceScanner processor = new JavaResourceScanner();
-
 
         var c1 = new SpringMainClassCollector<CtClass<?>>();
         processor.addCollector(c1);
@@ -61,7 +59,7 @@ public class TestResource {
         var c19 = new SpringAutowiredAnnoMethodCollector<CtMethod<?>>();
         processor.addCollector(c19);
 
-        processor.scan(launcher.getModel().getRootPackage());
+        processor.scan(model.getRootPackage());
 
         System.out.println("Main class: ");
         c1.elements().forEach(e -> {
@@ -81,7 +79,7 @@ public class TestResource {
         System.out.println("Bean method: ");
         c4.elements().forEach(e -> {
             System.out.print("    ");
-            System.out.println(e.getDeclaringType().getQualifiedName() + "." + e.getSignature());
+            System.out.println(e.getType().getQualifiedName() + " " + e.getDeclaringType().getQualifiedName() + "." + e.getSignature());
         });
         System.out.println("Value field: ");
         c5.elements().forEach(e -> {
@@ -96,7 +94,7 @@ public class TestResource {
         System.out.println("Repository method: ");
         c7.elements().forEach(e -> {
             System.out.print("    ");
-            System.out.println(e.getDeclaringType().getQualifiedName() + "." + e.getSignature());
+            System.out.println(e.getType().getQualifiedName() + " " + e.getDeclaringType().getQualifiedName() + "." + e.getSignature());
         });
         System.out.println("Autowired field: ");
         c8.elements().forEach(e -> {
@@ -116,27 +114,27 @@ public class TestResource {
         System.out.println("AfterReturning Anno method: ");
         c11.elements().forEach(e -> {
             System.out.print("    ");
-            System.out.println(e.getDeclaringType().getQualifiedName() + "." + e.getSignature());
+            System.out.println(e.getType().getQualifiedName() + " " + e.getDeclaringType().getQualifiedName() + "." + e.getSignature());
         });
         System.out.println("AfterThrowing Anno method: ");
         c12.elements().forEach(e -> {
             System.out.print("    ");
-            System.out.println(e.getDeclaringType().getQualifiedName() + "." + e.getSignature());
+            System.out.println(e.getType().getQualifiedName() + " " + e.getType().getQualifiedName() + " " + e.getDeclaringType().getQualifiedName() + "." + e.getSignature());
         });
         System.out.println("Around Anno method: ");
         c13.elements().forEach(e -> {
             System.out.print("    ");
-            System.out.println(e.getDeclaringType().getQualifiedName() + "." + e.getSignature());
+            System.out.println(e.getType().getQualifiedName() + " " + e.getDeclaringType().getQualifiedName() + "." + e.getSignature());
         });
         System.out.println("Before Anno method: ");
         c14.elements().forEach(e -> {
             System.out.print("    ");
-            System.out.println(e.getDeclaringType().getQualifiedName() + "." + e.getSignature());
+            System.out.println(e.getType().getQualifiedName() + " " + e.getDeclaringType().getQualifiedName() + "." + e.getSignature());
         });
         System.out.println("Pointcut Anno method: ");
         c15.elements().forEach(e -> {
             System.out.print("    ");
-            System.out.println(e.getDeclaringType().getQualifiedName() + "." + e.getSignature());
+            System.out.println(e.getType().getQualifiedName() + " " + e.getDeclaringType().getQualifiedName() + "." + e.getSignature());
         });
         System.out.println("Configuration class: ");
         c16.elements().forEach(e -> {
@@ -151,12 +149,12 @@ public class TestResource {
         System.out.println("Mapping method: ");
         c18.elements().forEach(e -> {
             System.out.print("    ");
-            System.out.println(e.getDeclaringType().getQualifiedName() + "." + e.getSignature());
+            System.out.println(e.getType().getQualifiedName() + " " + e.getDeclaringType().getQualifiedName() + "." + e.getSignature());
         });
         System.out.println("Autowired method: ");
         c19.elements().forEach(e -> {
             System.out.print("    ");
-            System.out.println(e.getDeclaringType().getQualifiedName() + "." + e.getSignature());
+            System.out.println(e.getType().getQualifiedName() + " " + e.getDeclaringType().getQualifiedName() + "." + e.getSignature());
         });
 
 
@@ -181,7 +179,7 @@ public class TestResource {
                 equals(a.getAnnotationType().getPackage() + "." + a.getAnnotationType().getSimpleName()));
 
         var customCollector = CustomCollector.newCollector(p, ResourceRole.METHOD);
-        var ret = processor.scanOnceFor(launcher.getModel().getRootPackage(), customCollector);
+        var ret = processor.scanOnceFor(model.getRootPackage(), customCollector);
         System.out.println("@Log method:");
         ret.forEach(e -> {
             System.out.print("    ");

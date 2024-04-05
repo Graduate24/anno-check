@@ -14,8 +14,14 @@ public class Scanner {
     private int start = 0;
     private int current = 0;
 
+    private boolean hasError = false;
+
     private static final Map<String, TokenType> keywords;
 
+
+    public boolean isHasError() {
+        return this.hasError;
+    }
 
     static {
         keywords = new HashMap<>();
@@ -33,12 +39,18 @@ public class Scanner {
     }
 
     public List<Token> scanTokens() {
-        while (!isAtEnd()) {
-            start = current;
-            scanToken();
+        try {
+            while (!isAtEnd()) {
+                start = current;
+                scanToken();
+            }
+            tokens.add(new Token(EOF, ""));
+            return tokens;
+        } catch (ScannerError e) {
+            e.printStackTrace();
+            hasError = true;
         }
-        tokens.add(new Token(EOF, ""));
-        return tokens;
+        return null;
     }
 
     private void scanToken() {
@@ -97,7 +109,15 @@ public class Scanner {
             }
             default -> {
                 if (isAlpha(c)) {
-                    identifier();
+                    if (c == 'a' && match("nd ")) {
+                        addToken(AND);
+                    } else if (c == 'o' && match("r ")) {
+                        addToken(OR);
+                    } else if (c == 'n' && match("ot ")) {
+                        addToken(BANG);
+                    } else {
+                        identifier();
+                    }
                 } else {
                     throw new ScannerError("unexpected character: " + c);
                 }

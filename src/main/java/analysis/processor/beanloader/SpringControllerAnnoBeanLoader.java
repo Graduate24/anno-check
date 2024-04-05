@@ -3,6 +3,8 @@ package analysis.processor.beanloader;
 import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
 
+import static resource.ElementUtil.*;
+
 import java.util.Set;
 
 /**

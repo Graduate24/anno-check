@@ -10,6 +10,10 @@ public interface ElementFinder {
 
     void addSuperClass(CtType<?> type, String superClass);
 
+    void addPointcutMethod(CtMethod<?> method);
+
+    void addPublicMethod(CtMethod<?> method);
+
     void addSuperInterfaces(CtType<?> type, Set<String> superInterfaces);
 
     CtType<?> findType(String qualifiedName);
@@ -17,6 +21,8 @@ public interface ElementFinder {
     CtClass<?> findClass(String qualifiedName);
 
     CtInterface<?> findInterface(String qualifiedName);
+
+    CtMethod<?> findPointcutMethod(String signature);
 
     Set<CtType<?>> directedSubType(String qualifiedName);
 

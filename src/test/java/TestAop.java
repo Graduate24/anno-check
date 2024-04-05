@@ -3,6 +3,7 @@ import analysis.processor.aop.parser.Expr;
 import analysis.processor.aop.parser.Parser;
 import analysis.processor.aop.parser.Scanner;
 import analysis.processor.aop.parser.Token;
+import analysis.processor.aop.resolver.builder.CachedPredictPointcutResolverBuilder;
 import io.github.azagniotov.matcher.AntPathMatcher;
 import org.junit.Test;
 
@@ -10,7 +11,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class TestAop {
+public class TestAop extends BaseTest {
 
 
     /**
@@ -176,15 +177,16 @@ public class TestAop {
     }
 
     @Test
-    public void test4(){
+    public void test4() {
         AntPathMatcher antPathMatcher = new AntPathMatcher.Builder().build();
-        System.out.println(antPathMatcher.isMatch("com/xyz/**/*","com/xyz/a/f/g/cded"));
-        System.out.println(antPathMatcher.isMatch("set*","setId"));
+        System.out.println(antPathMatcher.isMatch("com/xyz/**/*", "com/xyz/a/f/g/cded"));
+        System.out.println(antPathMatcher.isMatch("set*", "setId"));
     }
 
     @Test
-    public void test5(){
+    public void test5() {
         String[] patterns = {
+                "@annotation(auditable.asdf) and within(com.xyz.service..*.*)",
                 "@annotation(auditable.asdf) || within(com.xyz.service..*.*)",
                 "edu.tsinghua.demo.aop.ShipmentService.outerCheck()",
                 "execution( public * *(..)) || execution(* set*(..))",
@@ -209,9 +211,19 @@ public class TestAop {
             Parser parser = new Parser(tokens);
             Expr expr = parser.parse();
             assert !parser.isHasError();
+            System.out.print(expr.getClass().getSimpleName() + " :");
             System.out.println(expr);
             System.out.println();
         }
+    }
+
+    @Test
+    public void test6() {
+        getResource("src/test/resources/demo/");
+        var builder = new CachedPredictPointcutResolverBuilder();
+        pointcutMethod.forEach(m -> {
+            builder.build(null, m);
+        });
     }
 
 }

@@ -5,6 +5,8 @@ import spoon.reflect.declaration.CtElement;
 
 import java.util.Set;
 
+import static resource.ElementUtil.*;
+
 public class SpringConfigurationPropertiesBeanLoader extends AbstractBeanLoader {
     @Override
     public BeanDefinitionModel load(Set<CtElement> contextResource, CtElement currentResource) {

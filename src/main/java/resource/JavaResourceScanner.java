@@ -21,6 +21,7 @@ public class JavaResourceScanner extends CtScanner {
 
     @Override
     public <T> void visitCtMethod(CtMethod<T> ctMethod) {
+        CachedElementFinder.getInstance().addPublicMethod(ctMethod);
         collect(ResourceRole.METHOD, ctMethod);
         super.visitCtMethod(ctMethod);
     }

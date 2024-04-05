@@ -1,10 +1,11 @@
 package analysis.processor.beanloader;
 
-import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtMethod;
 
 import java.util.Set;
+
+import static resource.ElementUtil.*;
 
 /**
  * Spring components can also contribute bean definition metadata to the container.

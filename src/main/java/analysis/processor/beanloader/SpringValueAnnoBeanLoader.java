@@ -3,6 +3,8 @@ package analysis.processor.beanloader;
 import resource.ModelFactory;
 import spoon.reflect.declaration.*;
 
+import static resource.ElementUtil.*;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -26,7 +28,7 @@ public class SpringValueAnnoBeanLoader extends AbstractBeanLoader {
         String value = getAnnoValue(field, VALUE_ANNO);
         if (value == null) return null;
         value = get$placeholder(value);
-        if(value==null) return null;
+        if (value == null) return null;
         var v = ModelFactory.getConfigFromName(value);
         if (v == null) return null;
         bd.setType(field.getDeclaringType());

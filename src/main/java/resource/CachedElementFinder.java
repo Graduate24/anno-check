@@ -8,13 +8,24 @@ import java.util.stream.Collectors;
 public class CachedElementFinder implements ElementFinder {
     private static final Map<String, CtType<?>> cachedType = new HashMap<>();
     private static final Map<String, Set<String>> cachedSubType = new HashMap<>();
+    private static final Map<String, CtMethod<?>> cachedPointcutMethod = new HashMap<>();
+
+    private static final Set<CtMethod<?>> cachedPublicMethod = new HashSet<>();
+
     private static CachedElementFinder cachedElementFinder;
+
+    private CachedElementFinder() {
+    }
 
     public static CachedElementFinder getInstance() {
         if (cachedElementFinder == null) {
             cachedElementFinder = new CachedElementFinder();
         }
         return cachedElementFinder;
+    }
+
+    public Set<CtMethod<?>> getCachedPublicMethod() {
+        return cachedPublicMethod;
     }
 
     @Override
@@ -33,6 +44,18 @@ public class CachedElementFinder implements ElementFinder {
         } else {
             children.add(type.getQualifiedName());
         }
+    }
+
+    @Override
+    public void addPointcutMethod(CtMethod<?> method) {
+        String signature = method.getDeclaringType().getQualifiedName() + "." + method.getSimpleName();
+        cachedPointcutMethod.put(signature, method);
+    }
+
+    @Override
+    public void addPublicMethod(CtMethod<?> method) {
+        if (method.getModifiers().contains(ModifierKind.PUBLIC))
+            cachedPublicMethod.add(method);
     }
 
     @Override
@@ -65,6 +88,11 @@ public class CachedElementFinder implements ElementFinder {
         var c = findType(qualifiedName);
         if (c instanceof CtInterface<?>) return (CtInterface<?>) c;
         return null;
+    }
+
+    @Override
+    public CtMethod<?> findPointcutMethod(String signature) {
+        return cachedPointcutMethod.get(signature);
     }
 
     public Set<CtType<?>> directedSubType(String qualifiedName) {
