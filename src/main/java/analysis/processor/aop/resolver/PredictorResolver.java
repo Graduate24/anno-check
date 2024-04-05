@@ -179,7 +179,7 @@ public class PredictorResolver<T> implements Expr.ExprVisitor<Predicate<T>> {
     public Predicate<T> visitPointcutMethodExpr(Expr.PointcutMethod expr) {
         String methodName;
         if (expr.qualifiedName.size() == 1) {
-            methodName = base + "." + declaringClass + "." + expr.qualifiedName.get(0);
+            methodName = base + "." + declaringClass + "." + expr.qualifiedName.get(0).getLexeme();
         } else {
             methodName = expr.qualifiedName.stream().map(Token::getLexeme).collect(Collectors.joining("."));
         }

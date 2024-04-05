@@ -42,6 +42,10 @@ public class LoggingAspect {
     public void mathAdd() {
     }
 
+    @Pointcut("mathAdd()")
+    public void mathAdd2() {
+    }
+
     @Before("logPointcut()")
     public void logAllMethodCallsAdvice1(JoinPoint joinPoint) {
         System.out.println(Arrays.toString(joinPoint.getArgs()));

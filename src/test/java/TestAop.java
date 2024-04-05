@@ -257,6 +257,7 @@ public class TestAop extends BaseTest {
         CachedElementFinder cachedElementFinder = CachedElementFinder.getInstance();
         var methods = cachedElementFinder.getCachedPublicMethod();
         for (CtMethod<?> m : pointcutMethod) {
+            System.out.println("-- method: " + m.getSimpleName());
             String pointcut = getValueOfAnnotationAsString(m, "org.aspectj.lang.annotation.Pointcut");
             System.out.print("pointcut: " + pointcut);
             Scanner scanner = new Scanner(pointcut);
