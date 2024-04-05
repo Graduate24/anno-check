@@ -253,7 +253,9 @@ public class TestAop extends BaseTest {
 
     @Test
     public void test7() {
-        getResource("src/test/resources/demo/");
+        String project = "D:\\edgedownload\\mall-master";
+//        String project = "src/test/resources/demo/";
+        getResource(project);
         CachedElementFinder cachedElementFinder = CachedElementFinder.getInstance();
         var methods = cachedElementFinder.getCachedPublicMethod();
         for (CtMethod<?> m : pointcutMethod) {
