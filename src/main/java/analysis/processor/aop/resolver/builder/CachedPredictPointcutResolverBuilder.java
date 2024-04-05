@@ -29,6 +29,7 @@ public class CachedPredictPointcutResolverBuilder<E> implements PointcutResolver
             return (Predicate<E>) pointcutResolverCache.getPredictor(currentResource);
         }
         String value = getValueOfAnnotationAsString(currentResource, "org.aspectj.lang.annotation.Pointcut");
+
         Scanner scanner = new Scanner(value);
         List<Token> tokens = scanner.scanTokens();
         if (scanner.isHasError()) {
@@ -42,6 +43,7 @@ public class CachedPredictPointcutResolverBuilder<E> implements PointcutResolver
         PredictorResolver<CtMethod<?>> resolver = new PredictorResolver<>(expr,
                 currentResource.getDeclaringType().getPackage().toString(),
                 currentResource.getDeclaringType().getSimpleName());
+        resolver.setSource(value);
         var predictor = resolver.resolvePredictor();
         if (predictor == null) return null;
         pointcutResolverCache.addPredictor(currentResource, predictor);

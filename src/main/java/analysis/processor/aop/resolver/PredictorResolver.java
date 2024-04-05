@@ -25,10 +25,20 @@ public class PredictorResolver<T> implements Expr.ExprVisitor<Predicate<T>> {
 
     public String declaringClass;
 
+    public String source;
+
     public PredictorResolver(Expr expr, String basePackage, String declaringClass) {
         this.expr = expr;
         this.base = basePackage;
         this.declaringClass = declaringClass;
+    }
+
+    public String getSource() {
+        return source;
+    }
+
+    public void setSource(String source) {
+        this.source = source;
     }
 
     public Predicate<T> resolvePredictor() {
@@ -62,8 +72,6 @@ public class PredictorResolver<T> implements Expr.ExprVisitor<Predicate<T>> {
      */
     @Override
     public Predicate<T> visitExecutionExpr(Expr.Execution expr) {
-
-        // ignore modifier, only test public methods
         boolean ignoreRetType;
         boolean qualifiedPattern;
         if (expr.retType.size() == 1 && expr.retType.get(0).getType().equals(TokenType.STAR)) {
@@ -80,7 +88,6 @@ public class PredictorResolver<T> implements Expr.ExprVisitor<Predicate<T>> {
 
         boolean ignoreParam;
         ignoreParam = expr.paramPattern.size() == 1 && expr.paramPattern.get(0).getType().equals(TokenType.DOT_DOT);
-
         return (e) -> {
             CtMethodImpl<?> m = (CtMethodImpl<?>) e;
             if (!m.getModifiers().contains(ModifierKind.PUBLIC)) return false;
@@ -94,12 +101,13 @@ public class PredictorResolver<T> implements Expr.ExprVisitor<Predicate<T>> {
                 String regex = pattern
                         .replaceAll("\\.\\.\\*", "/**")
                         .replaceAll("\\.", "/");
-
-                boolean isMatch = antPathMatcher.isMatch(regex, m.getSignature().substring(0, m.getSignature().lastIndexOf(".")));
+                var sig = m.getDeclaringType().getQualifiedName().replaceAll("\\.", "/");
+                boolean isMatch = antPathMatcher.isMatch(regex, sig);
                 if (!isMatch) return false;
             }
             String name = m.getSimpleName();
-            if (expr.namePattern.getType().equals(TokenType.REGEX_IDENTIFIER)) {
+            if (expr.namePattern.getType().equals(TokenType.REGEX_IDENTIFIER)
+                    || expr.namePattern.getType().equals(TokenType.STAR)) {
                 if (!antPathMatcher.isMatch(expr.namePattern.getLexeme(), name)) return false;
             } else {
                 if (!name.equals(expr.namePattern.getLexeme())) return false;
@@ -116,8 +124,9 @@ public class PredictorResolver<T> implements Expr.ExprVisitor<Predicate<T>> {
                     sb.append(o.getLexeme());
                     sb.append(".");
                 }
-                refinedParams.add(removeLastPeriod(sb.toString()));
-
+                if (!sb.toString().isEmpty()) {
+                    refinedParams.add(removeLastPeriod(sb.toString()));
+                }
                 if (parameters.size() != refinedParams.size()) return false;
 
                 for (int i = 0; i < parameters.size(); i++) {
@@ -140,15 +149,14 @@ public class PredictorResolver<T> implements Expr.ExprVisitor<Predicate<T>> {
 
     @Override
     public Predicate<T> visitAnnotationExpr(Expr.Annotation expr) {
-
         return (e) -> {
             CtMethodImpl<?> m = (CtMethodImpl<?>) e;
             if (!m.getModifiers().contains(ModifierKind.PUBLIC)) return false;
-            return m.getAnnotations().stream().map(a -> a.getType().getQualifiedName())
-                    .collect(Collectors.toSet())
-                    .contains(expr.qualifiedName.size() == 1 ? base + "." + expr.qualifiedName.get(0) :
-                            expr.qualifiedName.stream()
-                                    .map(Token::getLexeme).collect(Collectors.joining(".")));
+            var s = m.getAnnotations().stream().map(a -> a.getType().getQualifiedName()).collect(Collectors.toSet());
+            if (s.isEmpty()) return false;
+            var name = expr.qualifiedName.size() == 1 ? base + "." + expr.qualifiedName.get(0).getLexeme() :
+                    expr.qualifiedName.stream().map(Token::getLexeme).collect(Collectors.joining("."));
+            return s.contains(name);
         };
     }
 
@@ -159,12 +167,11 @@ public class PredictorResolver<T> implements Expr.ExprVisitor<Predicate<T>> {
         String regex = pattern
                 .replaceAll("\\.\\.\\*", "/**")
                 .replaceAll("\\.", "/");
-
-
         return (e) -> {
             CtMethodImpl<?> m = (CtMethodImpl<?>) e;
             if (!m.getModifiers().contains(ModifierKind.PUBLIC)) return false;
-            return antPathMatcher.isMatch(regex, m.getSignature().substring(0, m.getSignature().lastIndexOf(".")));
+            var sig = m.getDeclaringType().getQualifiedName().replaceAll("\\.", "/");
+            return antPathMatcher.isMatch(regex, sig);
         };
     }
 

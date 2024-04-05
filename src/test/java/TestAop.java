@@ -3,13 +3,20 @@ import analysis.processor.aop.parser.Expr;
 import analysis.processor.aop.parser.Parser;
 import analysis.processor.aop.parser.Scanner;
 import analysis.processor.aop.parser.Token;
+import analysis.processor.aop.resolver.PredictorResolver;
 import analysis.processor.aop.resolver.builder.CachedPredictPointcutResolverBuilder;
 import io.github.azagniotov.matcher.AntPathMatcher;
 import org.junit.Test;
+import resource.CachedElementFinder;
+import spoon.reflect.declaration.CtMethod;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static resource.ElementUtil.getValueOfAnnotationAsString;
 
 /**
  * Created by: zhang ran
@@ -224,10 +231,69 @@ public class TestAop extends BaseTest {
     @Test
     public void test6() {
         getResource("src/test/resources/demo/");
-        var builder = new CachedPredictPointcutResolverBuilder();
+        var builder = new CachedPredictPointcutResolverBuilder<CtMethod<?>>();
+        List<Predicate<CtMethod<?>>> predictors = new ArrayList<>();
         pointcutMethod.forEach(m -> {
-            builder.build(null, m);
+            var p = builder.build(null, m);
+            if (p != null) predictors.add(p);
         });
+
+        CachedElementFinder cachedElementFinder = CachedElementFinder.getInstance();
+
+        var methods = cachedElementFinder.getCachedPublicMethod();
+        for (CtMethod<?> method : methods) {
+            for (Predicate<CtMethod<?>> predictor : predictors) {
+                if (predictor.test(method)) {
+                    System.out.println(method.getDeclaringType().getQualifiedName() + "." + method.getSignature());
+                }
+            }
+        }
+
+    }
+
+    @Test
+    public void test7() {
+        getResource("src/test/resources/demo/");
+        CachedElementFinder cachedElementFinder = CachedElementFinder.getInstance();
+        var methods = cachedElementFinder.getCachedPublicMethod();
+        for (CtMethod<?> m : pointcutMethod) {
+            String pointcut = getValueOfAnnotationAsString(m, "org.aspectj.lang.annotation.Pointcut");
+            System.out.print("pointcut: " + pointcut);
+            Scanner scanner = new Scanner(pointcut);
+            List<Token> tokens = scanner.scanTokens();
+            if (scanner.isHasError()) {
+                System.out.println("scan error");
+                continue;
+            }
+            Parser parser = new Parser(tokens);
+            Expr expr = parser.parse();
+            if (parser.isHasError()) {
+                System.out.println("parse error");
+                continue;
+            }
+
+            String basePackage = m.getDeclaringType().getPackage().toString();
+            String declaringClass = m.getDeclaringType().getSimpleName();
+            System.out.print("; defined package: " + basePackage);
+            System.out.print("; class: " + declaringClass);
+            PredictorResolver<CtMethod<?>> resolver = new PredictorResolver<>(expr,
+                    basePackage,
+                    declaringClass);
+
+            resolver.setSource(pointcut);
+
+            var predictor = resolver.resolvePredictor();
+            if (predictor == null) {
+                System.out.println("resolve error");
+                continue;
+            }
+            for (CtMethod<?> method : methods) {
+                if (predictor.test(method)) {
+                    System.out.println("\n    find target method: " + method.getDeclaringType().getQualifiedName() + "." + method.getSignature());
+                }
+            }
+            System.out.println();
+        }
     }
 
 }
