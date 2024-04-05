@@ -2,9 +2,11 @@ package analysis.collector;
 
 import resource.CachedElementFinder;
 import resource.ResourceRole;
+import spoon.reflect.declaration.CtAnnotation;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtMethod;
 
+import java.lang.annotation.Annotation;
 import java.util.function.Predicate;
 
 /**
@@ -16,9 +18,18 @@ public class PointcutMethodCollector<E extends CtElement> extends AbstractElemen
 
     @Override
     public Predicate<E> defaultPredictor() {
-
-        return (e) -> e.getAnnotations().stream().anyMatch(a -> ANNOTATION.
-                equals(a.getAnnotationType().getPackage() + "." + a.getAnnotationType().getSimpleName()));
+        // TODO fix bug. when source code with import wildcard like "import org.aspectj.lang.annotation.*", the actual
+        // type of the annotations is missing.
+        return (e) -> {
+            var annos = e.getAnnotations();
+            for (CtAnnotation<? extends Annotation> a : annos) {
+                var name = a.getAnnotationType().getPackage() + "." + a.getAnnotationType().getSimpleName();
+                if (name.equals(ANNOTATION)) {
+                    return true;
+                }
+            }
+            return false;
+        };
     }
 
     @Override

@@ -231,7 +231,7 @@ public class TestAop extends BaseTest {
 
     @Test
     public void test6() {
-        getResource("D:\\edgedownload\\mall-master");
+        getResource("src/test/resources/demo/");
         var builder = new CachedPredictPointcutResolverBuilder<CtMethod<?>>();
         List<Predicate<CtMethod<?>>> predictors = new ArrayList<>();
         pointcutMethod.forEach(m -> {
