@@ -1,0 +1,20 @@
+package analysis.lang.parser;
+
+/**
+ * Created by: zhang ran
+ * 2024-04-06
+ */
+public enum TokenType {
+    // single-character tokens
+    LEFT_PAREN, RIGHT_PAREN, COMMA, DOT, STAR, BANG, SEMICOLON, COLON,
+
+    // two-characters
+    DOT_DOT, AND, OR, ARROW,
+
+    //Literals
+    IDENTIFIER, REGEX_IDENTIFIER,
+
+    //keywords
+    EXECUTION, WITHIN, ANNOTATION, PUBLIC, PROTECTED, PRIVATE, THROWS, DEF, RUN,
+    EOF
+}

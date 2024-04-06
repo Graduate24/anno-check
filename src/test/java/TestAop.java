@@ -223,8 +223,8 @@ public class TestAop extends BaseTest {
 
     @Test
     public void test6() {
-//        String project = "D:\\edgedownload\\mall-master";
-        String project = "src/test/resources/demo/";
+        String project = "D:\\edgedownload\\mall-master";
+//        String project = "src/test/resources/demo/";
         getResource(project);
 //        var builder = new CachedPredictPointcutResolverBuilder<CtMethod<?>>();
 //        List<Predicate<CtMethod<?>>> predictors = new ArrayList<>();
@@ -259,6 +259,7 @@ public class TestAop extends BaseTest {
 
         var around = new AroundAspectResolverBuilder<CtMethod<?>>();
         matchTarget(around, aroundAnnoMethod, methods);
+
 
     }
 
