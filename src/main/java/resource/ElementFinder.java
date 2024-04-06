@@ -36,6 +36,6 @@ public interface ElementFinder {
 
     Set<CtType<?>> directedSubType(String qualifiedName);
 
-    List<CtMethod<?>> getAllMethods();
+    Set<CtMethod<?>> getAllMethods();
 
 }

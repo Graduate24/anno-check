@@ -38,8 +38,9 @@ public class TestLanguage extends BaseTest {
                         "@def f7: filmanno(org.springframework.web.bind.annotation.PatchMapping);\n" +
                         "@def f8: filmanno(org.springframework.web.bind.annotation.ExceptionHandler);\n" +
                         "@def f9: filmanno(org.springframework.web.bind.annotation.RequestMapping);\n" +
+                        "@def f10: filme(pubstatic * *(..));"+
                         "\n" +
-                        "@run f1||f2||f3||f4||f5||f6||f7||f8||f9 -> \"output/demo\";"
+                        "@run f1||f2||f3||f4||f5||f6||f7||f8||f9||f10 -> \"output/demo\";"
         };
         for (String pattern : patterns) {
             System.out.println(pattern);

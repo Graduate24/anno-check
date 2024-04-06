@@ -13,10 +13,7 @@ import spoon.support.reflect.declaration.CtMethodImpl;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -28,11 +25,15 @@ public class Interpreter implements Expr.ExprVisitor<Object>, Stmt.Visitor<Void>
 
     private final Map<String, Object> locals = new HashMap<>();
 
-    private final List<CtMethod<?>> allMethods;
-    public static boolean hadRuntimeError = false;
+    private final Set<CtMethod<?>> allMethods;
+    public boolean hadRuntimeError = false;
 
     public Interpreter() {
         this.allMethods = CachedElementFinder.getInstance().getAllMethods();
+    }
+
+    public Interpreter(Set<CtMethod<?>> allMethods) {
+        this.allMethods = allMethods;
     }
 
     public void interpret(List<Stmt> statements) {
@@ -91,8 +92,15 @@ public class Interpreter implements Expr.ExprVisitor<Object>, Stmt.Visitor<Void>
         return (Predicate<CtMethod<?>>) (e) -> {
             CtMethodImpl<?> m = (CtMethodImpl<?>) e;
             if (!ignoreModifier) {
-                if (m.getModifiers().stream().map(Object::toString).noneMatch(mo -> mo.equals(expr.modifier.getLexeme())))
-                    return false;
+                var modifiers = m.getModifiers().stream().map(Object::toString).collect(Collectors.toSet());
+                if (expr.modifier.getType().equals(TokenType.PUB_STATIC)) {
+                    if (!(modifiers.contains("public") && modifiers.contains("static"))) {
+                        return false;
+                    }
+                } else {
+                    if (modifiers.stream().noneMatch(mo -> mo.equals(expr.modifier.getLexeme())))
+                        return false;
+                }
             }
             if (!ignoreRetType) {
                 String retTypeName = qualifiedPattern ? m.getType().getQualifiedName() : m.getType().getSimpleName();
@@ -217,14 +225,16 @@ public class Interpreter implements Expr.ExprVisitor<Object>, Stmt.Visitor<Void>
         if (output.getType().equals(TokenType.IDENTIFIER)) {
             if (output.getLexeme().equals("stdout")) {
                 System.out.println("@run to stdout:---");
-                result.forEach(m -> System.out.println(m.getDeclaringType().getPackage() + "." + m.getSignature()));
+                result.forEach(m -> {
+                    System.out.println(printMethod(m));
+                });
             } else {
                 locals.put(output.getLexeme(), result);
             }
         } else if (output.getType().equals(TokenType.STRING)) {
             StringBuilder sb = new StringBuilder();
             result.forEach(m -> {
-                sb.append(m.getDeclaringType().getPackage()).append(".").append(m.getSignature()).append("\n");
+                sb.append(printMethod(m));
             });
             try {
                 writeOutput(output.getLexeme(), sb.toString());
@@ -274,4 +284,29 @@ public class Interpreter implements Expr.ExprVisitor<Object>, Stmt.Visitor<Void>
         return str;
     }
 
+    private String printMethod(CtMethod<?> m) {
+        StringBuilder sb = new StringBuilder();
+        var modifiers = m.getModifiers();
+        if (modifiers.contains(ModifierKind.PUBLIC)) {
+            sb.append("public ");
+        } else if (modifiers.contains(ModifierKind.PRIVATE)) {
+            sb.append("private ");
+        } else if (modifiers.contains(ModifierKind.PROTECTED)) {
+            sb.append("protected ");
+        }
+        if (modifiers.contains(ModifierKind.ABSTRACT)) {
+            sb.append("abstract ");
+        }
+        if (modifiers.contains(ModifierKind.STATIC)) {
+            sb.append("static ");
+        }
+        if (modifiers.contains(ModifierKind.FINAL)) {
+            sb.append("final ");
+        }
+        if (modifiers.contains(ModifierKind.NATIVE)) {
+            sb.append("native ");
+        }
+        sb.append(m.getDeclaringType().getPackage().toString()).append(".").append(m.getSignature()).append("\n");
+        return sb.toString();
+    }
 }

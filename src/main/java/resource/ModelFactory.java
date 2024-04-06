@@ -33,6 +33,21 @@ import java.util.Set;
  * <p>
  * Created by: zhang ran
  * 2024-03-05
+ * <p>
+ * Created by: zhang ran
+ * 2024-03-05
+ * <p>
+ * Created by: zhang ran
+ * 2024-03-05
+ * <p>
+ * Created by: zhang ran
+ * 2024-03-05
+ * <p>
+ * Created by: zhang ran
+ * 2024-03-05
+ * <p>
+ * Created by: zhang ran
+ * 2024-03-05
  *//**
  * Created by: zhang ran
  * 2024-03-05
@@ -79,6 +94,14 @@ public class ModelFactory {
         }
 
         return model;
+    }
+
+    public static void reset() {
+        model = null;
+        filePath = null;
+        mapper = null;
+        config = null;
+        CachedElementFinder.reset();
     }
 
     public static CtModel getModel() {

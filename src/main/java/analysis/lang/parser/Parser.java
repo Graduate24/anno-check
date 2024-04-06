@@ -161,7 +161,7 @@ public class Parser {
 
     private Expr filme() {
         Token modifier = null;
-        if (match(PUBLIC, PROTECTED, PRIVATE)) {
+        if (match(PUBLIC, PROTECTED, PRIVATE, PUB_STATIC)) {
             modifier = previous();
         }
         List<Token> retType = new ArrayList<>();

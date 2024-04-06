@@ -18,9 +18,17 @@ public class CachedElementFinder implements ElementFinder {
 
     private static CachedElementFinder cachedElementFinder;
 
-    private static final List<CtMethod<?>> allMethods = new ArrayList<>();
+    private static final Set<CtMethod<?>> allMethods = new HashSet<>();
 
     private CachedElementFinder() {
+    }
+
+    protected static void reset() {
+        cachedType.clear();
+        cachedSubType.clear();
+        cachedPointcutMethod.clear();
+        cachedPublicMethod.clear();
+        allMethods.clear();
     }
 
     public static CachedElementFinder getInstance() {
@@ -121,7 +129,7 @@ public class CachedElementFinder implements ElementFinder {
     }
 
     @Override
-    public List<CtMethod<?>> getAllMethods() {
+    public Set<CtMethod<?>> getAllMethods() {
         return allMethods;
     }
 
