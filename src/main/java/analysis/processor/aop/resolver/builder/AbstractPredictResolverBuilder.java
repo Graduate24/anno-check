@@ -60,6 +60,7 @@ public abstract class AbstractPredictResolverBuilder<E> implements PointcutResol
         if (predictor == null) return null;
         pointcutResolverCache.addPredictor(currentResource, predictor);
         pointcutResolverCache.addPredictor(value, predictor);
+        System.out.println("predictor for :" + value);
         return (Predicate<E>) predictor;
     }
 }

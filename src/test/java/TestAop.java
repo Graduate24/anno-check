@@ -1,4 +1,3 @@
-import analysis.processor.aop.ExecutionPointcut;
 import analysis.processor.aop.parser.Expr;
 import analysis.processor.aop.parser.Parser;
 import analysis.processor.aop.parser.Scanner;
@@ -10,7 +9,6 @@ import org.junit.Test;
 import resource.CachedElementFinder;
 import spoon.reflect.declaration.CtMethod;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -92,18 +90,17 @@ public class TestAop extends BaseTest {
                 // If found, group(1) contains the matched substring
                 continue;
             }
-            ExecutionPointcut executionPointcut = getPatternBefore(matcher.group(1));
-            System.out.println(executionPointcut);
+            getPatternBefore(matcher.group(1));
             System.out.println();
         }
     }
 
-    private ExecutionPointcut getPatternBefore(String expression) {
+    private void getPatternBefore(String expression) {
         expression = expression.trim();
         String paramPatternRegex = "\\((.*?)\\)";
         Pattern paramPattern = Pattern.compile(paramPatternRegex);
         Matcher pm = paramPattern.matcher(expression);
-        if (!pm.find()) return null;
+        if (!pm.find()) return;
         String param = pm.group(1);
 
         // Find the index of the opening parenthesis of the method parameters
@@ -113,13 +110,13 @@ public class TestAop extends BaseTest {
         while (startIndex > 0 && Character.isWhitespace(expression.charAt(startIndex - 1))) {
             startIndex--;
         }
-        if (startIndex == 0) return null;
+        if (startIndex == 0) return;
         // Move backwards until the first whitespace is found to capture the pattern
         int endIndex = startIndex;
         while (endIndex > 0 && !Character.isWhitespace(expression.charAt(endIndex - 1))) {
             endIndex--;
         }
-        if (endIndex == 0 || endIndex == startIndex) return null;
+        if (endIndex == 0 || endIndex == startIndex) return;
         String declaringNamePattern = expression.substring(endIndex, startIndex).trim();
         String restPrefix = expression.substring(0, endIndex);
         String[] arr = restPrefix.split(" ");
@@ -131,14 +128,9 @@ public class TestAop extends BaseTest {
             modifier = arr[0];
             retType = arr[1];
         } else {
-            return null;
+            return;
         }
-        ExecutionPointcut pointcut = new ExecutionPointcut();
-        pointcut.setModifier(modifier);
-        pointcut.setRetType(retType);
-        pointcut.setDeclaringTypeNamePattern(declaringNamePattern);
-        pointcut.setParamPattern(param);
-        return pointcut;
+        System.out.println(modifier + " " + retType + " " + declaringNamePattern + " " + param);
     }
 
     @Test
@@ -231,24 +223,27 @@ public class TestAop extends BaseTest {
 
     @Test
     public void test6() {
-        getResource("src/test/resources/demo/");
-        var builder = new CachedPredictPointcutResolverBuilder<CtMethod<?>>();
-        List<Predicate<CtMethod<?>>> predictors = new ArrayList<>();
-        pointcutMethod.forEach(m -> {
-            var p = builder.build(null, m);
-            if (p != null) predictors.add(p);
-        });
+//        String project = "D:\\edgedownload\\mall-master";
+        String project = "src/test/resources/demo/";
+        getResource(project);
+//        var builder = new CachedPredictPointcutResolverBuilder<CtMethod<?>>();
+//        List<Predicate<CtMethod<?>>> predictors = new ArrayList<>();
+//        pointcutMethod.forEach(m -> {
+//            var p = builder.build(null, m);
+//            if (p != null) predictors.add(p);
+//        });
 
         CachedElementFinder cachedElementFinder = CachedElementFinder.getInstance();
 
         var methods = cachedElementFinder.getCachedPublicMethod();
-        for (CtMethod<?> method : methods) {
-            for (Predicate<CtMethod<?>> predictor : predictors) {
-                if (predictor.test(method)) {
-                    System.out.println(method.getDeclaringType().getQualifiedName() + "." + method.getSignature());
-                }
-            }
-        }
+//        Set<CtMethod<?>> candidateMethods = new HashSet<>();
+//        for (CtMethod<?> method : methods) {
+//            for (Predicate<CtMethod<?>> predictor : predictors) {
+//                if (predictor.test(method)) {
+//                    candidateMethods.add(method);
+//                }
+//            }
+//        }
 
         var before = new BeforeAspectResolverBuilder<CtMethod<?>>();
         matchTarget(before, beforeAnnoMethod, methods);

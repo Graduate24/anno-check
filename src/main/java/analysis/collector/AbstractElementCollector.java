@@ -59,10 +59,11 @@ public abstract class AbstractElementCollector<E extends CtElement> implements E
             var annos = e.getAnnotations();
             for (CtAnnotation<? extends Annotation> a : annos) {
                 boolean isMethod = e instanceof CtMethod<?>;
-                var pack = isMethod ? ((CtMethod<?>) e).getDeclaringType().getPackage().toString() :
-                        ((CtClass<?>) e).getPackage().toString();
+                var pack = isMethod ? ((CtMethod<?>) e).getDeclaringType().getPackage() :
+                        ((CtClass<?>) e).getPackage();
+                if (pack == null) continue;
                 if (a.getAnnotationType().getPackage().toString()
-                        .equals(pack)) {
+                        .equals(pack.toString())) {
                     if (a.getAnnotationType().getSimpleName()
                             .equals(annotation.substring(annotation.lastIndexOf(".") + 1))) {
                         return true;
