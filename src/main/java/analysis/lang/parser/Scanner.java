@@ -30,8 +30,8 @@ public class Scanner {
     static {
         keywords = new HashMap<>();
         keywords.put("filme", FIL_ME);
-        keywords.put("filinp", FIL_INP);
-        keywords.put("filanno", FIL_ANNO);
+        keywords.put("filminp", FIL_INP);
+        keywords.put("filmanno", FIL_ANNO);
         keywords.put("public", PUBLIC);
         keywords.put("protected", PROTECTED);
         keywords.put("private", PRIVATE);

@@ -219,7 +219,7 @@ public class Interpreter implements Expr.ExprVisitor<Object>, Stmt.Visitor<Void>
                 System.out.println("@run to stdout:---");
                 result.forEach(m -> System.out.println(m.getDeclaringType().getPackage() + "." + m.getSignature()));
             } else {
-                throw new RuntimeError("unsupported output");
+                locals.put(output.getLexeme(), result);
             }
         } else if (output.getType().equals(TokenType.STRING)) {
             StringBuilder sb = new StringBuilder();

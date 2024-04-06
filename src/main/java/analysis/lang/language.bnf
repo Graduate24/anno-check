@@ -11,8 +11,8 @@ expression ::= term (("||" term)*)
 term ::= factor (("&&" factor)*)
 
 factor ::=  "filme" "(" method_pattern ")"
-          | "filinp" "(" declaring_type_pattern ")"
-          | "filanno" "(" annotation_pattern ")"
+          | "filminp" "(" declaring_type_pattern ")"
+          | "filmanno" "(" annotation_pattern ")"
           |  identifier
           | "(" expression ")"
           | "!" factor
