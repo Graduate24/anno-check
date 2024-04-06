@@ -1,5 +1,6 @@
 package analysis.collector;
 
+import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
 
 import java.util.function.Predicate;
@@ -13,7 +14,6 @@ public class AspectAnnoClassCollector<E extends CtElement> extends AbstractEleme
 
     @Override
     public Predicate<E> defaultPredictor() {
-        return (e) -> e.getAnnotations().stream().anyMatch(a -> ASPECT_ANNOTATION.
-                equals(a.getAnnotationType().getPackage() + "." + a.getAnnotationType().getSimpleName()));
+        return annoMatch(ASPECT_ANNOTATION);
     }
 }

@@ -1,8 +1,12 @@
 package analysis.collector;
 
 import resource.ResourceRole;
+import spoon.reflect.declaration.CtAnnotation;
+import spoon.reflect.declaration.CtClass;
 import spoon.reflect.declaration.CtElement;
+import spoon.reflect.declaration.CtMethod;
 
+import java.lang.annotation.Annotation;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.function.Predicate;
@@ -48,5 +52,29 @@ public abstract class AbstractElementCollector<E extends CtElement> implements E
             setMatcher(defaultPredictor());
         }
         return this.predicate;
+    }
+
+    protected Predicate<E> annoMatch(String annotation) {
+        return (e) -> {
+            var annos = e.getAnnotations();
+            for (CtAnnotation<? extends Annotation> a : annos) {
+                boolean isMethod = e instanceof CtMethod<?>;
+                var pack = isMethod ? ((CtMethod<?>) e).getDeclaringType().getPackage().toString() :
+                        ((CtClass<?>) e).getPackage().toString();
+                if (a.getAnnotationType().getPackage().toString()
+                        .equals(pack)) {
+                    if (a.getAnnotationType().getSimpleName()
+                            .equals(annotation.substring(annotation.lastIndexOf(".") + 1))) {
+                        return true;
+                    }
+                } else {
+                    var name = a.getAnnotationType().getPackage() + "." + a.getAnnotationType().getSimpleName();
+                    if (name.equals(annotation)) {
+                        return true;
+                    }
+                }
+            }
+            return false;
+        };
     }
 }

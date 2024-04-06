@@ -14,8 +14,7 @@ public class BeforeAnnoMethodCollector<E extends CtElement> extends AbstractElem
 
     @Override
     public Predicate<E> defaultPredictor() {
-        return (e) -> e.getAnnotations().stream().anyMatch(a -> ANNOTATION.
-                equals(a.getAnnotationType().getPackage() + "." + a.getAnnotationType().getSimpleName()));
+        return annoMatch(ANNOTATION);
     }
 
     @Override

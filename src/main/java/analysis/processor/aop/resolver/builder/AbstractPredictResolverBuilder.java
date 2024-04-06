@@ -32,7 +32,15 @@ public abstract class AbstractPredictResolverBuilder<E> implements PointcutResol
             System.out.println("hit cache");
             return (Predicate<E>) pointcutResolverCache.getPredictor(currentResource);
         }
-        String value = getValueOfAnnotationAsString(currentResource, targetAnnotation());
+        var pack = currentResource.getDeclaringType().getPackage().toString();
+        boolean wildcardImport = currentResource.getAnnotations().stream()
+                .anyMatch(a -> a.getAnnotationType().getPackage().toString().equals(pack));
+        var targetAnnotation = targetAnnotation();
+        if (wildcardImport) {
+            targetAnnotation = pack + "." +
+                    targetAnnotation.substring(targetAnnotation.lastIndexOf(".") + 1);
+        }
+        String value = getValueOfAnnotationAsString(currentResource, targetAnnotation);
         if (value == null) return null;
         Scanner scanner = new Scanner(value);
         List<Token> tokens = scanner.scanTokens();

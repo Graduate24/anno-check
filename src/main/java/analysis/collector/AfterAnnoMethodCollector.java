@@ -1,8 +1,11 @@
 package analysis.collector;
 
 import resource.ResourceRole;
+import spoon.reflect.declaration.CtAnnotation;
 import spoon.reflect.declaration.CtElement;
+import spoon.reflect.declaration.CtMethod;
 
+import java.lang.annotation.Annotation;
 import java.util.function.Predicate;
 
 /**
@@ -14,9 +17,7 @@ public class AfterAnnoMethodCollector<E extends CtElement> extends AbstractEleme
 
     @Override
     public Predicate<E> defaultPredictor() {
-
-        return (e) -> e.getAnnotations().stream().anyMatch(a -> ANNOTATION.
-                equals(a.getAnnotationType().getPackage() + "." + a.getAnnotationType().getSimpleName()));
+        return annoMatch(ANNOTATION);
     }
 
     @Override
