@@ -19,6 +19,8 @@ public class TestLanguage extends BaseTest {
         getResource(project);
         String[] patterns = {
                 "@def f1:filme(* set*(..));",
+                "@def f1:filmcanno(org.springframework.stereotype.Repository);" +
+                        "@run f1 -> stdout;",
                 "@def f1:filminmapper();" +
                         "@run f1 -> stdout;",
                 "@run filme(* com.xyz.service..*.*(java.lang.String, int)) && filme(public void " +

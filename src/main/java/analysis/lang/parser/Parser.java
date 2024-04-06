@@ -136,6 +136,11 @@ public class Parser {
             Expr expr = new Expr.MapperFilter();
             consume(RIGHT_PAREN, "Expect ')' after filminmapper.");
             return expr;
+        } else if (match(FIL_CANNO)) {
+            consume(LEFT_PAREN, "Expect '(' before filcanno.");
+            Expr expr = filcanno();
+            consume(RIGHT_PAREN, "Expect ')' after filcanno.");
+            return expr;
         } else {
             throw new ParseError("filter not found");
         }
@@ -157,6 +162,10 @@ public class Parser {
 
     private Expr filanno() {
         return new Expr.AnnotationFilter(qualifiedName(false, DOT));
+    }
+
+    private Expr filcanno() {
+        return new Expr.ClassAnnotationFilter(qualifiedName(false, DOT));
     }
 
     private Expr filinp() {

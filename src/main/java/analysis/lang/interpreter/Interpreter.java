@@ -217,6 +217,27 @@ public class Interpreter implements Expr.ExprVisitor<Object>, Stmt.Visitor<Void>
     }
 
     @Override
+    public Object visitClassAnnotationExpr(Expr.ClassAnnotationFilter expr) {
+        return (Predicate<CtMethod<?>>) (e) -> {
+            CtMethodImpl<?> m = (CtMethodImpl<?>) e;
+            var ctPackage = e.getDeclaringType().getPackage();
+            if (ctPackage == null) return false;
+            var pack = ctPackage.toString();
+            boolean wildcardImport = e.getAnnotations().stream()
+                    .anyMatch(a -> a.getAnnotationType().getPackage().toString().equals(pack));
+
+            var s = m.getDeclaringType().getAnnotations().stream().map(a -> wildcardImport ? a.getType().getSimpleName()
+                    : a.getType().getQualifiedName()).collect(Collectors.toSet());
+
+            if (s.isEmpty()) return false;
+            var name = expr.qualifiedName.size() == 1 ? expr.qualifiedName.get(0).getLexeme() :
+                    wildcardImport ? expr.qualifiedName.get(expr.qualifiedName.size() - 1).getLexeme()
+                            : expr.qualifiedName.stream().map(Token::getLexeme).collect(Collectors.joining("."));
+            return s.contains(name);
+        };
+    }
+
+    @Override
     public Void visitRunStmt(Stmt.Run run) {
         Token output = run.output;
         if (output == null) {

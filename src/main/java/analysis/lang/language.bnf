@@ -21,9 +21,12 @@ filter ::=  "filme" "(" method_pattern ")"
            | "filminp" "(" declaring_type_pattern ")"
            | "filmanno" "(" annotation_pattern ")"
            | "filminmapper" "(" ")"
+           | "filmcanno" "(" annotation_pattern ")"
+
+processor ::= "proc"
 
 method_pattern ::= modifier_pattern? ret_type (declaring_type_pattern ".")? name_pattern "(" param_pattern? ")" throws_pattern?
-modifier_pattern ::= "public" | "protected" | "private"
+modifier_pattern ::= "public" | "protected" | "private" | "pubstatic"
 ret_type ::= "*" | qualified_name
 declaring_type_pattern ::= identifier ( ("."|"..") (identifier|"*"))*
 name_pattern ::= "*" | regex_identifier | identifier

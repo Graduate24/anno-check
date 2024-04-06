@@ -33,6 +33,7 @@ public class Scanner {
         keywords.put("filminp", FIL_INP);
         keywords.put("filmanno", FIL_ANNO);
         keywords.put("filminmapper", FIL_MAPPER);
+        keywords.put("filmcanno", FIL_CANNO);
         keywords.put("public", PUBLIC);
         keywords.put("pubstatic", PUB_STATIC);
         keywords.put("protected", PROTECTED);
