@@ -4,16 +4,16 @@ declaration ::= filter_decl
                 | statement ;
 
 filter_decl ::= "@def" identifier ":"  expression ";"
-statement ::= "@run" expression ("->" identifier)? ";"
+statement ::= "@run" expression ("->" identifier | string)? ";"
 
 expression ::= term (("||" term)*)
 
 term ::= factor (("&&" factor)*)
 
-factor ::= "execution" "(" method_pattern ")"
-          | "within" "(" declaring_type_pattern ")"
-          | "@annotation" "(" annotation_pattern ")"
-          | identifier "(" ")"
+factor ::=  "filme" "(" method_pattern ")"
+          | "filinp" "(" declaring_type_pattern ")"
+          | "filanno" "(" annotation_pattern ")"
+          |  identifier
           | "(" expression ")"
           | "!" factor
 
@@ -31,3 +31,4 @@ qualified_name ::= identifier ("." identifier)*
 
 regex_identifier ::= "[a-zA-Z_*][a-zA-Z0-9_*]*"
 identifier ::= "[a-zA-Z_][a-zA-Z0-9_]*"
+string ::= ".*"

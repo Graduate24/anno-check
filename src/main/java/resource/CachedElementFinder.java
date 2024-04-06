@@ -18,6 +18,8 @@ public class CachedElementFinder implements ElementFinder {
 
     private static CachedElementFinder cachedElementFinder;
 
+    private static final List<CtMethod<?>> allMethods = new ArrayList<>();
+
     private CachedElementFinder() {
     }
 
@@ -58,6 +60,13 @@ public class CachedElementFinder implements ElementFinder {
 
     @Override
     public void addPublicMethod(CtMethod<?> method) {
+        if (method.getModifiers().contains(ModifierKind.PUBLIC))
+            cachedPublicMethod.add(method);
+    }
+
+    @Override
+    public void addMethod(CtMethod<?> method) {
+        allMethods.add(method);
         if (method.getModifiers().contains(ModifierKind.PUBLIC))
             cachedPublicMethod.add(method);
     }
@@ -109,6 +118,11 @@ public class CachedElementFinder implements ElementFinder {
             result = cs.stream().map(cachedType::get).filter(Objects::nonNull).collect(Collectors.toSet());
         }
         return result;
+    }
+
+    @Override
+    public List<CtMethod<?>> getAllMethods() {
+        return allMethods;
     }
 
 

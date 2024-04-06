@@ -64,8 +64,13 @@ public class Parser {
         Expr expr = expression();
         Token output = null;
         if (match(ARROW)) {
-            consume(IDENTIFIER, "Expect output name");
-            output = previous();
+            if (match(IDENTIFIER)) {
+                output = previous();
+            } else if (match(STRING)) {
+                output = previous();
+            } else {
+                throw new ParseError("Expect output");
+            }
         }
         Stmt run = new Stmt.Run(expr, output);
         consume(SEMICOLON, "Expect ';' after def");
@@ -91,19 +96,19 @@ public class Parser {
     }
 
     private Expr factor() {
-        if (match(EXECUTION)) {
+        if (match(FIL_ME)) {
             consume(LEFT_PAREN, "Expect '(' before execution.");
-            Expr expr = execution();
+            Expr expr = filme();
             consume(RIGHT_PAREN, "Expect ')' after execution.");
             return expr;
-        } else if (match(WITHIN)) {
+        } else if (match(FIL_INP)) {
             consume(LEFT_PAREN, "Expect '(' before within.");
-            Expr expr = within();
+            Expr expr = filinp();
             consume(RIGHT_PAREN, "Expect ')' after within.");
             return expr;
-        } else if (match(ANNOTATION)) {
+        } else if (match(FIL_ANNO)) {
             consume(LEFT_PAREN, "Expect '(' before annotation.");
-            Expr expr = annotation();
+            Expr expr = filanno();
             consume(RIGHT_PAREN, "Expect ')' after annotation.");
             return expr;
         } else if (match(LEFT_PAREN)) {
@@ -116,8 +121,6 @@ public class Parser {
         } else {
             consume(IDENTIFIER, "Expect var name");
             Token name = previous();
-            consume(LEFT_PAREN, "Expect '(' after name ");
-            consume(RIGHT_PAREN, "Expect ')' after '('");
             return new Expr.Var(name);
         }
     }
@@ -136,11 +139,11 @@ public class Parser {
         return names;
     }
 
-    private Expr annotation() {
-        return new Expr.Annotation(qualifiedName(false, DOT));
+    private Expr filanno() {
+        return new Expr.AnnotationFilter(qualifiedName(false, DOT));
     }
 
-    private Expr within() {
+    private Expr filinp() {
         List<Token> declaringType = new ArrayList<>();
         consume(IDENTIFIER, "within type must starts with identifier");
         declaringType.add(previous());
@@ -153,10 +156,10 @@ public class Parser {
                 throw new ParseError("identifier or star must follow dot");
             }
         }
-        return new Expr.Within(declaringType);
+        return new Expr.PackageFilter(declaringType);
     }
 
-    private Expr execution() {
+    private Expr filme() {
         Token modifier = null;
         if (match(PUBLIC, PROTECTED, PRIVATE)) {
             modifier = previous();
@@ -229,7 +232,7 @@ public class Parser {
                 throwsList.addAll(qualifiedName(false, DOT));
             }
         }
-        return new Expr.Execution(modifier, retType, declaringTypeAndName, namePattern, paramPattern, throwsList);
+        return new Expr.MethodFilter(modifier, retType, declaringTypeAndName, namePattern, paramPattern, throwsList);
     }
 
     private Token consume(TokenType type, String message) {

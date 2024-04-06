@@ -29,9 +29,9 @@ public class Scanner {
 
     static {
         keywords = new HashMap<>();
-        keywords.put("execution", EXECUTION);
-        keywords.put("within", WITHIN);
-        keywords.put("@annotation", ANNOTATION);
+        keywords.put("filme", FIL_ME);
+        keywords.put("filinp", FIL_INP);
+        keywords.put("filanno", FIL_ANNO);
         keywords.put("public", PUBLIC);
         keywords.put("protected", PROTECTED);
         keywords.put("private", PRIVATE);
@@ -112,9 +112,7 @@ public class Scanner {
                 }
             }
             case '@' -> {
-                if (match("annotation")) {
-                    addToken(ANNOTATION);
-                } else if (match("def")) {
+                if (match("def")) {
                     addToken(DEF);
                 } else if (match("run")) {
                     addToken(RUN);
@@ -124,6 +122,7 @@ public class Scanner {
             }
             case ' ', '\r', '\t', '\n' -> {
             }
+            case '"' -> string();
             default -> {
                 if (isAlpha(c)) {
                     if (c == 'a' && match("nd ")) {
@@ -166,6 +165,20 @@ public class Scanner {
             }
         }
         addToken(type);
+    }
+
+    private void string() {
+        while (peek() != '"' && !isAtEnd()) {
+            advance();
+        }
+        if (isAtEnd()) {
+            throw new ScannerError("unterminated string. ");
+        }
+        // the closing ".
+        advance();
+        // Trim the surrounding quotes.
+        String value = source.substring(start + 1, current - 1);
+        addToken(STRING, value);
     }
 
     private boolean isDigit(char c) {
@@ -229,6 +242,10 @@ public class Scanner {
     private void addToken(TokenType type) {
         String text = source.substring(start, current);
         tokens.add(new Token(type, text));
+    }
+
+    private void addToken(TokenType type, String literal) {
+        tokens.add(new Token(type, literal));
     }
 
     private boolean isAtEnd() {

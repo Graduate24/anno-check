@@ -9,14 +9,14 @@ import com.google.gson.Gson;
 public abstract class Stmt {
 
     public interface Visitor<R> {
-        R visitRunStmt(Stmt run);
+        R visitRunStmt(Stmt.Run run);
 
-        R visitDefStmt(Stmt run);
+        R visitDefStmt(Stmt.Def def);
     }
 
     public abstract <R> R accept(Visitor<R> visitor);
 
-    static class Run extends Stmt {
+    public static class Run extends Stmt {
         Run(Expr expression, Token output) {
             this.expression = expression;
             this.output = output;
@@ -36,7 +36,7 @@ public abstract class Stmt {
         }
     }
 
-    static class Def extends Stmt {
+    public static class Def extends Stmt {
         Def(Token name, Expr initializer) {
             this.initializer = initializer;
             this.name = name;

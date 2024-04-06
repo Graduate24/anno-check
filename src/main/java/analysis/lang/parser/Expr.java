@@ -16,11 +16,11 @@ public abstract class Expr {
 
         R visitNotExpr(Not expr);
 
-        R visitExecutionExpr(Execution expr);
+        R visitMethodFilterExpr(MethodFilter expr);
 
-        R visitAnnotationExpr(Annotation expr);
+        R visitAnnotationFilterExpr(AnnotationFilter expr);
 
-        R visitWithinExpr(Within expr);
+        R visitPackageFilterExpr(PackageFilter expr);
 
         R visitVarExpr(Var expr);
     }
@@ -85,10 +85,10 @@ public abstract class Expr {
         }
     }
 
-    public static class Execution extends Expr {
-        Execution(Token modifier, List<Token> retType,
-                  List<Token> declaringType, Token namePattern,
-                  List<Token> paramPattern, List<Token> throwsPattern) {
+    public static class MethodFilter extends Expr {
+        MethodFilter(Token modifier, List<Token> retType,
+                     List<Token> declaringType, Token namePattern,
+                     List<Token> paramPattern, List<Token> throwsPattern) {
             this.modifier = modifier;
             this.retType = retType;
             this.declaringType = declaringType;
@@ -111,12 +111,12 @@ public abstract class Expr {
 
         @Override
         public <R> R accept(ExprVisitor<R> visitor) {
-            return visitor.visitExecutionExpr(this);
+            return visitor.visitMethodFilterExpr(this);
         }
     }
 
-    public static class Within extends Expr {
-        Within(List<Token> declaringType) {
+    public static class PackageFilter extends Expr {
+        PackageFilter(List<Token> declaringType) {
             this.declaringType = declaringType;
         }
 
@@ -129,12 +129,12 @@ public abstract class Expr {
 
         @Override
         public <R> R accept(ExprVisitor<R> visitor) {
-            return visitor.visitWithinExpr(this);
+            return visitor.visitPackageFilterExpr(this);
         }
     }
 
-    public static class Annotation extends Expr {
-        Annotation(List<Token> qualifiedName) {
+    public static class AnnotationFilter extends Expr {
+        AnnotationFilter(List<Token> qualifiedName) {
             this.qualifiedName = qualifiedName;
         }
 
@@ -147,7 +147,7 @@ public abstract class Expr {
 
         @Override
         public <R> R accept(ExprVisitor<R> visitor) {
-            return visitor.visitAnnotationExpr(this);
+            return visitor.visitAnnotationFilterExpr(this);
         }
     }
 

@@ -11,7 +11,7 @@ import java.util.Arrays;
 @Aspect
 public class LoggingAspect {
 
-    @Pointcut("@annotation(Log)")
+    @Pointcut("@annotation(edu.tsinghua.demo.aop.Log)")
     public void logPointcut() {
     }
 

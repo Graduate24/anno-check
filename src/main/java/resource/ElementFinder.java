@@ -5,6 +5,7 @@ import spoon.reflect.declaration.CtInterface;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.CtType;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -21,6 +22,8 @@ public interface ElementFinder {
 
     void addPublicMethod(CtMethod<?> method);
 
+    void addMethod(CtMethod<?> method);
+
     void addSuperInterfaces(CtType<?> type, Set<String> superInterfaces);
 
     CtType<?> findType(String qualifiedName);
@@ -32,5 +35,7 @@ public interface ElementFinder {
     CtMethod<?> findPointcutMethod(String signature);
 
     Set<CtType<?>> directedSubType(String qualifiedName);
+
+    List<CtMethod<?>> getAllMethods();
 
 }
