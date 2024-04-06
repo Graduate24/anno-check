@@ -23,6 +23,8 @@ public abstract class Expr {
         R visitPackageFilterExpr(PackageFilter expr);
 
         R visitVarExpr(Var expr);
+
+        R visitMapperExpr(MapperFilter expr);
     }
 
     public abstract <R> R accept(Expr.ExprVisitor<R> visitor);
@@ -148,6 +150,20 @@ public abstract class Expr {
         @Override
         public <R> R accept(ExprVisitor<R> visitor) {
             return visitor.visitAnnotationFilterExpr(this);
+        }
+    }
+
+    public static class MapperFilter extends Expr {
+        MapperFilter() {
+        }
+
+        public String toString() {
+            return new Gson().toJson(this);
+        }
+
+        @Override
+        public <R> R accept(ExprVisitor<R> visitor) {
+            return visitor.visitMapperExpr(this);
         }
     }
 

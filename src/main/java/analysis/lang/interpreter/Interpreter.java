@@ -6,6 +6,7 @@ import analysis.lang.parser.Token;
 import analysis.lang.parser.TokenType;
 import io.github.azagniotov.matcher.AntPathMatcher;
 import resource.CachedElementFinder;
+import resource.ModelFactory;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.ModifierKind;
 import spoon.support.reflect.declaration.CtMethodImpl;
@@ -200,6 +201,19 @@ public class Interpreter implements Expr.ExprVisitor<Object>, Stmt.Visitor<Void>
             throw new RuntimeError("Can't find variable '" + expr.name.getLexeme() + "'.");
         }
         return value;
+    }
+
+    @Override
+    public Object visitMapperExpr(Expr.MapperFilter expr) {
+
+        return (Predicate<CtMethod<?>>) (e) -> {
+            boolean isMapper = ModelFactory.getMybatisMapper().contains(e.getDeclaringType().getQualifiedName());
+            if (isMapper) {
+                return true;
+            }
+            return e.getDeclaringType().getAnnotations().stream().anyMatch(a -> "org.apache.ibatis.annotations.Mapper".
+                    equals(a.getAnnotationType().getPackage() + "." + a.getAnnotationType().getSimpleName()));
+        };
     }
 
     @Override

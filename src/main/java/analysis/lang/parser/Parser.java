@@ -54,14 +54,14 @@ public class Parser {
         consume(IDENTIFIER, "Expect var name.");
         Token name = previous();
         consume(COLON, "Expect ':' after name");
-        Expr expr = expression();
+        Expr expr = prediction();
         Stmt def = new Stmt.Def(name, expr);
         consume(SEMICOLON, "Expect ';' after def");
         return def;
     }
 
     private Stmt statement() {
-        Expr expr = expression();
+        Expr expr = prediction();
         Token output = null;
         if (match(ARROW)) {
             if (match(IDENTIFIER)) {
@@ -77,7 +77,7 @@ public class Parser {
         return run;
     }
 
-    private Expr expression() {
+    private Expr prediction() {
         Expr expr = term();
         while (match(OR)) {
             Expr right = term();
@@ -87,41 +87,57 @@ public class Parser {
     }
 
     private Expr term() {
-        Expr expr = factor();
+        Expr expr = unary();
         while (match(AND)) {
-            Expr right = factor();
+            Expr right = unary();
             expr = new Expr.And(expr, right);
         }
         return expr;
     }
 
+    private Expr unary() {
+        if (match(BANG)) {
+            return new Expr.Not(unary());
+        }
+        return factor();
+    }
+
     private Expr factor() {
-        if (match(FIL_ME)) {
-            consume(LEFT_PAREN, "Expect '(' before execution.");
-            Expr expr = filme();
-            consume(RIGHT_PAREN, "Expect ')' after execution.");
-            return expr;
-        } else if (match(FIL_INP)) {
-            consume(LEFT_PAREN, "Expect '(' before within.");
-            Expr expr = filinp();
-            consume(RIGHT_PAREN, "Expect ')' after within.");
-            return expr;
-        } else if (match(FIL_ANNO)) {
-            consume(LEFT_PAREN, "Expect '(' before annotation.");
-            Expr expr = filanno();
-            consume(RIGHT_PAREN, "Expect ')' after annotation.");
-            return expr;
-        } else if (match(LEFT_PAREN)) {
-            Expr expr = expression();
-            consume(RIGHT_PAREN, "Expect ')' after expression.");
-            return expr;
-        } else if (match(BANG)) {
-            Expr expr = factor();
-            return new Expr.Not(expr);
-        } else {
-            consume(IDENTIFIER, "Expect var name");
+        if (match(IDENTIFIER)) {
             Token name = previous();
             return new Expr.Var(name);
+        } else if (match(LEFT_PAREN)) {
+            Expr expr = prediction();
+            consume(RIGHT_PAREN, "Expect ')' after expression.");
+            return expr;
+        } else {
+            return filter();
+        }
+    }
+
+    private Expr filter() {
+        if (match(FIL_ME)) {
+            consume(LEFT_PAREN, "Expect '(' before filme.");
+            Expr expr = filme();
+            consume(RIGHT_PAREN, "Expect ')' after filme.");
+            return expr;
+        } else if (match(FIL_INP)) {
+            consume(LEFT_PAREN, "Expect '(' before filme.");
+            Expr expr = filinp();
+            consume(RIGHT_PAREN, "Expect ')' after filme.");
+            return expr;
+        } else if (match(FIL_ANNO)) {
+            consume(LEFT_PAREN, "Expect '(' before filanno.");
+            Expr expr = filanno();
+            consume(RIGHT_PAREN, "Expect ')' after filanno.");
+            return expr;
+        } else if (match(FIL_MAPPER)) {
+            consume(LEFT_PAREN, "Expect '(' before filminmapper.");
+            Expr expr = new Expr.MapperFilter();
+            consume(RIGHT_PAREN, "Expect ')' after filminmapper.");
+            return expr;
+        } else {
+            throw new ParseError("filter not found");
         }
     }
 
