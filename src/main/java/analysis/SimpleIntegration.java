@@ -120,7 +120,11 @@ public class SimpleIntegration {
                     .append("\n  -->  ").append(bs.size()).append("| ").append(bs).append("\n");
             ;
         });
-        writeOutput(outputPath, sb.toString());
+        if (outputPath.equals("stdout")) {
+            System.out.println(sb);
+        } else {
+            writeOutput(outputPath, sb.toString());
+        }
     }
 
     private static void aop(String outputPath) throws IOException {
@@ -130,23 +134,44 @@ public class SimpleIntegration {
 
         var before = new BeforeAspectResolverBuilder<CtMethod<?>>();
         String content = matchTarget(before, ProjectResource.beforeAnnoMethod, methods);
-        writeOutput(outputPath, content);
+        if (outputPath.equals("stdout")) {
+            System.out.println(content);
+        } else {
+            writeOutput(outputPath, content);
+        }
+
 
         var after = new AfterAspectResolverBuilder<CtMethod<?>>();
         content = matchTarget(after, ProjectResource.afterAnnoMethod, methods);
-        writeOutput(outputPath, content);
+        if (outputPath.equals("stdout")) {
+            System.out.println(content);
+        } else {
+            writeOutput(outputPath, content);
+        }
 
         var afterReturning = new AfterReturningAspectResolverBuilder<CtMethod<?>>();
         content = matchTarget(afterReturning, ProjectResource.afterReturningAnnoMethod, methods);
-        writeOutput(outputPath, content);
+        if (outputPath.equals("stdout")) {
+            System.out.println(content);
+        } else {
+            writeOutput(outputPath, content);
+        }
 
         var afterThrowing = new AfterThrowingAspectResolverBuilder<CtMethod<?>>();
         content = matchTarget(afterThrowing, ProjectResource.afterThrowingAnnoMethod, methods);
-        writeOutput(outputPath, content);
+        if (outputPath.equals("stdout")) {
+            System.out.println(content);
+        } else {
+            writeOutput(outputPath, content);
+        }
 
         var around = new AroundAspectResolverBuilder<CtMethod<?>>();
         content = matchTarget(around, ProjectResource.aroundAnnoMethod, methods);
-        writeOutput(outputPath, content);
+        if (outputPath.equals("stdout")) {
+            System.out.println(content);
+        } else {
+            writeOutput(outputPath, content);
+        }
     }
 
     private static void entryPoint(String outputPath) throws IOException {
