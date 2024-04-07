@@ -54,16 +54,28 @@ public class Parser {
         consume(IDENTIFIER, "Expect var name.");
         Token name = previous();
         consume(COLON, "Expect ':' after name");
-        Expr expr = prediction();
+        Expr expr = null;
+        if (match(STRING)) {
+            expr = new Expr.Literal(previous());
+        } else {
+            expr = prediction();
+        }
         Stmt def = new Stmt.Def(name, expr);
         consume(SEMICOLON, "Expect ';' after def");
         return def;
     }
 
     private Stmt statement() {
-        Expr expr = prediction();
+        Expr expr;
+        if (match(STRING)) {
+            expr = new Expr.Literal(previous());
+        } else {
+            expr = prediction();
+        }
         Token output = null;
+        Token operator = null;
         if (match(ARROW)) {
+            operator = previous();
             if (match(IDENTIFIER)) {
                 output = previous();
             } else if (match(STRING)) {
@@ -72,7 +84,7 @@ public class Parser {
                 throw new ParseError("Expect output");
             }
         }
-        Stmt run = new Stmt.Run(expr, output);
+        Stmt run = new Stmt.Run(expr, operator, output);
         consume(SEMICOLON, "Expect ';' after def");
         return run;
     }
@@ -110,6 +122,9 @@ public class Parser {
             Expr expr = prediction();
             consume(RIGHT_PAREN, "Expect ')' after expression.");
             return expr;
+        } else if (match(STRING)) {
+            Token string = previous();
+            return new Expr.Literal(string);
         } else {
             return filter();
         }
