@@ -1,6 +1,5 @@
-import analysis.processor.entrypoint.DefaultEntrypointFinder;
+import analysis.processor.entrypoint.DSLEntrypointFinder;
 import org.junit.Test;
-import resource.ModelFactory;
 import resource.ProjectResource;
 
 /**
@@ -17,10 +16,11 @@ public class TestEntrypoint {
 //        ModelFactory.init(project);
         ProjectResource.getResource(project);
 
-        DefaultEntrypointFinder ep = new DefaultEntrypointFinder();
+        DSLEntrypointFinder ep = new DSLEntrypointFinder();
 //        ep.findDefaultOutputConsole();
 //        ep.findDefaultOutputFile();
         ep.findDefaultOutputFile("output/entry2");
 
+        ep.findByDSL("src/test/resources/dsl/entrypoint");
     }
 }

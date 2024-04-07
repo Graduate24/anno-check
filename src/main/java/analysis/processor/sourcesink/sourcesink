@@ -1,12 +1,3 @@
-@def f1: filmanno(org.springframework.amqp.rabbit.annotation.RabbitHandler);
-@def f2: filmanno(org.springframework.web.bind.annotation.Mapping);
-@def f3: filmanno(org.springframework.web.bind.annotation.GetMapping);
-@def f4: filmanno(org.springframework.web.bind.annotation.PostMapping);
-@def f5: filmanno(org.springframework.web.bind.annotation.PutMapping);
-@def f6: filmanno(org.springframework.web.bind.annotation.DeleteMapping);
-@def f7: filmanno(org.springframework.web.bind.annotation.PatchMapping);
-@def f8: filmanno(org.springframework.web.bind.annotation.ExceptionHandler);
-@def f9: filmanno(org.springframework.web.bind.annotation.RequestMapping);
-
-@run f1||f2||f3||f4||f5||f6||f7||f8||f9||f10||f11 -> "output/source";
-
+@def f1:filmcanno(org.springframework.stereotype.Repository);
+@def f2:filminmapper();
+@run f1 || f2 -> stdout;,

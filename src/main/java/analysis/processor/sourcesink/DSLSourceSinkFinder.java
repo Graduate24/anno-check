@@ -11,7 +11,7 @@ import java.util.List;
  * Created by: zhang ran
  * 2024-04-06
  */
-public class DefaultSourceSinkFinder {
+public class DSLSourceSinkFinder {
 
     public final static String defaultOutput = "-> \"output/source\";";
 
@@ -33,7 +33,7 @@ public class DefaultSourceSinkFinder {
             "\n" +
             "@run f1||f2||f3||f4||f5||f6||f7||f8||f9||f10 ";
 
-    public DefaultSourceSinkFinder() {
+    public DSLSourceSinkFinder() {
     }
 
     public boolean findDefaultOutputConsole() {
