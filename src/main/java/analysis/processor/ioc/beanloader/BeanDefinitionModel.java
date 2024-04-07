@@ -150,16 +150,16 @@ public class BeanDefinitionModel {
 
     @Override
     public String toString() {
-        return "BeanDefinitionModel{" +
-                "name=" + (name != null ? name : "") +
-                ", type=" + type.getQualifiedName() +
-                ", scope=" + scope + ", fromSource=" + fromSource +
-                ", constructorArguments=" + constructorArguments +
-                ", initializeMethod=" + (initializeMethod == null ? "" : initializeMethod.getSimpleName()) +
-                ", constructor=" + (constructor == null ? "" : constructor.getSignature()) +
-                ", properties=" + (properties != null ? properties.stream().map(CtNamedElement::getSimpleName).toList() : "") +
-                ", propertiesValue=" + (propertyValue) +
-                ", lazyInit=" + lazyInit +
-                '}';
+        return "BeanDefinitionModel{\n" +
+                "           name=" + (name != null ? name : "") +",\n"+
+                "           type=" + type.getQualifiedName() +",\n"+
+                "           scope=" + scope + ", fromSource=" + fromSource +",\n"+
+                "           constructorArguments=" + constructorArguments +",\n"+
+                "           initializeMethod=" + (initializeMethod == null ? "" : initializeMethod.getSimpleName()) +",\n"+
+                "           constructor=" + (constructor == null ? "" : constructor.getSignature()) +",\n"+
+                "           properties=" + (properties != null ? properties.stream().map(CtNamedElement::getSimpleName).toList() : "") +",\n"+
+                "           propertiesValue=" + (propertyValue) +",\n"+
+                "           lazyInit=" + lazyInit +"\n"+
+                "       }";
     }
 }

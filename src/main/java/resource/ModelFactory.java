@@ -1,5 +1,6 @@
 package resource;
 
+import analysis.processor.ioc.beanregistor.IoCContainerModel;
 import org.w3c.dom.Document;
 import org.yaml.snakeyaml.Yaml;
 import spoon.Launcher;
@@ -102,6 +103,7 @@ public class ModelFactory {
         mapper = null;
         config = null;
         CachedElementFinder.reset();
+        IoCContainerModel.INSTANCE.reset();
     }
 
     public static CtModel getModel() {

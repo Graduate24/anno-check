@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  */
 public class DSLEntrypointFinder {
 
-    public final static String defaultOutput = "-> \"output/entrypoint\";";
+    public final static String defaultOutput = "-> \"output/entrypoint_template\";";
 
     public final static String consoleOutput = "-> stdout;";
 

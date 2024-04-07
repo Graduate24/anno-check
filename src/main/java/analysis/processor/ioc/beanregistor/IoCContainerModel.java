@@ -22,6 +22,11 @@ public enum IoCContainerModel {
         typeToBeanMap = new HashMap<>();
     }
 
+    public void reset() {
+        nameToBeanMap.clear();
+        typeToBeanMap.clear();
+    }
+
     public void addToNameToBeanMap(String name, BeanDefinitionModel beanDefinitionModel) {
         var beans = nameToBeanMap.computeIfAbsent(name, k -> new HashSet<>());
         beans.add(beanDefinitionModel);

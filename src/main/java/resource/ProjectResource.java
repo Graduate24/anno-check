@@ -33,7 +33,10 @@ public class ProjectResource {
     public static final List<CtClass<?>> springConfigurationClass = new ArrayList<>();
     public static final List<CtClass<?>> springControllerClass = new ArrayList<>();
     public static final List<CtMethod<?>> springMappingMethod = new ArrayList<>();
-    public static final List<CtMethod<?>> SpringAutowiredAnnoMethod = new ArrayList<>();
+    public static final List<CtMethod<?>> springAutowiredAnnoMethod = new ArrayList<>();
+    public static final List<CtInterface<?>> mybatisMapperInterface = new ArrayList<>();
+    public static final List<CtInterface<?>> springMongoInterface = new ArrayList<>();
+    public static final List<CtClass<?>> springConfigurationPropertiesClass = new ArrayList<>();
 
     public static void getResource(String project) {
         CtModel model = ModelFactory.init(project);
@@ -77,6 +80,12 @@ public class ProjectResource {
         processor.addCollector(c18);
         var c19 = new SpringAutowiredAnnoMethodCollector<CtMethod<?>>();
         processor.addCollector(c19);
+        var c20 = new MybatisMapperInterfaceCollector<CtInterface<?>>();
+        processor.addCollector(c20);
+        var c21 = new SpringMongoRepoInterfaceCollector<CtInterface<?>>();
+        processor.addCollector(c21);
+        var c22 = new SpringConfigurationPropertiesClassCollector<CtClass<?>>();
+        processor.addCollector(c22);
 
         processor.scan(model.getRootPackage());
         springMainClass.clear();
@@ -115,7 +124,13 @@ public class ProjectResource {
         springControllerClass.addAll(c17.elements());
         springMappingMethod.clear();
         springMappingMethod.addAll(c18.elements());
-        SpringAutowiredAnnoMethod.clear();
-        SpringAutowiredAnnoMethod.addAll(c19.elements());
+        springAutowiredAnnoMethod.clear();
+        springAutowiredAnnoMethod.addAll(c19.elements());
+        mybatisMapperInterface.clear();
+        mybatisMapperInterface.addAll(c20.elements());
+        springMongoInterface.clear();
+        springMongoInterface.addAll(c21.elements());
+        springConfigurationPropertiesClass.clear();
+        springConfigurationPropertiesClass.addAll(c22.elements());
     }
 }

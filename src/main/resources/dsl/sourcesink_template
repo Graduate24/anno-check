@@ -1,0 +1,35 @@
+// replace it
+@def output: "{0}";
+
+@run "source---" -> output;
+// getter in Spring configuration classes. Those methods often get value from external yaml files
+@def g1:filme(public * *get*(..));
+@def g2:filmcanno(org.springframework.boot.context.properties.ConfigurationProperties);
+@def g3:filmcanno(org.springframework.boot.context.properties.ConfigurationPropertiesScan);
+@def g4:filmanno(org.springframework.context.annotation.Bean);
+@def configGetter: (g1 && g2 && g3) || g4;
+
+
+// some entry that takes input from user from web controller
+@def w1: filmanno(org.springframework.amqp.rabbit.annotation.RabbitHandler);
+@def w2: filmanno(org.springframework.web.bind.annotation.Mapping);
+@def w3: filmanno(org.springframework.web.bind.annotation.GetMapping);
+@def w4: filmanno(org.springframework.web.bind.annotation.PostMapping);
+@def w5: filmanno(org.springframework.web.bind.annotation.PutMapping);
+@def w6: filmanno(org.springframework.web.bind.annotation.DeleteMapping);
+@def w7: filmanno(org.springframework.web.bind.annotation.PatchMapping);
+@def w8: filmanno(org.springframework.web.bind.annotation.ExceptionHandler);
+@def w9: filmanno(org.springframework.web.bind.annotation.RequestMapping);
+@def webController:  w1||w2||w3||w4||w5||w6||w7||w8||w9;
+
+@run configGetter || webController -> output;
+
+
+@run "sink---" -> output;
+// sink methods in Mybatis mapper or Spring data jpa classes
+@def s1:filmcanno(org.springframework.stereotype.Repository);
+@def s2:filminmapper();
+@def s3:filme(* *get*(..)) || filme(* *select*(..));
+@def daoMethods: (s1||s2)&& !s3;
+
+@run daoMethods -> output;
