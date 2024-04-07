@@ -1,3 +1,4 @@
+// replace it
 @def output: "{0}";
 // entrypoint
 @def f1: filmanno(org.springframework.amqp.rabbit.annotation.RabbitHandler);
