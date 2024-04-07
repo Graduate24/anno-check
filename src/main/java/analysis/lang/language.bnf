@@ -3,8 +3,8 @@ program ::= declaration* EOF ;
 declaration ::= filter_decl
                 | statement ;
 
-filter_decl ::= "@def" identifier ":"  prediction ";"
-statement ::= "@run" prediction ("->" identifier | string)? ";"
+filter_decl ::= "@def" identifier ":"  (prediction | literal) ";"
+statement ::= "@run" (prediction|literal)  ("->" identifier | string)? ";"
 
 prediction ::= term (("||" term)*)
 
@@ -39,4 +39,5 @@ qualified_name ::= identifier ("." identifier)*
 
 regex_identifier ::= "[a-zA-Z_*][a-zA-Z0-9_*]*"
 identifier ::= "[a-zA-Z_][a-zA-Z0-9_]*"
+literal ::= string
 string ::= ".*"

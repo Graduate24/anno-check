@@ -238,6 +238,11 @@ public class Interpreter implements Expr.ExprVisitor<Object>, Stmt.Visitor<Void>
     }
 
     @Override
+    public Object visitLiteralExpr(Expr.Literal expr) {
+        return expr.literal.getLexeme();
+    }
+
+    @Override
     public Void visitRunStmt(Stmt.Run run) {
         Token output = run.output;
         if (output == null) {
@@ -245,40 +250,105 @@ public class Interpreter implements Expr.ExprVisitor<Object>, Stmt.Visitor<Void>
         }
         Object exp = evaluate(run.expression);
 
-        if (!(exp instanceof Predicate<?>)) {
+        if (exp instanceof Predicate<?>) {
+            Predicate<CtMethod<?>> p = (Predicate<CtMethod<?>>) exp;
+            List<CtMethod<?>> result = new ArrayList<>();
+            allMethods.forEach(m -> {
+                if (p.test(m)) {
+                    result.add(m);
+                }
+            });
+
+            if (output.getType().equals(TokenType.IDENTIFIER)) {
+                if (output.getLexeme().equals("stdout")) {
+                    System.out.println("@run to stdout:---");
+                    result.forEach(m -> {
+                        System.out.println(printMethod(m));
+                    });
+                } else {
+                    if (run.operator.getType().equals(TokenType.ARROW)) {
+                        Object ret = locals.get(output.getLexeme());
+                        if (!(ret instanceof String out)) {
+                            throw new RuntimeError("unsupported output target");
+                        }
+                        if (out.equals("stdout")) {
+                            System.out.println("@run to stdout:---");
+                            result.forEach(m -> {
+                                System.out.println(printMethod(m));
+                            });
+                        } else {
+                            StringBuilder sb = new StringBuilder();
+                            result.forEach(m -> {
+                                sb.append(printMethod(m));
+                            });
+                            try {
+                                writeOutput(out, sb.toString());
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    } else {
+                        // TODO => operator
+                        locals.put(output.getLexeme(), result);
+                    }
+
+                }
+            } else if (output.getType().equals(TokenType.STRING)) {
+                StringBuilder sb = new StringBuilder();
+                result.forEach(m -> {
+                    sb.append(printMethod(m));
+                });
+                try {
+                    writeOutput(output.getLexeme(), sb.toString());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                throw new RuntimeError("unsupported output");
+            }
+        } else if (exp instanceof String result) {
+            if (output.getType().equals(TokenType.IDENTIFIER)) {
+                if (output.getLexeme().equals("stdout")) {
+                    System.out.println("@run to stdout:---");
+                    System.out.println(result);
+                } else {
+                    if (run.operator.getType().equals(TokenType.ARROW)) {
+                        Object ret = locals.get(output.getLexeme());
+                        if (!(ret instanceof String out)) {
+                            throw new RuntimeError("unsupported output target");
+                        }
+                        if (out.equals("stdout")) {
+                            System.out.println("@run to stdout:---");
+                            System.out.println(result);
+                        } else {
+                            try {
+                                if (!result.endsWith("\n")) {
+                                    result += "\n";
+                                }
+                                writeOutput(out, result);
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }
+                    } else {
+                        // TODO => operator
+                        locals.put(output.getLexeme(), result);
+                    }
+                }
+            } else if (output.getType().equals(TokenType.STRING)) {
+                try {
+                    writeOutput(output.getLexeme(), result);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            } else {
+                throw new RuntimeError("unsupported output");
+            }
+        } else {
             throw new RuntimeError("unsupported run expression");
         }
 
-        Predicate<CtMethod<?>> p = (Predicate<CtMethod<?>>) exp;
-        List<CtMethod<?>> result = new ArrayList<>();
-        allMethods.forEach(m -> {
-            if (p.test(m)) {
-                result.add(m);
-            }
-        });
 
-        if (output.getType().equals(TokenType.IDENTIFIER)) {
-            if (output.getLexeme().equals("stdout")) {
-                System.out.println("@run to stdout:---");
-                result.forEach(m -> {
-                    System.out.println(printMethod(m));
-                });
-            } else {
-                locals.put(output.getLexeme(), result);
-            }
-        } else if (output.getType().equals(TokenType.STRING)) {
-            StringBuilder sb = new StringBuilder();
-            result.forEach(m -> {
-                sb.append(printMethod(m));
-            });
-            try {
-                writeOutput(output.getLexeme(), sb.toString());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        } else {
-            throw new RuntimeError("unsupported output");
-        }
         return null;
     }
 

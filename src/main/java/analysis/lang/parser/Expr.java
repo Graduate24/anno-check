@@ -27,6 +27,8 @@ public abstract class Expr {
         R visitMapperExpr(MapperFilter expr);
 
         R visitClassAnnotationExpr(ClassAnnotationFilter expr);
+
+        R visitLiteralExpr(Literal expr);
     }
 
     public abstract <R> R accept(Expr.ExprVisitor<R> visitor);
@@ -202,6 +204,24 @@ public abstract class Expr {
         @Override
         public <R> R accept(ExprVisitor<R> visitor) {
             return visitor.visitVarExpr(this);
+        }
+    }
+
+    public static class Literal extends Expr {
+        Literal(Token literal) {
+            this.literal = literal;
+        }
+
+        public final Token literal;
+
+        @Override
+        public String toString() {
+            return new Gson().toJson(this);
+        }
+
+        @Override
+        public <R> R accept(ExprVisitor<R> visitor) {
+            return visitor.visitLiteralExpr(this);
         }
     }
 

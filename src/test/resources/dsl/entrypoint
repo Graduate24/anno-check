@@ -1,3 +1,4 @@
+// entrypoint
 @def f1: filmanno(org.springframework.amqp.rabbit.annotation.RabbitHandler);
 @def f2: filmanno(org.springframework.web.bind.annotation.Mapping);
 @def f3: filmanno(org.springframework.web.bind.annotation.GetMapping);

@@ -125,6 +125,14 @@ public class Scanner {
             }
             case ' ', '\r', '\t', '\n' -> {
             }
+            case '/' -> {
+                if (match('/')) {
+                    // A comment goes until the end of the line.
+                    while (peek() != '\n' && !isAtEnd()) {
+                        advance();
+                    }
+                }
+            }
             case '"' -> string();
             default -> {
                 if (isAlpha(c)) {

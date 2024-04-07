@@ -17,13 +17,16 @@ public abstract class Stmt {
     public abstract <R> R accept(Visitor<R> visitor);
 
     public static class Run extends Stmt {
-        Run(Expr expression, Token output) {
+        Run(Expr expression, Token operator, Token output) {
             this.expression = expression;
             this.output = output;
+            this.operator = operator;
         }
 
         public final Expr expression;
         public final Token output;
+
+        public final Token operator;
 
         @Override
         public <R> R accept(Visitor<R> visitor) {
