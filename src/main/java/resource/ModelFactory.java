@@ -161,8 +161,11 @@ public class ModelFactory {
                         try {
                             Yaml yaml = new Yaml();
                             InputStream inputStream = new FileInputStream(path.toString());
-                            Map<String, Object> obj = yaml.load(inputStream);
-                            yamlConfig.putAll(obj);
+                            yaml.loadAll(inputStream).forEach(o -> {
+                                Map<String, Object> obj = (Map<String, Object>) o;
+                                yamlConfig.putAll(obj);
+                            });
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }

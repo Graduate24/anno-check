@@ -152,7 +152,15 @@ public class PredictorResolver<T> implements Expr.ExprVisitor<Predicate<T>> {
         return (e) -> {
             CtMethodImpl<?> m = (CtMethodImpl<?>) e;
             if (!m.getModifiers().contains(ModifierKind.PUBLIC)) return false;
-            var s = m.getAnnotations().stream().map(a -> a.getType().getQualifiedName()).collect(Collectors.toSet());
+
+            var s = m.getAnnotations().stream().map(a -> {
+                if (a.getType() == null) {
+                    return false;
+                }
+                return a.getType().getQualifiedName();
+            }).collect(Collectors.toSet());
+
+            // var s = m.getAnnotations().stream().map(a -> a.getType().getQualifiedName()).collect(Collectors.toSet());
             if (s.isEmpty()) return false;
             var name = expr.qualifiedName.size() == 1 ? base + "." + expr.qualifiedName.get(0).getLexeme() :
                     expr.qualifiedName.stream().map(Token::getLexeme).collect(Collectors.joining("."));
