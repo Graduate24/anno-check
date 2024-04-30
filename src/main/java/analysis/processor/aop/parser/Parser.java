@@ -132,39 +132,55 @@ public class Parser {
         }
         List<Token> declaringTypeAndName = new ArrayList<>();
         Token namePattern = null;
-        if (match(STAR, REGEX_IDENTIFIER)) {
-            // must be name pattern and no declaring type pattern
-            namePattern = previous();
-        } else {
-            consume(IDENTIFIER, "declaring type must starts with identifier");
+
+        while (!match(LEFT_PAREN)) {
+            advance();
             declaringTypeAndName.add(previous());
-            while (match(DOT, DOT_DOT)) {
-                // add dots
-                declaringTypeAndName.add(previous());
-                if (match(IDENTIFIER, REGEX_IDENTIFIER, STAR)) {
-                    declaringTypeAndName.add(previous());
-                } else if (peek().type == LEFT_PAREN) {
-                    break;
-                } else {
-                    throw new ParseError("identifier or star must follow dot");
-                }
-            }
+        }
+        // matched a '('
+        if (declaringTypeAndName.isEmpty()) {
+            throw new ParseError("declaring type missing.");
+        }
+        namePattern = declaringTypeAndName.get(declaringTypeAndName.size() - 1);
+        declaringTypeAndName.remove(declaringTypeAndName.size() - 1);
+        if (!declaringTypeAndName.isEmpty() && declaringTypeAndName.get(declaringTypeAndName.size() - 1).type == DOT) {
+            declaringTypeAndName.remove(declaringTypeAndName.size() - 1);
         }
 
-        if (namePattern == null) {
-            if (peek().type == LEFT_PAREN) {
-                advance();
-                namePattern = declaringTypeAndName.get(declaringTypeAndName.size() - 1);
-                declaringTypeAndName.remove(declaringTypeAndName.size() - 1);
-                if (!declaringTypeAndName.isEmpty() && declaringTypeAndName.get(declaringTypeAndName.size() - 1).type == DOT) {
-                    declaringTypeAndName.remove(declaringTypeAndName.size() - 1);
-                }
-            } else {
-                throw new ParseError("missing '(' after name pattern");
-            }
-        } else {
-            consume(LEFT_PAREN, "missing '(' after name pattern");
-        }
+//        if (match(STAR, REGEX_IDENTIFIER)) {
+//            // must be name pattern and no declaring type pattern
+//            // namePattern = previous();
+//            declaringTypeAndName.add(previous());
+//        } else {
+//            consume(IDENTIFIER, "declaring type must starts with identifier");
+//            declaringTypeAndName.add(previous());
+//            while (match(DOT, DOT_DOT)) {
+//                // add dots
+//                declaringTypeAndName.add(previous());
+//                if (match(IDENTIFIER, REGEX_IDENTIFIER, STAR)) {
+//                    declaringTypeAndName.add(previous());
+//                } else if (peek().type == LEFT_PAREN) {
+//                    break;
+//                } else {
+//                    throw new ParseError("identifier or star must follow dot");
+//                }
+//            }
+//        }
+
+//        if (namePattern == null) {
+//            if (peek().type == LEFT_PAREN) {
+//                advance();
+//                namePattern = declaringTypeAndName.get(declaringTypeAndName.size() - 1);
+//                declaringTypeAndName.remove(declaringTypeAndName.size() - 1);
+//                if (!declaringTypeAndName.isEmpty() && declaringTypeAndName.get(declaringTypeAndName.size() - 1).type == DOT) {
+//                    declaringTypeAndName.remove(declaringTypeAndName.size() - 1);
+//                }
+//            } else {
+//                throw new ParseError("missing '(' after name pattern");
+//            }
+//        } else {
+//            consume(LEFT_PAREN, "missing '(' after name pattern");
+//        }
 
         List<Token> paramPattern = new ArrayList<>();
 

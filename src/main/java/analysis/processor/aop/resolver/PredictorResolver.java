@@ -99,6 +99,7 @@ public class PredictorResolver<T> implements Expr.ExprVisitor<Predicate<T>> {
             if (!ignoreDeclaringType) {
                 String pattern = expr.declaringType.stream().map(Token::getLexeme).collect(Collectors.joining(""));
                 String regex = pattern
+                        .replaceFirst("\\*\\.\\.", "**/")
                         .replaceAll("\\.\\.\\*", "/**")
                         .replaceAll("\\.", "/");
                 var sig = m.getDeclaringType().getQualifiedName().replaceAll("\\.", "/");

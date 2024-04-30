@@ -190,22 +190,24 @@ public class TestAop extends BaseTest {
     @Test
     public void test5() {
         String[] patterns = {
-                "@annotation(auditable.asdf) and within(com.xyz.service..*.*)",
-                "@annotation(auditable.asdf) || within(com.xyz.service..*.*)",
-                "edu.tsinghua.demo.aop.ShipmentService.outerCheck()",
-                "execution( public * *(..)) || execution(* set*(..))",
-                "execution(* set*(..))",
-                "execution(* com.xyz.service.AccountService.*(..))",
-                "execution(* com.xyz.service.*.*(..))",
-                "execution(* com.xyz.service..*.*(..))",
-                "execution(* com.xyz.service..*.*Set*Id*(..))",
-                "execution(public void edu.tsinghua.demo.aop.ShipmentService.outerCheck())",
-                "execution(public * edu.tsinghua.demo.aop.BillService.*(..))",
-                "execution(public String edu.tsinghua.demo.aop.OrderService.*(..))",
-                "execution(public * edu.tsinghua.demo.aop.MathCalculator.add(String, Object))",
-                "execution(* com.xyz.service..*.*(java.lang.String, int)) && execution(public void " +
-                        "edu.tsinghua.demo.aop.ShipmentService.outerCheck()) " +
-                        "||(execution(* set*(..))&& (!execution( public * *(..)  )) )"
+                "execution(* com.kakarote.hrm.controller..*.*(..)) && !execution(@(com.kakarote.core.common.ParamAspect) * *(..))",
+//                "execution(* *..rpc..*.*(..))",
+//                "@annotation(auditable.asdf) and within(com.xyz.service..*.*)",
+//                "@annotation(auditable.asdf) || within(com.xyz.service..*.*)",
+//                "edu.tsinghua.demo.aop.ShipmentService.outerCheck()",
+//                "execution( public * *(..)) || execution(* set*(..))",
+//                "execution(* set*(..))",
+//                "execution(* com.xyz.service.AccountService.*(..))",
+//                "execution(* com.xyz.service.*.*(..))",
+//                "execution(* com.xyz.service..*.*(..))",
+//                "execution(* com.xyz.service..*.*Set*Id*(..))",
+//                "execution(public void edu.tsinghua.demo.aop.ShipmentService.outerCheck())",
+//                "execution(public * edu.tsinghua.demo.aop.BillService.*(..))",
+//                "execution(public String edu.tsinghua.demo.aop.OrderService.*(..))",
+//                "execution(public * edu.tsinghua.demo.aop.MathCalculator.add(String, Object))",
+//                "execution(* com.xyz.service..*.*(java.lang.String, int)) && execution(public void " +
+//                        "edu.tsinghua.demo.aop.ShipmentService.outerCheck()) " +
+//                        "||(execution(* set*(..))&& (!execution( public * *(..)  )) )"
         };
 
         for (String pattern : patterns) {

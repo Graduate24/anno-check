@@ -49,6 +49,23 @@ public class SimpleIntegration {
 
         public double time;
 
+        public void reset() {
+            this.beanDefinitionCount = 0;
+            this.annoPointerCount = 0;
+            this.singleLinkedCount = 0;
+            this.zeroLinkedCount = 0;
+            this.multiLinkedCount = 0;
+            this.beforeAop = 0;
+            this.afterThrowingAop = 0;
+            this.afterAop = 0;
+            this.aroundAop = 0;
+            this.afterReturningAop = 0;
+            this.entryPointCount = 0;
+            this.sourceCount = 0;
+            this.sinkCount = 0;
+            this.time = 0;
+        }
+
         @Override
         public String toString() {
             return "Stat{" +
@@ -76,6 +93,7 @@ public class SimpleIntegration {
         long start = System.currentTimeMillis();
         ModelFactory.reset();
         ProjectResource.getResource(projectPath);
+        stat.reset();
         iocLink(outputPath);
         aop(outputPath);
         entryPoint(outputPath);

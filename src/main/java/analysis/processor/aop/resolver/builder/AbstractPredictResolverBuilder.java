@@ -41,6 +41,7 @@ public abstract class AbstractPredictResolverBuilder<E> implements PointcutResol
                     targetAnnotation.substring(targetAnnotation.lastIndexOf(".") + 1);
         }
         String value = getValueOfAnnotationAsString(currentResource, targetAnnotation);
+        System.out.println(currentResource.getType().getQualifiedName() + " " + value);
         if (value == null) return null;
         Scanner scanner = new Scanner(value);
         List<Token> tokens = scanner.scanTokens();

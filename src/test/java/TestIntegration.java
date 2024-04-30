@@ -7,6 +7,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 import static analysis.SimpleIntegration.analysis;
 
@@ -18,13 +19,41 @@ public class TestIntegration {
 
     @Test
     public void test1() throws IOException {
-        String project = "D:\\edgedownload\\mall-master"; //1 15s
+        var projects = List.of(
+                "D:/edgedownload/mall-master",
+                "D:/edgedownload/mall4cloud-master",
+                "D:/edgedownload/eladmin-master",
+                "D:/edgedownload/novel-master",
+                "D:/edgedownload/litemall-master",
+                "D:/edgedownload/zheng-master",
+                "D:/edgedownload/WukongCRM-11.0-JAVA-master",
+                "D:/edgedownload/newbee-mall-master");
+//        String project = "D:\\edgedownload\\mall-master"; //1 15s
 //        String project = "D:/edgedownload/mall4cloud-master"; //3 10s
 //        String project = "src/test/resources/demo/"; // 2 1s
 //        String project = "D:/edgedownload/eladmin-master"; //4 5s
 //        String project = "D:/edgedownload/mall-swarm-master//mall-portal"; //5
-        //String project = "D:\\edgedownload\\jetlinks-community-master"; //6 15s
+//        String project = "D:\\edgedownload\\jetlinks-community-master"; //6 15s
 //        String project = "D:\\edgedownload\\novel-master";
+//        String project = "D:\\edgedownload\\ruoyi-vue-pro-master";
+//        String project = "D:\\edgedownload\\litemall-master";
+//        String project = "D:\\edgedownload\\zheng-master";
+        for (String project : projects) {
+            Path dirPath = Paths.get(project).getFileName();
+            String output = "output/" + dirPath + ".report"; // 10s
+            long start = System.currentTimeMillis();
+            analysis(project, output);
+            long timeSpent = (System.currentTimeMillis() - start) / 1000;
+            System.out.println("Time spent: " + timeSpent);
+        }
+
+    }
+
+    @Test
+    public void testsingle() throws IOException {
+        //D:\edgedownload\paascloud-master-master
+        //String project = "D:/edgedownload/newbee-mall-master";
+        String project = "D:/edgedownload/WukongCRM-11.0-JAVA-master";
         Path dirPath = Paths.get(project).getFileName();
         String output = "output/" + dirPath + ".report"; // 10s
         long start = System.currentTimeMillis();
