@@ -24,10 +24,64 @@ public class TestIntegration {
                 "D:/edgedownload/mall4cloud-master",
                 "D:/edgedownload/eladmin-master",
                 "D:/edgedownload/novel-master",
-                "D:/edgedownload/litemall-master",
+                "D:/edgedownload/opsli-boot-master",
                 "D:/edgedownload/zheng-master",
                 "D:/edgedownload/WukongCRM-11.0-JAVA-master",
-                "D:/edgedownload/newbee-mall-master");
+                "D:/edgedownload/newbee-mall-master",
+                "D:/edgedownload/xboot-master/xboot-module/xboot-core");
+        /**
+         * eladmin-master
+         * ---------------------------------------------------------------------------------
+         * Language                       files          blank        comment           code
+         * ---------------------------------------------------------------------------------
+         * Java                             276           2304           8226          12127
+         *
+         * litemall-master
+         * -------------------------------------------------------------------------------
+         * Language                     files          blank        comment           code
+         * -------------------------------------------------------------------------------
+         * Java                           327          14934          40871          60517
+         *
+         * mall4cloud-master
+         * -------------------------------------------------------------------------------
+         * Language                     files          blank        comment           code
+         * -------------------------------------------------------------------------------
+         * Java                           520           8224           8922          27288
+         *
+         * mall-master
+         * -------------------------------------------------------------------------------
+         * Language                     files          blank        comment           code
+         * -------------------------------------------------------------------------------
+         * Java                           526          16820           3079          65687
+         *
+         * newbee-mall-master
+         * -------------------------------------------------------------------------------
+         * Language                     files          blank        comment           code
+         * -------------------------------------------------------------------------------
+         * Java                            88           1215           1457           4937
+         *
+         * novel-master
+         * ----------------------------------------------------------------------------------------
+         * Language                              files          blank        comment           code
+         * ----------------------------------------------------------------------------------------
+         * Java                                    182           2182           3468           7000
+         *
+         * WukongCRM-11.0-JAVA-master
+         * -------------------------------------------------------------------------------
+         * Language                     files          blank        comment           code
+         * -------------------------------------------------------------------------------
+         * Java                          1672          18462          20392          90933
+         *
+         * zheng-master
+         * ----------------------------------------------------------------------------------------
+         * Language                              files          blank        comment           code
+         * ----------------------------------------------------------------------------------------
+         * Java                                    379           7814           3447          30363
+         *
+         *
+         *
+         *
+         */
 //        String project = "D:\\edgedownload\\mall-master"; //1 15s
 //        String project = "D:/edgedownload/mall4cloud-master"; //3 10s
 //        String project = "src/test/resources/demo/"; // 2 1s
@@ -52,8 +106,8 @@ public class TestIntegration {
     @Test
     public void testsingle() throws IOException {
         //D:\edgedownload\paascloud-master-master
-        //String project = "D:/edgedownload/newbee-mall-master";
-        String project = "D:/edgedownload/WukongCRM-11.0-JAVA-master";
+        String project = "D:\\edgedownload\\xboot-master\\xboot-module\\xboot-core";
+//        String project = "D:/edgedownload/zheng-master";
         Path dirPath = Paths.get(project).getFileName();
         String output = "output/" + dirPath + ".report"; // 10s
         long start = System.currentTimeMillis();

@@ -47,6 +47,39 @@ import java.util.regex.Pattern;
  * <p>
  * Created by: zhang ran
  * 2024-03-18
+ * <p>
+ * Created by: zhang ran
+ * 2024-03-18
+ * <p>
+ * Created by: zhang ran
+ * 2024-03-18
+ * <p>
+ * Created by: zhang ran
+ * 2024-03-18
+ * <p>
+ * Created by: zhang ran
+ * 2024-03-18
+ * <p>
+ * Created by: zhang ran
+ * 2024-03-18
+ * <p>
+ * Created by: zhang ran
+ * 2024-03-18
+ * <p>
+ * Created by: zhang ran
+ * 2024-03-18
+ * <p>
+ * Created by: zhang ran
+ * 2024-03-18
+ * <p>
+ * Created by: zhang ran
+ * 2024-03-18
+ * <p>
+ * Created by: zhang ran
+ * 2024-03-18
+ * <p>
+ * Created by: zhang ran
+ * 2024-03-18
  *//**
  * Created by: zhang ran
  * 2024-03-18
@@ -96,6 +129,7 @@ public class SpringValueAnnoFieldLinker implements Linker {
     public void link(CtElement element) {
         CtField<?> field = (CtField<?>) element;
         var o = getAnnoValue(element, VALUE_ANNOTATION);
+        if (o == null) return;
 //        boolean v = ((CtAnnotationImpl<?>) o).getElementValues().containsKey("required");
 //        boolean required = !v || (boolean) ((CtLiteral<?>) o.getValue("required")).getValue();
         var beanName = getExpPlaceholder(o);
