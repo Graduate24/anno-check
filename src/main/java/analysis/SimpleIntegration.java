@@ -30,13 +30,59 @@ import java.util.stream.Collectors;
  */
 public class SimpleIntegration {
 
+    static class Stat {
+        public int beanDefinitionCount = 0;
+        public int annoPointerCount = 0;
+        public int singleLinkedCount = 0;
+        public int zeroLinkedCount = 0;
+        public int multiLinkedCount = 0;
+
+        public int beforeAop = 0;
+        public int afterAop = 0;
+        public int aroundAop = 0;
+        public int afterReturningAop = 0;
+        public int afterThrowingAop = 0;
+
+        public int entryPointCount = 0;
+        public int sourceCount = 0;
+        public int sinkCount = 0;
+
+        public double time;
+
+        @Override
+        public String toString() {
+            return "Stat{" +
+                    "beanDefinitionCount=" + beanDefinitionCount +
+                    ", annoPointerCount=" + annoPointerCount +
+                    ", singleLinkedCount=" + singleLinkedCount +
+                    ", zeroLinkedCount=" + zeroLinkedCount +
+                    ", multiLinkedCount=" + multiLinkedCount +
+                    ", beforeAop=" + beforeAop +
+                    ", afterAop=" + afterAop +
+                    ", aroundAop=" + aroundAop +
+                    ", afterReturningAop=" + afterReturningAop +
+                    ", afterThrowingAop=" + afterThrowingAop +
+                    ", entryPointCount=" + entryPointCount +
+                    ", sourceCount=" + sourceCount +
+                    ", sinkCount=" + sinkCount +
+                    ", time=" + time +
+                    '}';
+        }
+    }
+
+    private static final Stat stat = new Stat();
+
     public static void analysis(String projectPath, String outputPath) throws IOException {
+        long start = System.currentTimeMillis();
         ModelFactory.reset();
         ProjectResource.getResource(projectPath);
         iocLink(outputPath);
         aop(outputPath);
         entryPoint(outputPath);
         sourceSink(outputPath);
+        long end = System.currentTimeMillis();
+        stat.time = (end - start) / 1000d;
+        writeOutput(outputPath, stat.toString());
     }
 
     private static void iocLink(String outputPath) throws IOException {
@@ -91,6 +137,9 @@ public class SimpleIntegration {
             list.add(bd);
         });
 
+        stat.beanDefinitionCount = list.size();
+
+
 //        var v = new SpringValueAnnoBeanLoader();
 //        ProjectResource.springValueAnnoField.forEach(e -> {
 //            var bd = v.load(null, e);
@@ -105,8 +154,17 @@ public class SimpleIntegration {
         StringBuilder sb = new StringBuilder();
         sb.append("---------@Autowired-----------\n\n");
         ProjectResource.springAutowiredAnnoField.forEach(e -> {
+            stat.annoPointerCount++;
             linker.link(e);
             var bs = linker.findLink(e);
+            if (bs.isEmpty()) {
+                stat.zeroLinkedCount++;
+            } else if (bs.size() == 1) {
+                stat.singleLinkedCount++;
+            } else {
+                stat.multiLinkedCount++;
+            }
+
             sb.append(e.getDeclaringType().getQualifiedName()).append("#").append(e.getSimpleName())
                     .append("\n  -->  ").append(bs.size()).append("| ").append(bs).append("\n");
         });
@@ -114,8 +172,16 @@ public class SimpleIntegration {
         var linker2 = new SpringValueAnnoFieldLinker();
         // link
         ProjectResource.springValueAnnoField.forEach(e -> {
+            stat.annoPointerCount++;
             linker2.link(e);
             var bs = linker2.findLink(e);
+            if (bs.isEmpty()) {
+                stat.zeroLinkedCount++;
+            } else if (bs.size() == 1) {
+                stat.singleLinkedCount++;
+            } else {
+                stat.multiLinkedCount++;
+            }
             sb.append(e.getDeclaringType().getQualifiedName()).append("#").append(e.getSimpleName())
                     .append("\n  -->  ").append(bs.size()).append("| ").append(bs).append("\n");
             ;
@@ -178,9 +244,12 @@ public class SimpleIntegration {
         writeOutput(outputPath, "\n\n --- Entry point ---\n\n");
         String fileName = "dsl/entrypoint_template";
         String fileContent = readFileFromResources(fileName);
-        // Replace the placeholder {0} with "John Doe"
+        // Replace the placeholder {0}
         String dsl = MessageFormat.format(fileContent, outputPath);
         interpretRaw(dsl);
+
+        int count = countLinesAfterEntry("--- Entry point ---", outputPath, true, null);
+        stat.entryPointCount = count;
     }
 
     private static void sourceSink(String outputPath) throws IOException {
@@ -188,10 +257,13 @@ public class SimpleIntegration {
 
         String fileName = "dsl/sourcesink_template";
         String fileContent = readFileFromResources(fileName);
-        // Replace the placeholder {0} with "John Doe"
+        // Replace the placeholder {0}
         String dsl = MessageFormat.format(fileContent, outputPath);
         interpretRaw(dsl);
-
+        int count = countLinesAfterEntry("source---", outputPath, false, "sink---");
+        stat.sourceCount = count;
+        int sinkCount = countLinesAfterEntry("sink---", outputPath, false, null);
+        stat.sinkCount = sinkCount;
     }
 
     private static String matchTarget(AbstractPredictResolverBuilder<CtMethod<?>> builder,
@@ -205,6 +277,17 @@ public class SimpleIntegration {
             if (p != null) {
                 for (CtMethod<?> method : methods) {
                     if (p.test(method)) {
+                        if (builder.name().equals("before")) {
+                            stat.beforeAop++;
+                        } else if (builder.name().equals("after")) {
+                            stat.afterAop++;
+                        } else if (builder.name().equals("around")) {
+                            stat.aroundAop++;
+                        } else if (builder.name().equals("afterreturning")) {
+                            stat.afterReturningAop++;
+                        } else if (builder.name().equals("afterthrowing")) {
+                            stat.afterThrowingAop++;
+                        }
                         sb.append("      -> ").append(printMethod(method)).append("\n");
                     }
                 }
@@ -279,5 +362,32 @@ public class SimpleIntegration {
         Interpreter interpreter = new Interpreter();
         interpreter.interpret(stmts);
         return !interpreter.hadRuntimeError;
+    }
+
+    public static int countLinesAfterEntry(String pattern, String filePath, boolean skipOneLine, String end) {
+        boolean startCounting = false;
+        int lineCount = 0;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (pattern.equals(line.trim())) {
+                    startCounting = true;
+                    if (skipOneLine)
+                        reader.readLine();
+                    continue;
+                }
+                if (startCounting) {
+                    if (line.trim().isEmpty() || (end != null && end.equals(line.trim()))) {
+                        break;
+                    }
+                    lineCount++;
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred while reading the file: " + e.getMessage());
+        }
+
+        return lineCount;
     }
 }

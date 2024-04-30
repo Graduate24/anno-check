@@ -26,10 +26,11 @@ public class TestIntegration {
         //String project = "D:\\edgedownload\\jetlinks-community-master"; //6 15s
 //        String project = "D:\\edgedownload\\novel-master";
         Path dirPath = Paths.get(project).getFileName();
-        String output = "output/"+dirPath+".report"; // 10s
+        String output = "output/" + dirPath + ".report"; // 10s
         long start = System.currentTimeMillis();
         analysis(project, output);
-        System.out.println("Time spent: " + (System.currentTimeMillis() - start) / 1000);
+        long timeSpent = (System.currentTimeMillis() - start) / 1000;
+        System.out.println("Time spent: " + timeSpent);
     }
 
     @Test
