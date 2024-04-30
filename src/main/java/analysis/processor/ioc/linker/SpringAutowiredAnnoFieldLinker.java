@@ -5,11 +5,23 @@ import analysis.processor.ioc.beanregistor.BeanRegister;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtField;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 /**
+ * Created by: zhang ran
+ * 2024-03-18
+ * <p>
+ * Created by: zhang ran
+ * 2024-03-18
+ * <p>
+ * Created by: zhang ran
+ * 2024-03-18
+ * <p>
+ * Created by: zhang ran
+ * 2024-03-18
+ * <p>
+ * Created by: zhang ran
+ * 2024-03-18
+ * <p>
  * Created by: zhang ran
  * 2024-03-18
  * <p>
@@ -72,8 +84,17 @@ public class SpringAutowiredAnnoFieldLinker implements Linker {
 
         var bs = BeanRegister.getBeanByName(field.getSimpleName());
         if (bs != null && !bs.isEmpty()) {
-            link.put(element, bs);
-            return;
+            if (bs.size() == 1) {
+                link.put(element, bs);
+            } else {
+                bs.stream().filter(b -> {
+                    return b.getType().getQualifiedName().equals(field.getType().getQualifiedName());
+                }).findFirst().ifPresent(b ->{
+                    link.put(element, Collections.singleton(b));
+                });
+
+            }
+
         }
 
         bs = BeanRegister.getBeanByTypeAndSunType(field.getType().getQualifiedName());

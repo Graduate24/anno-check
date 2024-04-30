@@ -91,11 +91,11 @@ public class SimpleIntegration {
             list.add(bd);
         });
 
-        var v = new SpringValueAnnoBeanLoader();
-        ProjectResource.springValueAnnoField.forEach(e -> {
-            var bd = v.load(null, e);
-            list.add(bd);
-        });
+//        var v = new SpringValueAnnoBeanLoader();
+//        ProjectResource.springValueAnnoField.forEach(e -> {
+//            var bd = v.load(null, e);
+//            list.add(bd);
+//        });
 
         // load bean and register bean
         list.forEach(BeanRegister::register);

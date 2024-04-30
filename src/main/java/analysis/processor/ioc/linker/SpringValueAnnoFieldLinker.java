@@ -2,15 +2,13 @@ package analysis.processor.ioc.linker;
 
 import analysis.processor.ioc.beanloader.BeanDefinitionModel;
 import analysis.processor.ioc.beanregistor.BeanRegister;
+import resource.ModelFactory;
 import spoon.reflect.code.CtLiteral;
 import spoon.reflect.declaration.CtElement;
 import spoon.reflect.declaration.CtField;
 import spoon.support.reflect.declaration.CtAnnotationImpl;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 /**
@@ -108,11 +106,26 @@ public class SpringValueAnnoFieldLinker implements Linker {
             }
             return;
         }
-
-        var bs = BeanRegister.getBeanByName(field.getDeclaringType().getQualifiedName() + "#" + field.getSimpleName());
-        if (bs != null) {
-            link.put(element, bs);
+        beanName = get$placeholder(o);
+        if (beanName != null) {
+            var obj = ModelFactory.getConfigFromName(beanName);
+            if (obj != null) {
+                BeanDefinitionModel bd = new BeanDefinitionModel();
+                bd.setName(beanName);
+                bd.setType(((CtField<?>) element).getType().getTypeDeclaration());
+                bd.setFromSource(BeanDefinitionModel.FromSource.VALUE_ANNOTATION);
+                Map<String, Object> pv = new HashMap<>();
+                pv.put(field.getSimpleName(), obj);
+                bd.setPropertyValue(pv);
+                link.put(element, Collections.singleton(bd));
+            }
+            return;
         }
+
+//        var bs = BeanRegister.getBeanByName(field.getType().getQualifiedName() + "#" + field.getSimpleName());
+//        if (bs != null) {
+//            link.put(element, bs);
+//        }
     }
 
     @Override

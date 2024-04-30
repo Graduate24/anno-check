@@ -26,8 +26,10 @@ public class SpringValueAnnoBeanLoader extends AbstractBeanLoader {
     public BeanDefinitionModel load(Set<CtElement> contextResource, CtElement currentResource) {
         CtField<?> field = (CtField<?>) currentResource;
         var bd = new BeanDefinitionModel();
-        String name = field.getDeclaringType().getQualifiedName() + "#" + field.getSimpleName();
-        bd.setName(name);
+//        String name = field.getDeclaringType().getQualifiedName() + "#" + field.getSimpleName();
+//        bd.setName(name);
+        bd.setName(field.getSimpleName());
+        bd.setType(field.getType().getTypeDeclaration());
 
         // ${ }
         String value = getAnnoValue(field, VALUE_ANNO);
@@ -36,7 +38,7 @@ public class SpringValueAnnoBeanLoader extends AbstractBeanLoader {
         if (value == null) return null;
         var v = ModelFactory.getConfigFromName(value);
         if (v == null) return null;
-        bd.setType(field.getDeclaringType());
+        //bd.setType(field.getDeclaringType());
         bd.setFromSource(BeanDefinitionModel.FromSource.VALUE_ANNOTATION);
         Map<String, Object> pv = new HashMap<>();
         pv.put(field.getSimpleName(), v);
