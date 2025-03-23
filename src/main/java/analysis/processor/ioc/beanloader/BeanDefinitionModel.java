@@ -1,9 +1,19 @@
 package analysis.processor.ioc.beanloader;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 import spoon.reflect.declaration.*;
 
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Created by: zhang ran
@@ -54,6 +64,15 @@ public class BeanDefinitionModel {
         private CtType<?> type;
         private String name;
         private String value;
+
+        // 获取构造函数参数的JSON表示
+        public Map<String, Object> toJsonMap() {
+            Map<String, Object> jsonMap = new HashMap<>();
+            jsonMap.put("type", type != null ? type.getQualifiedName() : null);
+            jsonMap.put("name", name);
+            jsonMap.put("value", value);
+            return jsonMap;
+        }
     }
 
     private String name;
@@ -148,18 +167,126 @@ public class BeanDefinitionModel {
         this.propertyValue = propertyValue;
     }
 
+    /**
+     * 自定义序列化器，处理CtElement的特殊序列化
+     */
+    private static class BeanDefinitionModelSerializer implements JsonSerializer<BeanDefinitionModel> {
+        @Override
+        public JsonElement serialize(BeanDefinitionModel src, Type typeOfSrc, JsonSerializationContext context) {
+            JsonObject json = new JsonObject();
+
+            // 基本属性
+            json.addProperty("name", src.name);
+            json.addProperty("type", src.type != null ? src.type.getQualifiedName() : null);
+            json.addProperty("scope", src.scope != null ? src.scope.name() : null);
+            json.addProperty("fromSource", src.fromSource != null ? src.fromSource.name() : null);
+            json.addProperty("lazyInit", src.lazyInit);
+
+            // 构造函数参数
+            if (src.constructorArguments != null && !src.constructorArguments.isEmpty()) {
+                json.add("constructorArguments", context.serialize(src.constructorArguments.stream()
+                        .map(ConstructorArgument::toJsonMap)
+                        .collect(Collectors.toList())));
+            }
+
+            // 初始化方法
+            if (src.initializeMethod != null) {
+                json.addProperty("initializeMethod", src.initializeMethod.getSimpleName());
+            }
+
+            // 构造函数
+            if (src.constructor != null) {
+                json.addProperty("constructor", src.constructor.getSignature());
+            }
+
+            // 属性列表
+            if (src.properties != null && !src.properties.isEmpty()) {
+                json.add("properties", context.serialize(src.properties.stream()
+                        .map(CtNamedElement::getSimpleName)
+                        .collect(Collectors.toList())));
+            }
+
+            // 属性值
+            if (src.propertyValue != null && !src.propertyValue.isEmpty()) {
+                json.add("propertyValue", context.serialize(src.propertyValue));
+            }
+
+            return json;
+        }
+    }
+
+    /**
+     * 将BeanDefinitionModel对象转换为JSON字符串
+     * @return 标准JSON格式的字符串表示
+     */
+    public String toJson() {
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(BeanDefinitionModel.class, new BeanDefinitionModelSerializer())
+                .create();
+        return gson.toJson(this);
+    }
+
+    /**
+     * 将BeanDefinitionModel对象转换为格式化的JSON字符串
+     * @return 格式化的标准JSON字符串
+     */
+    public String toPrettyJson() {
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(BeanDefinitionModel.class, new BeanDefinitionModelSerializer())
+                .setPrettyPrinting()
+                .create();
+        return gson.toJson(this);
+    }
+
+    /**
+     * 将BeanDefinitionModel对象转换为Map，便于序列化
+     * @return 包含对象属性的Map
+     */
+    public Map<String, Object> toJsonMap() {
+        Map<String, Object> jsonMap = new HashMap<>();
+
+        jsonMap.put("name", name);
+        jsonMap.put("type", type != null ? type.getQualifiedName() : null);
+        jsonMap.put("scope", scope != null ? scope.name() : null);
+        jsonMap.put("fromSource", fromSource != null ? fromSource.name() : null);
+
+        // 构造函数参数
+        if (constructorArguments != null && !constructorArguments.isEmpty()) {
+            List<Map<String, Object>> argList = constructorArguments.stream()
+                    .map(ConstructorArgument::toJsonMap)
+                    .collect(Collectors.toList());
+            jsonMap.put("constructorArguments", argList);
+        } else {
+            jsonMap.put("constructorArguments", new ArrayList<>());
+        }
+
+        // 初始化方法
+        jsonMap.put("initializeMethod", initializeMethod != null ? initializeMethod.getSimpleName() : null);
+
+        // 构造函数
+        jsonMap.put("constructor", constructor != null ? constructor.getSignature() : null);
+
+        // 属性列表
+        if (properties != null && !properties.isEmpty()) {
+            List<String> propList = properties.stream()
+                    .map(CtNamedElement::getSimpleName)
+                    .collect(Collectors.toList());
+            jsonMap.put("properties", propList);
+        } else {
+            jsonMap.put("properties", new ArrayList<>());
+        }
+
+        // 属性值
+        jsonMap.put("propertyValue", propertyValue);
+
+        // 懒加载
+        jsonMap.put("lazyInit", lazyInit);
+
+        return jsonMap;
+    }
+
     @Override
     public String toString() {
-        return "BeanDefinitionModel{\n" +
-                "           name=" + (name != null ? name : "") +",\n"+
-                "           type=" + type.getQualifiedName() +",\n"+
-                "           scope=" + scope + ", fromSource=" + fromSource +",\n"+
-                "           constructorArguments=" + constructorArguments +",\n"+
-                "           initializeMethod=" + (initializeMethod == null ? "" : initializeMethod.getSimpleName()) +",\n"+
-                "           constructor=" + (constructor == null ? "" : constructor.getSignature()) +",\n"+
-                "           properties=" + (properties != null ? properties.stream().map(CtNamedElement::getSimpleName).toList() : "") +",\n"+
-                "           propertiesValue=" + (propertyValue) +",\n"+
-                "           lazyInit=" + lazyInit +"\n"+
-                "       }";
+        return toPrettyJson();
     }
 }

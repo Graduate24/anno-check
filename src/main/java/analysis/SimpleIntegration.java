@@ -9,18 +9,19 @@ import analysis.processor.ioc.beanloader.*;
 import analysis.processor.ioc.beanregistor.BeanRegister;
 import analysis.processor.ioc.linker.SpringAutowiredAnnoFieldLinker;
 import analysis.processor.ioc.linker.SpringValueAnnoFieldLinker;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import resource.CachedElementFinder;
 import resource.ModelFactory;
 import resource.ProjectResource;
+import spoon.reflect.declaration.CtField;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.ModifierKind;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -29,6 +30,9 @@ import java.util.stream.Collectors;
  * 2024-04-07
  */
 public class SimpleIntegration {
+    private static Gson gson = new GsonBuilder()
+            .setPrettyPrinting()
+            .create();
 
     static class Stat {
         public int beanDefinitionCount = 0;
@@ -88,14 +92,66 @@ public class SimpleIntegration {
     }
 
     private static final Stat stat = new Stat();
+    private static final Map<CtField<?>, Set<BeanDefinitionModel>> linkResult = new HashMap<>();
+    private static final List<AspectTracker> beforeAopResult = new ArrayList<>();
+    private static final List<AspectTracker> afterAopResult = new ArrayList<>();
+    private static final List<AspectTracker> aroundAopResult = new ArrayList<>();
+    private static final List<AspectTracker> afterReturningAopResult = new ArrayList<>();
+    private static final List<AspectTracker> afterThrowingAopResult = new ArrayList<>();
+    private static final List<CtMethod<?>> entryPointMethods = new ArrayList<>();
+    private static final List<CtMethod<?>> sourceMethods = new ArrayList<>();
+    private static final List<CtMethod<?>> sinkMethods = new ArrayList<>();
+
+    private static String linkResultJson;
+    private static String aopResultJson;
+
+    static class AspectTracker {
+        public CtMethod<?> adviceMethod;
+        public List<CtMethod<?>> targetMethods = new ArrayList<>();
+
+        public void clear() {
+            this.adviceMethod = null;
+            this.targetMethods.clear();
+        }
+    }
 
     public static void analysis(String projectPath, String outputPath) throws IOException {
         long start = System.currentTimeMillis();
         ModelFactory.reset();
         ProjectResource.getResource(projectPath);
         stat.reset();
+        linkResult.clear();
+        linkResultJson = null;
+        aopResultJson = null;
+        beforeAopResult.clear();
+        afterAopResult.clear();
+        aroundAopResult.clear();
+        afterReturningAopResult.clear();
+        afterThrowingAopResult.clear();
+        entryPointMethods.clear();
+        sourceMethods.clear();
+        sinkMethods.clear();
+        writeOutput(outputPath, "\n\n --- IoC Container ---\n\n");
         iocLink(outputPath);
+
+        // 修改linkResult的输出格式
+        Map<String, Object> structuredLinkResult = new HashMap<>();
+        for (Map.Entry<CtField<?>, Set<BeanDefinitionModel>> entry : linkResult.entrySet()) {
+            CtField<?> field = entry.getKey();
+            Set<BeanDefinitionModel> beanDefs = entry.getValue();
+
+            // 创建字段信息对象
+            Map<String, Object> fieldInfo = formatFieldLinkJson(field, beanDefs);
+
+            // 使用字段完整路径作为唯一标识
+            String fieldKey = field.getDeclaringType().getQualifiedName() + "." + field.getSimpleName();
+            structuredLinkResult.put(fieldKey, fieldInfo);
+        }
+        linkResultJson = gson.toJson(structuredLinkResult);
+        writeOutput(outputPath, linkResultJson);
+        writeOutput(outputPath, "\n\n --- AOP ---\n\n");
         aop(outputPath);
+        writeOutput(outputPath, aopResultJson);
         entryPoint(outputPath);
         sourceSink(outputPath);
         long end = System.currentTimeMillis();
@@ -104,7 +160,6 @@ public class SimpleIntegration {
     }
 
     private static void iocLink(String outputPath) throws IOException {
-        writeOutput(outputPath, "\n\n --- IoC Container ---\n\n");
         var list = new ArrayList<BeanDefinitionModel>();
 
         var com = new SpringComponentAnnoBeanLoader();
@@ -170,7 +225,6 @@ public class SimpleIntegration {
         // collect @Autowired fields
         var linker = new SpringAutowiredAnnoFieldLinker();
         StringBuilder sb = new StringBuilder();
-        sb.append("---------@Autowired-----------\n\n");
         ProjectResource.springAutowiredAnnoField.forEach(e -> {
             stat.annoPointerCount++;
             linker.link(e);
@@ -182,11 +236,10 @@ public class SimpleIntegration {
             } else {
                 stat.multiLinkedCount++;
             }
+            linkResult.put(e, bs);
 
-            sb.append(e.getDeclaringType().getQualifiedName()).append("#").append(e.getSimpleName())
-                    .append("\n  -->  ").append(bs.size()).append("| ").append(bs).append("\n");
         });
-        sb.append("\n\n---------@Value-----------\n\n");
+
         var linker2 = new SpringValueAnnoFieldLinker();
         // link
         ProjectResource.springValueAnnoField.forEach(e -> {
@@ -200,62 +253,38 @@ public class SimpleIntegration {
             } else {
                 stat.multiLinkedCount++;
             }
-            sb.append(e.getDeclaringType().getQualifiedName()).append("#").append(e.getSimpleName())
-                    .append("\n  -->  ").append(bs.size()).append("| ").append(bs).append("\n");
-            ;
+            linkResult.put(e, bs);
+
         });
-        if (outputPath.equals("stdout")) {
-            System.out.println(sb);
-        } else {
-            writeOutput(outputPath, sb.toString());
-        }
     }
 
     private static void aop(String outputPath) throws IOException {
-        writeOutput(outputPath, "\n\n --- AOP ---\n\n");
+
         CachedElementFinder cachedElementFinder = CachedElementFinder.getInstance();
         var methods = cachedElementFinder.getCachedPublicMethod();
 
         var before = new BeforeAspectResolverBuilder<CtMethod<?>>();
-        String content = matchTarget(before, ProjectResource.beforeAnnoMethod, methods);
-        if (outputPath.equals("stdout")) {
-            System.out.println(content);
-        } else {
-            writeOutput(outputPath, content);
-        }
+        matchTarget(before, ProjectResource.beforeAnnoMethod, methods);
 
 
         var after = new AfterAspectResolverBuilder<CtMethod<?>>();
-        content = matchTarget(after, ProjectResource.afterAnnoMethod, methods);
-        if (outputPath.equals("stdout")) {
-            System.out.println(content);
-        } else {
-            writeOutput(outputPath, content);
-        }
+        matchTarget(after, ProjectResource.afterAnnoMethod, methods);
+
 
         var afterReturning = new AfterReturningAspectResolverBuilder<CtMethod<?>>();
-        content = matchTarget(afterReturning, ProjectResource.afterReturningAnnoMethod, methods);
-        if (outputPath.equals("stdout")) {
-            System.out.println(content);
-        } else {
-            writeOutput(outputPath, content);
-        }
+        matchTarget(afterReturning, ProjectResource.afterReturningAnnoMethod, methods);
+
 
         var afterThrowing = new AfterThrowingAspectResolverBuilder<CtMethod<?>>();
-        content = matchTarget(afterThrowing, ProjectResource.afterThrowingAnnoMethod, methods);
-        if (outputPath.equals("stdout")) {
-            System.out.println(content);
-        } else {
-            writeOutput(outputPath, content);
-        }
+        matchTarget(afterThrowing, ProjectResource.afterThrowingAnnoMethod, methods);
 
         var around = new AroundAspectResolverBuilder<CtMethod<?>>();
-        content = matchTarget(around, ProjectResource.aroundAnnoMethod, methods);
-        if (outputPath.equals("stdout")) {
-            System.out.println(content);
-        } else {
-            writeOutput(outputPath, content);
-        }
+        matchTarget(around, ProjectResource.aroundAnnoMethod, methods);
+
+        // 生成AOP结果的JSON格式
+        Map<String, Object> allAopResults = formatAopResultJson();
+        aopResultJson = gson.toJson(allAopResults);
+
     }
 
     private static void entryPoint(String outputPath) throws IOException {
@@ -284,14 +313,23 @@ public class SimpleIntegration {
         stat.sinkCount = sinkCount;
     }
 
-    private static String matchTarget(AbstractPredictResolverBuilder<CtMethod<?>> builder,
+    private static void matchTarget(AbstractPredictResolverBuilder<CtMethod<?>> builder,
                                       List<CtMethod<?>> aspectMethods,
                                       Set<CtMethod<?>> methods) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(builder.name()).append("\n");
+        /**
+         * around
+         * public me.zhengjie.aspect.around(org.aspectj.lang.ProceedingJoinPoint) ; aspect targets:
+         *       -> public me.zhengjie.modules.system.rest.testLimit()
+         * public me.zhengjie.aspect.logAround(org.aspectj.lang.ProceedingJoinPoint) ; aspect targets:
+         *       -> public me.zhengjie.rest.sendEmail(me.zhengjie.domain.vo.EmailVo)
+         *       -> public me.zhengjie.modules.system.rest.updateRoleMenu(me.zhengjie.modules.system.domain.Role)
+         *       -> public me.zhengjie.modules.mnt.rest.startServer(me.zhengjie.modules.mnt.domain.Deploy)
+         *       -> public me.zhengjie.modules.mnt.rest.deleteDeploy(java.util.Set)
+         */
         for (CtMethod<?> m : aspectMethods) {
             Predicate<CtMethod<?>> p = builder.build(null, m);
-            sb.append(printMethod(m)).append(" ; aspect targets: \n");
+            AspectTracker tracker = new AspectTracker();
+            tracker.adviceMethod = m;
             if (p != null) {
                 for (CtMethod<?> method : methods) {
                     if (p.test(method)) {
@@ -306,13 +344,22 @@ public class SimpleIntegration {
                         } else if (builder.name().equals("afterthrowing")) {
                             stat.afterThrowingAop++;
                         }
-                        sb.append("      -> ").append(printMethod(method)).append("\n");
+                        tracker.targetMethods.add(method);
                     }
                 }
             }
+            if (builder.name().equals("before")) {
+                beforeAopResult.add(tracker);
+            } else if (builder.name().equals("after")) {
+                afterAopResult.add(tracker);
+            } else if (builder.name().equals("around")) {
+                aroundAopResult.add(tracker);
+            } else if (builder.name().equals("afterreturning")) {
+                afterReturningAopResult.add(tracker);
+            } else if (builder.name().equals("afterthrowing")) {
+                afterThrowingAopResult.add(tracker);
+            }
         }
-        sb.append("\n");
-        return sb.toString();
     }
 
     private static void writeOutput(String filePath, String content) throws IOException {
@@ -407,5 +454,128 @@ public class SimpleIntegration {
         }
 
         return lineCount;
+    }
+
+    /**
+     * 格式化字段关联信息为统一的JSON结构
+     * @param field 字段
+     * @param beanDefs 关联的bean定义
+     * @return 格式化后的JSON对象
+     */
+    private static Map<String, Object> formatFieldLinkJson(CtField<?> field, Set<BeanDefinitionModel> beanDefs) {
+        Map<String, Object> result = new HashMap<>();
+        result.put("name", field.getSimpleName());
+        result.put("declaringType", field.getDeclaringType().getQualifiedName());
+        result.put("fieldType", field.getType().getQualifiedName());
+
+        // 获取注解信息
+        String annotation = "";
+        if (!field.getAnnotations().isEmpty()) {
+            annotation = field.getAnnotations().get(0).toString();
+        }
+        result.put("annotation", annotation);
+        result.put("linkedBeans", beanDefs);
+
+        return result;
+    }
+
+    /**
+     * 格式化AOP结果为JSON结构
+     * @return 格式化后的AOP结果JSON对象
+     */
+    private static Map<String, Object> formatAopResultJson() {
+        Map<String, Object> result = new HashMap<>();
+
+        // 添加Before切面
+        List<Map<String, Object>> beforeAspects = new ArrayList<>();
+        for (AspectTracker tracker : beforeAopResult) {
+            Map<String, Object> aspectInfo = formatAspectTrackerJson(tracker, "before");
+            beforeAspects.add(aspectInfo);
+        }
+        result.put("beforeAspects", beforeAspects);
+
+        // 添加After切面
+        List<Map<String, Object>> afterAspects = new ArrayList<>();
+        for (AspectTracker tracker : afterAopResult) {
+            Map<String, Object> aspectInfo = formatAspectTrackerJson(tracker, "after");
+            afterAspects.add(aspectInfo);
+        }
+        result.put("afterAspects", afterAspects);
+
+        // 添加Around切面
+        List<Map<String, Object>> aroundAspects = new ArrayList<>();
+        for (AspectTracker tracker : aroundAopResult) {
+            Map<String, Object> aspectInfo = formatAspectTrackerJson(tracker, "around");
+            aroundAspects.add(aspectInfo);
+        }
+        result.put("aroundAspects", aroundAspects);
+
+        // 添加AfterReturning切面
+        List<Map<String, Object>> afterReturningAspects = new ArrayList<>();
+        for (AspectTracker tracker : afterReturningAopResult) {
+            Map<String, Object> aspectInfo = formatAspectTrackerJson(tracker, "afterReturning");
+            afterReturningAspects.add(aspectInfo);
+        }
+        result.put("afterReturningAspects", afterReturningAspects);
+
+        // 添加AfterThrowing切面
+        List<Map<String, Object>> afterThrowingAspects = new ArrayList<>();
+        for (AspectTracker tracker : afterThrowingAopResult) {
+            Map<String, Object> aspectInfo = formatAspectTrackerJson(tracker, "afterThrowing");
+            afterThrowingAspects.add(aspectInfo);
+        }
+        result.put("afterThrowingAspects", afterThrowingAspects);
+
+        // 添加统计信息
+        Map<String, Integer> statistics = new HashMap<>();
+        statistics.put("beforeCount", stat.beforeAop);
+        statistics.put("afterCount", stat.afterAop);
+        statistics.put("aroundCount", stat.aroundAop);
+        statistics.put("afterReturningCount", stat.afterReturningAop);
+        statistics.put("afterThrowingCount", stat.afterThrowingAop);
+        result.put("statistics", statistics);
+
+        return result;
+    }
+
+    /**
+     * 格式化单个AspectTracker为JSON结构
+     * @param tracker 要格式化的AspectTracker
+     * @param aspectType 切面类型
+     * @return 格式化后的JSON对象
+     */
+    private static Map<String, Object> formatAspectTrackerJson(AspectTracker tracker, String aspectType) {
+        Map<String, Object> result = new HashMap<>();
+
+        // 添加切面方法信息
+        if (tracker.adviceMethod != null) {
+            Map<String, Object> adviceMethodInfo = new HashMap<>();
+            adviceMethodInfo.put("name", tracker.adviceMethod.getSimpleName());
+            adviceMethodInfo.put("declaringType", tracker.adviceMethod.getDeclaringType().getQualifiedName());
+            adviceMethodInfo.put("signature", tracker.adviceMethod.getSignature());
+            adviceMethodInfo.put("type", aspectType);
+            result.put("adviceMethod", adviceMethodInfo);
+
+            // 添加目标方法列表
+            List<Map<String, Object>> targetMethodsInfo = new ArrayList<>();
+            for (CtMethod<?> targetMethod : tracker.targetMethods) {
+                Map<String, Object> targetMethodInfo = new HashMap<>();
+                targetMethodInfo.put("name", targetMethod.getSimpleName());
+                targetMethodInfo.put("declaringType", targetMethod.getDeclaringType().getQualifiedName());
+                targetMethodInfo.put("signature", targetMethod.getSignature());
+                targetMethodsInfo.add(targetMethodInfo);
+            }
+            result.put("targetMethods", targetMethodsInfo);
+        }
+
+        return result;
+    }
+
+    public static String getLinkResultJson() {
+        return linkResultJson;
+    }
+
+    public static String getAopResultJson() {
+        return aopResultJson;
     }
 }
