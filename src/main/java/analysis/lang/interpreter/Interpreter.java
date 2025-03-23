@@ -207,12 +207,24 @@ public class Interpreter implements Expr.ExprVisitor<Object>, Stmt.Visitor<Void>
     public Object visitMapperExpr(Expr.MapperFilter expr) {
 
         return (Predicate<CtMethod<?>>) (e) -> {
-            boolean isMapper = ModelFactory.getMybatisMapper().contains(e.getDeclaringType().getQualifiedName());
-            if (isMapper) {
-                return true;
-            }
-            return e.getDeclaringType().getAnnotations().stream().anyMatch(a -> "org.apache.ibatis.annotations.Mapper".
+            // 检查方法是否来自Mapper接口
+            boolean isMapperMethod = ModelFactory.getMybatisMapper().contains(e.getDeclaringType().getQualifiedName()) ||
+                    e.getDeclaringType().getAnnotations().stream().anyMatch(a -> "org.apache.ibatis.annotations.Mapper".
                     equals(a.getAnnotationType().getPackage() + "." + a.getAnnotationType().getSimpleName()));
+            
+            if (!isMapperMethod) {
+                return false;
+            }
+            
+            // 检查方法是否在XML中标记为有SQL注入风险
+            String methodSignature = e.getDeclaringType().getQualifiedName() + "." + e.getSimpleName();
+            boolean isXmlRiskMethod = ModelFactory.getXmlSqlInjectionMethods().contains(methodSignature);
+            
+            // 检查方法是否在注解收集器中标记为有SQL注入风险
+            boolean isAnnotationRiskMethod = resource.ProjectResource.sqlInjectionRiskMethods.contains(e);
+            
+            // 如果方法在XML或注解中被标记为有SQL注入风险，则返回true
+            return isXmlRiskMethod || isAnnotationRiskMethod;
         };
     }
 

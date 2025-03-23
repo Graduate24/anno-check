@@ -37,6 +37,7 @@ public class ProjectResource {
     public static final List<CtInterface<?>> mybatisMapperInterface = new ArrayList<>();
     public static final List<CtInterface<?>> springMongoInterface = new ArrayList<>();
     public static final List<CtClass<?>> springConfigurationPropertiesClass = new ArrayList<>();
+    public static final List<CtMethod<?>> sqlInjectionRiskMethods = new ArrayList<>();
 
     public static void getResource(String project) {
         CtModel model = ModelFactory.init(project);
@@ -86,6 +87,8 @@ public class ProjectResource {
         processor.addCollector(c21);
         var c22 = new SpringConfigurationPropertiesClassCollector<CtClass<?>>();
         processor.addCollector(c22);
+        var c23 = new MybatisSqlInjectionRiskMethodCollector<CtMethod<?>>();
+        processor.addCollector(c23);
 
         processor.scan(model.getRootPackage());
         springMainClass.clear();
@@ -132,5 +135,7 @@ public class ProjectResource {
         springMongoInterface.addAll(c21.elements());
         springConfigurationPropertiesClass.clear();
         springConfigurationPropertiesClass.addAll(c22.elements());
+        sqlInjectionRiskMethods.clear();
+        sqlInjectionRiskMethods.addAll(c23.elements());
     }
 }
