@@ -19,16 +19,17 @@ public class TestIntegration {
 
     @Test
     public void test1() throws IOException {
+        var base = "/home/ran/Documents/work/graduate/testproject/";
         var projects = List.of(
-                "D:/edgedownload/mall-master",
-                "D:/edgedownload/mall4cloud-master",
-                "D:/edgedownload/eladmin-master",
-                "D:/edgedownload/novel-master",
-                "D:/edgedownload/opsli-boot-master",
-                "D:/edgedownload/zheng-master",
-                "D:/edgedownload/WukongCRM-11.0-JAVA-master",
-                "D:/edgedownload/newbee-mall-master",
-                "D:/edgedownload/xboot-master/xboot-module/xboot-core");
+                "mall-master",
+                "mall4cloud-master",
+                "eladmin-master",
+                "novel-master",
+                "opsli-boot-master",
+                "zheng-master",
+                "WukongCRM-11.0-JAVA-master",
+                "newbee-mall-master",
+                "xboot-master/xboot-module/xboot-core");
         /**
          * eladmin-master
          * ---------------------------------------------------------------------------------
@@ -93,6 +94,7 @@ public class TestIntegration {
 //        String project = "D:\\edgedownload\\litemall-master";
 //        String project = "D:\\edgedownload\\zheng-master";
         for (String project : projects) {
+            project = base + project;
             Path dirPath = Paths.get(project).getFileName();
             String output = "output/" + dirPath + ".report"; // 10s
             long start = System.currentTimeMillis();
@@ -105,9 +107,7 @@ public class TestIntegration {
 
     @Test
     public void testsingle() throws IOException {
-        //D:\edgedownload\paascloud-master-master
-        String project = "D:\\edgedownload\\xboot-master\\xboot-module\\xboot-core";
-//        String project = "D:/edgedownload/zheng-master";
+        String project = "/home/ran/Documents/work/graduate/BenchmarkJava/annotated-benchmark";
         Path dirPath = Paths.get(project).getFileName();
         String output = "output/" + dirPath + ".report"; // 10s
         long start = System.currentTimeMillis();

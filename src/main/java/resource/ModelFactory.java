@@ -16,55 +16,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-/**
- * Created by: zhang ran
- * 2024-03-05
- * <p>
- * Created by: zhang ran
- * 2024-03-05
- * <p>
- * Created by: zhang ran
- * 2024-03-05
- * <p>
- * Created by: zhang ran
- * 2024-03-05
- * <p>
- * Created by: zhang ran
- * 2024-03-05
- * <p>
- * Created by: zhang ran
- * 2024-03-05
- * <p>
- * Created by: zhang ran
- * 2024-03-05
- * <p>
- * Created by: zhang ran
- * 2024-03-05
- * <p>
- * Created by: zhang ran
- * 2024-03-05
- * <p>
- * Created by: zhang ran
- * 2024-03-05
- * <p>
- * Created by: zhang ran
- * 2024-03-05
- *//**
- * Created by: zhang ran
- * 2024-03-05
- *//**
- * Created by: zhang ran
- * 2024-03-05
- *//**
- * Created by: zhang ran
- * 2024-03-05
- *//**
- * Created by: zhang ran
- * 2024-03-05
- *//**
- * Created by: zhang ran
- * 2024-03-05
- */
 
 /**
  * Created by: zhang ran
@@ -75,6 +26,7 @@ public class ModelFactory {
     private static String filePath;
 
     private static Set<String> mapper;
+    private static Set<String> sqlIMethodInMapper;
 
     private static Map<String, Object> config;
 
