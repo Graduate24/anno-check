@@ -3,11 +3,12 @@
 
 @run "source---" -> output;
 // getter in Spring configuration classes. Those methods often get value from external yaml files
-@def g1:filme(public * *get*(..));
+//@def g1:filme(public * *get*(..));
 @def g2:filmcanno(org.springframework.boot.context.properties.ConfigurationProperties);
 @def g3:filmcanno(org.springframework.boot.context.properties.ConfigurationPropertiesScan);
 @def g4:filmanno(org.springframework.context.annotation.Bean);
-@def configGetter: (g1 && g2 && g3) || g4;
+//@def configGetter: (g1 && g2 && g3) || g4;
+@def configGetter: ( g2 && g3) || g4;
 
 
 // some entry that takes input from user from web controller
@@ -29,7 +30,7 @@
 // sink methods in Mybatis mapper or Spring data jpa classes
 @def s1:filmcanno(org.springframework.stereotype.Repository);
 @def s2:filminmapper();
-@def s3:filme(* *get*(..)) || filme(* *select*(..));
-@def daoMethods: (s1||s2)&& !s3;
-
+//@def s3:filme(* *get*(..)) || filme(* *select*(..));
+//@def daoMethods: (s1||s2)&& !s3;
+@def daoMethods: (s1||s2);
 @run daoMethods -> output;
