@@ -98,12 +98,16 @@ public class SimpleIntegration {
     private static final List<AspectTracker> aroundAopResult = new ArrayList<>();
     private static final List<AspectTracker> afterReturningAopResult = new ArrayList<>();
     private static final List<AspectTracker> afterThrowingAopResult = new ArrayList<>();
-    private static final List<CtMethod<?>> entryPointMethods = new ArrayList<>();
-    private static final List<CtMethod<?>> sourceMethods = new ArrayList<>();
-    private static final List<CtMethod<?>> sinkMethods = new ArrayList<>();
+    private static final List<String> entryPoints = new ArrayList<>();
+    private static final List<String> sources = new ArrayList<>();
+    private static final List<String> sinks = new ArrayList<>();
 
     private static String linkResultJson;
     private static String aopResultJson;
+    private static String entryPointsJson;
+    private static String sourcesJson;
+    private static String sinksJson;
+    private static String finalResultJson; // 存储最终的完整JSON结果
 
     static class AspectTracker {
         public CtMethod<?> adviceMethod;
@@ -123,40 +127,82 @@ public class SimpleIntegration {
         linkResult.clear();
         linkResultJson = null;
         aopResultJson = null;
+        entryPointsJson = null;
+        sourcesJson = null;
+        sinksJson = null;
+        finalResultJson = null; // 重置最终JSON结果
         beforeAopResult.clear();
         afterAopResult.clear();
         aroundAopResult.clear();
         afterReturningAopResult.clear();
         afterThrowingAopResult.clear();
-        entryPointMethods.clear();
-        sourceMethods.clear();
-        sinkMethods.clear();
-        writeOutput(outputPath, "\n\n --- IoC Container ---\n\n");
+        entryPoints.clear();
+        sources.clear();
+        sinks.clear();
+
+//        writeOutput(outputPath, "\n\n --- IoC Container ---\n\n");
         iocLink(outputPath);
-
-        // 修改linkResult的输出格式
-        Map<String, Object> structuredLinkResult = new HashMap<>();
-        for (Map.Entry<CtField<?>, Set<BeanDefinitionModel>> entry : linkResult.entrySet()) {
-            CtField<?> field = entry.getKey();
-            Set<BeanDefinitionModel> beanDefs = entry.getValue();
-
-            // 创建字段信息对象
-            Map<String, Object> fieldInfo = formatFieldLinkJson(field, beanDefs);
-
-            // 使用字段完整路径作为唯一标识
-            String fieldKey = field.getDeclaringType().getQualifiedName() + "." + field.getSimpleName();
-            structuredLinkResult.put(fieldKey, fieldInfo);
-        }
-        linkResultJson = gson.toJson(structuredLinkResult);
-        writeOutput(outputPath, linkResultJson);
-        writeOutput(outputPath, "\n\n --- AOP ---\n\n");
+//        writeOutput(outputPath, linkResultJson);
+//        writeOutput(outputPath, "\n\n --- AOP ---\n\n");
         aop(outputPath);
-        writeOutput(outputPath, aopResultJson);
+//        writeOutput(outputPath, aopResultJson);
         entryPoint(outputPath);
         sourceSink(outputPath);
+
+        // 将所有JSON结果组织成一个统一的JSON对象
+        Map<String, Object> resultMap = new HashMap<>();
+        
+        // 解析各个JSON字符串为Map对象并添加到结果中
+        if (linkResultJson != null) {
+            resultMap.put("iocLinker", gson.fromJson(linkResultJson, Map.class));
+        }
+        
+        if (aopResultJson != null) {
+            resultMap.put("aop", gson.fromJson(aopResultJson, Map.class));
+        }
+        
+        if (entryPointsJson != null) {
+            resultMap.put("entryPoints", gson.fromJson(entryPointsJson, Map.class));
+        }
+        
+        if (sourcesJson != null) {
+            resultMap.put("sources", gson.fromJson(sourcesJson, Map.class));
+        }
+        
+        if (sinksJson != null) {
+            resultMap.put("sinks", gson.fromJson(sinksJson, Map.class));
+        }
+        
+        // 添加统计信息
         long end = System.currentTimeMillis();
         stat.time = (end - start) / 1000d;
-        writeOutput(outputPath, stat.toString());
+        Map<String, Object> statMap = new HashMap<>();
+        statMap.put("beanDefinitionCount", stat.beanDefinitionCount);
+        statMap.put("annoPointerCount", stat.annoPointerCount);
+        statMap.put("singleLinkedCount", stat.singleLinkedCount);
+        statMap.put("zeroLinkedCount", stat.zeroLinkedCount);
+        statMap.put("multiLinkedCount", stat.multiLinkedCount);
+        statMap.put("beforeAop", stat.beforeAop);
+        statMap.put("afterAop", stat.afterAop);
+        statMap.put("aroundAop", stat.aroundAop);
+        statMap.put("afterReturningAop", stat.afterReturningAop);
+        statMap.put("afterThrowingAop", stat.afterThrowingAop);
+        statMap.put("entryPointCount", stat.entryPointCount);
+        statMap.put("sourceCount", stat.sourceCount);
+        statMap.put("sinkCount", stat.sinkCount);
+        statMap.put("time", stat.time);
+        resultMap.put("statistics", statMap);
+        
+        // 将整个结果转换为JSON并写入输出文件
+        String finalJson = gson.toJson(resultMap);
+        // 保存最终JSON结果
+        finalResultJson = finalJson;
+        // 清空文件内容
+        new FileWriter(outputPath, false).close();
+        // 写入新内容
+        writeOutput(outputPath, finalJson);
+        
+        System.out.println(stat);
     }
 
     private static void iocLink(String outputPath) throws IOException {
@@ -256,6 +302,21 @@ public class SimpleIntegration {
             linkResult.put(e, bs);
 
         });
+
+        // 修改linkResult的输出格式
+        Map<String, Object> structuredLinkResult = new HashMap<>();
+        for (Map.Entry<CtField<?>, Set<BeanDefinitionModel>> entry : linkResult.entrySet()) {
+            CtField<?> field = entry.getKey();
+            Set<BeanDefinitionModel> beanDefs = entry.getValue();
+
+            // 创建字段信息对象
+            Map<String, Object> fieldInfo = formatFieldLinkJson(field, beanDefs);
+
+            // 使用字段完整路径作为唯一标识
+            String fieldKey = field.getDeclaringType().getQualifiedName() + "." + field.getSimpleName();
+            structuredLinkResult.put(fieldKey, fieldInfo);
+        }
+        linkResultJson = gson.toJson(structuredLinkResult);
     }
 
     private static void aop(String outputPath) throws IOException {
@@ -288,29 +349,133 @@ public class SimpleIntegration {
     }
 
     private static void entryPoint(String outputPath) throws IOException {
-        writeOutput(outputPath, "\n\n --- Entry point ---\n\n");
+//        writeOutput(outputPath, "\n\n --- Entry point ---\n\n");
+
+        // 创建临时文件
+        File tempFile = File.createTempFile("entryPoint", ".temp");
+        String tempFilePath = tempFile.getAbsolutePath();
+
+        // 设置DSL模板并执行
         String fileName = "dsl/entrypoint_template";
         String fileContent = readFileFromResources(fileName);
-        // Replace the placeholder {0}
-        String dsl = MessageFormat.format(fileContent, outputPath);
+        String dsl = MessageFormat.format(fileContent, tempFilePath);
         interpretRaw(dsl);
 
-        int count = countLinesAfterEntry("--- Entry point ---", outputPath, true, null);
-        stat.entryPointCount = count;
+        // 从临时文件读取结果并添加到entryPoints列表
+        try (BufferedReader reader = new BufferedReader(new FileReader(tempFilePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (!line.trim().isEmpty()) {
+                    entryPoints.add(line.trim());
+                }
+            }
+        }
+
+        // 将entryPoints转换为JSON格式
+        Map<String, Object> entryPointsMap = new HashMap<>();
+        List<Map<String, Object>> entryPointsList = new ArrayList<>();
+
+        for (String entryPoint : entryPoints) {
+            Map<String, Object> entryPointInfo = new HashMap<>();
+            entryPointInfo.put("signature", entryPoint);
+            entryPointsList.add(entryPointInfo);
+        }
+
+        entryPointsMap.put("entryPoints", entryPointsList);
+        entryPointsMap.put("count", entryPoints.size());
+        entryPointsJson = gson.toJson(entryPointsMap);
+
+        // 输出JSON到文件
+//        writeOutput(outputPath, "\n\n --- Entry point JSON ---\n\n");
+//        writeOutput(outputPath, entryPointsJson);
+
+        // 删除临时文件
+        if (tempFile.exists()) {
+            tempFile.delete();
+        }
+
+        stat.entryPointCount = entryPoints.size();
     }
 
     private static void sourceSink(String outputPath) throws IOException {
-        writeOutput(outputPath, "\n\n --- Source sink ---\n\n");
+//        writeOutput(outputPath, "\n\n --- Source sink ---\n\n");
 
+        // 创建临时文件
+        File tempFile = File.createTempFile("sourceSink", ".temp");
+        String tempFilePath = tempFile.getAbsolutePath();
+
+        // 设置DSL模板并执行
         String fileName = "dsl/sourcesink_template";
         String fileContent = readFileFromResources(fileName);
-        // Replace the placeholder {0}
-        String dsl = MessageFormat.format(fileContent, outputPath);
+        String dsl = MessageFormat.format(fileContent, tempFilePath);
         interpretRaw(dsl);
-        int count = countLinesAfterEntry("source---", outputPath, false, "sink---");
-        stat.sourceCount = count;
-        int sinkCount = countLinesAfterEntry("sink---", outputPath, false, null);
-        stat.sinkCount = sinkCount;
+
+        // 从临时文件读取结果并添加到sources和sinks列表
+        boolean readingSources = false;
+        boolean readingSinks = false;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(tempFilePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.trim().equals("source---")) {
+                    readingSources = true;
+                    readingSinks = false;
+                    continue;
+                } else if (line.trim().equals("sink---")) {
+                    readingSources = false;
+                    readingSinks = true;
+                    continue;
+                }
+
+                if (readingSources && !line.trim().isEmpty()) {
+                    sources.add(line.trim());
+                } else if (readingSinks && !line.trim().isEmpty()) {
+                    sinks.add(line.trim());
+                }
+            }
+        }
+
+        // 将sources转换为JSON格式
+        Map<String, Object> sourcesMap = new HashMap<>();
+        List<Map<String, Object>> sourcesList = new ArrayList<>();
+
+        for (String source : sources) {
+            Map<String, Object> sourceInfo = new HashMap<>();
+            sourceInfo.put("signature", source);
+            sourcesList.add(sourceInfo);
+        }
+
+        sourcesMap.put("sources", sourcesList);
+        sourcesMap.put("count", sources.size());
+        sourcesJson = gson.toJson(sourcesMap);
+
+        // 将sinks转换为JSON格式
+        Map<String, Object> sinksMap = new HashMap<>();
+        List<Map<String, Object>> sinksList = new ArrayList<>();
+
+        for (String sink : sinks) {
+            Map<String, Object> sinkInfo = new HashMap<>();
+            sinkInfo.put("signature", sink);
+            sinksList.add(sinkInfo);
+        }
+
+        sinksMap.put("sinks", sinksList);
+        sinksMap.put("count", sinks.size());
+        sinksJson = gson.toJson(sinksMap);
+
+        // 输出JSON到文件
+//        writeOutput(outputPath, "\n\n --- Sources ---\n\n");
+//        writeOutput(outputPath, sourcesJson);
+//        writeOutput(outputPath, "\n\n --- Sinks ---\n\n");
+//        writeOutput(outputPath, sinksJson);
+
+        // 删除临时文件
+        if (tempFile.exists()) {
+            tempFile.delete();
+        }
+
+        stat.sourceCount = sources.size();
+        stat.sinkCount = sinks.size();
     }
 
     private static void matchTarget(AbstractPredictResolverBuilder<CtMethod<?>> builder,
@@ -427,33 +592,6 @@ public class SimpleIntegration {
         Interpreter interpreter = new Interpreter();
         interpreter.interpret(stmts);
         return !interpreter.hadRuntimeError;
-    }
-
-    public static int countLinesAfterEntry(String pattern, String filePath, boolean skipOneLine, String end) {
-        boolean startCounting = false;
-        int lineCount = 0;
-
-        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (pattern.equals(line.trim())) {
-                    startCounting = true;
-                    if (skipOneLine)
-                        reader.readLine();
-                    continue;
-                }
-                if (startCounting) {
-                    if (line.trim().isEmpty() || (end != null && end.equals(line.trim()))) {
-                        break;
-                    }
-                    lineCount++;
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("An error occurred while reading the file: " + e.getMessage());
-        }
-
-        return lineCount;
     }
 
     /**
@@ -577,5 +715,62 @@ public class SimpleIntegration {
 
     public static String getAopResultJson() {
         return aopResultJson;
+    }
+
+    public static String getEntryPointsJson() {
+        return entryPointsJson;
+    }
+
+    public static String getSourcesJson() {
+        return sourcesJson;
+    }
+
+    public static String getSinksJson() {
+        return sinksJson;
+    }
+
+    /**
+     * 获取最终组合后的完整JSON结果
+     * @return 完整的分析结果JSON字符串
+     */
+    public static String getFinalResultJson() {
+        return finalResultJson;
+    }
+
+    /**
+     * 统计指定文件中匹配模式后的行数
+     * @param pattern 匹配模式
+     * @param filePath 文件路径
+     * @param skipOneLine 是否跳过一行
+     * @param end 结束模式
+     * @return 匹配行数
+     * @deprecated 已被新的JSON格式化方法替代，保留此方法仅用于兼容
+     */
+    @Deprecated
+    public static int countLinesAfterEntry(String pattern, String filePath, boolean skipOneLine, String end) {
+        boolean startCounting = false;
+        int lineCount = 0;
+
+        try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (pattern.equals(line.trim())) {
+                    startCounting = true;
+                    if (skipOneLine)
+                        reader.readLine();
+                    continue;
+                }
+                if (startCounting) {
+                    if (line.trim().isEmpty() || (end != null && end.equals(line.trim()))) {
+                        break;
+                    }
+                    lineCount++;
+                }
+            }
+        } catch (IOException e) {
+            System.out.println("An error occurred while reading the file: " + e.getMessage());
+        }
+
+        return lineCount;
     }
 }
