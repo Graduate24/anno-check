@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  */
 public class SimpleIntegration {
     private static Gson gson = new GsonBuilder()
-            .setPrettyPrinting()
+            .disableHtmlEscaping().setPrettyPrinting()
             .create();
 
     static class Stat {
@@ -391,15 +391,7 @@ public class SimpleIntegration {
 
         // 将entryPoints转换为JSON格式
         Map<String, Object> entryPointsMap = new HashMap<>();
-        List<Map<String, Object>> entryPointsList = new ArrayList<>();
-
-        for (String entryPoint : entryPoints) {
-            Map<String, Object> entryPointInfo = new HashMap<>();
-            entryPointInfo.put("signature", entryPoint);
-            entryPointsList.add(entryPointInfo);
-        }
-
-        entryPointsMap.put("entryPoints", entryPointsList);
+        entryPointsMap.put("entryPoints", entryPoints);
         entryPointsMap.put("count", entryPoints.size());
         entryPointsJson = gson.toJson(entryPointsMap);
 
@@ -463,21 +455,13 @@ public class SimpleIntegration {
             sourcesList.add(sourceInfo);
         }
 
-        sourcesMap.put("sources", sourcesList);
+        sourcesMap.put("sources", sources);
         sourcesMap.put("count", sources.size());
         sourcesJson = gson.toJson(sourcesMap);
 
         // 将sinks转换为JSON格式
         Map<String, Object> sinksMap = new HashMap<>();
-        List<Map<String, Object>> sinksList = new ArrayList<>();
-
-        for (String sink : sinks) {
-            Map<String, Object> sinkInfo = new HashMap<>();
-            sinkInfo.put("signature", sink);
-            sinksList.add(sinkInfo);
-        }
-
-        sinksMap.put("sinks", sinksList);
+        sinksMap.put("sinks", sinks);
         sinksMap.put("count", sinks.size());
         sinksJson = gson.toJson(sinksMap);
 

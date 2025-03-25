@@ -211,18 +211,18 @@ public class Interpreter implements Expr.ExprVisitor<Object>, Stmt.Visitor<Void>
             boolean isMapperMethod = ModelFactory.getMybatisMapper().contains(e.getDeclaringType().getQualifiedName()) ||
                     e.getDeclaringType().getAnnotations().stream().anyMatch(a -> "org.apache.ibatis.annotations.Mapper".
                     equals(a.getAnnotationType().getPackage() + "." + a.getAnnotationType().getSimpleName()));
-            
+
             if (!isMapperMethod) {
                 return false;
             }
-            
+
             // 检查方法是否在XML中标记为有SQL注入风险
             String methodSignature = e.getDeclaringType().getQualifiedName() + "." + e.getSimpleName();
             boolean isXmlRiskMethod = ModelFactory.getXmlSqlInjectionMethods().contains(methodSignature);
-            
+
             // 检查方法是否在注解收集器中标记为有SQL注入风险
             boolean isAnnotationRiskMethod = resource.ProjectResource.sqlInjectionRiskMethods.contains(e);
-            
+
             // 如果方法在XML或注解中被标记为有SQL注入风险，则返回true
             return isXmlRiskMethod || isAnnotationRiskMethod;
         };
@@ -403,27 +403,29 @@ public class Interpreter implements Expr.ExprVisitor<Object>, Stmt.Visitor<Void>
 
     private String printMethod(CtMethod<?> m) {
         StringBuilder sb = new StringBuilder();
-        var modifiers = m.getModifiers();
-        if (modifiers.contains(ModifierKind.PUBLIC)) {
-            sb.append("public ");
-        } else if (modifiers.contains(ModifierKind.PRIVATE)) {
-            sb.append("private ");
-        } else if (modifiers.contains(ModifierKind.PROTECTED)) {
-            sb.append("protected ");
-        }
-        if (modifiers.contains(ModifierKind.ABSTRACT)) {
-            sb.append("abstract ");
-        }
-        if (modifiers.contains(ModifierKind.STATIC)) {
-            sb.append("static ");
-        }
-        if (modifiers.contains(ModifierKind.FINAL)) {
-            sb.append("final ");
-        }
-        if (modifiers.contains(ModifierKind.NATIVE)) {
-            sb.append("native ");
-        }
-        sb.append(m.getDeclaringType().getPackage().toString()).append(".").append(m.getSignature()).append("\n");
+//        var modifiers = m.getModifiers();
+//        if (modifiers.contains(ModifierKind.PUBLIC)) {
+//            sb.append("public ");
+//        } else if (modifiers.contains(ModifierKind.PRIVATE)) {
+//            sb.append("private ");
+//        } else if (modifiers.contains(ModifierKind.PROTECTED)) {
+//            sb.append("protected ");
+//        }
+//        if (modifiers.contains(ModifierKind.ABSTRACT)) {
+//            sb.append("abstract ");
+//        }
+//        if (modifiers.contains(ModifierKind.STATIC)) {
+//            sb.append("static ");
+//        }
+//        if (modifiers.contains(ModifierKind.FINAL)) {
+//            sb.append("final ");
+//        }
+//        if (modifiers.contains(ModifierKind.NATIVE)) {
+//            sb.append("native ");
+//        }
+        // <org.springframework.jdbc.core.JdbcTemplate: java.util.List queryForList(java.lang.String,java.lang.String)>
+        sb.append("<").append(m.getDeclaringType().getPackage().toString()).append(".").append(m.getDeclaringType().getSimpleName()).append(": ").append(m.getType().getQualifiedName()).append(" ").append(m.getSignature()).append(">").append("\n");
+       // sb.append(m.getType().getQualifiedName()).append(m.getDeclaringType().getPackage().toString()).append(".").append(m.getSignature()).append("\n");
         return sb.toString();
     }
 }
