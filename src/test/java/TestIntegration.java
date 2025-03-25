@@ -29,7 +29,8 @@ public class TestIntegration {
                 "zheng-master",
                 "WukongCRM-11.0-JAVA-master",
                 "newbee-mall-master",
-                "xboot-master/xboot-module/xboot-core");
+                "xboot-master/xboot-module/xboot-core"
+        );
         /**
          * eladmin-master
          * ---------------------------------------------------------------------------------
@@ -96,7 +97,7 @@ public class TestIntegration {
         for (String project : projects) {
             project = base + project;
             Path dirPath = Paths.get(project).getFileName();
-            String output = "output/" + dirPath + ".report"; // 10s
+            String output = "output" + "/" + dirPath; // 10s
             long start = System.currentTimeMillis();
             analysis(project, output);
             long timeSpent = (System.currentTimeMillis() - start) / 1000;
@@ -109,7 +110,7 @@ public class TestIntegration {
     public void testsingle() throws IOException {
         String project = "/home/ran/Documents/work/graduate/BenchmarkJava/annotated-benchmark";
         Path dirPath = Paths.get(project).getFileName();
-        String output = "output/" + dirPath + ".report"; // 10s
+        String output = "output" + "/" + dirPath; // 10s
         long start = System.currentTimeMillis();
         analysis(project, output);
         long timeSpent = (System.currentTimeMillis() - start) / 1000;

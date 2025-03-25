@@ -119,10 +119,11 @@ public class SimpleIntegration {
         }
     }
 
-    public static void analysis(String projectPath, String outputPath) throws IOException {
-        long start = System.currentTimeMillis();
-        ModelFactory.reset();
-        ProjectResource.getResource(projectPath);
+    public static void analysis(String projectPath, String outputDir) throws IOException {
+        File dict = new File(outputDir);
+        if(! dict.exists()) {
+            dict.mkdirs();
+        }
         stat.reset();
         linkResult.clear();
         linkResultJson = null;
@@ -140,42 +141,57 @@ public class SimpleIntegration {
         sources.clear();
         sinks.clear();
 
-//        writeOutput(outputPath, "\n\n --- IoC Container ---\n\n");
-        iocLink(outputPath);
-//        writeOutput(outputPath, linkResultJson);
-//        writeOutput(outputPath, "\n\n --- AOP ---\n\n");
-        aop(outputPath);
-//        writeOutput(outputPath, aopResultJson);
-        entryPoint(outputPath);
-        sourceSink(outputPath);
+        long start = System.currentTimeMillis();
+        ModelFactory.reset();
+        ProjectResource.getResource(projectPath);
+        iocLink();
+        aop();
+        entryPoint();
+        sourceSink();
+        long end = System.currentTimeMillis();
+        // 添加统计信息
+        stat.time = (end - start) / 1000d;
 
         // 将所有JSON结果组织成一个统一的JSON对象
         Map<String, Object> resultMap = new HashMap<>();
-        
+
         // 解析各个JSON字符串为Map对象并添加到结果中
         if (linkResultJson != null) {
             resultMap.put("iocLinker", gson.fromJson(linkResultJson, Map.class));
+            File file = new File(outputDir,"ioc.json");
+            new FileWriter(file, false).close();
+            writeOutput(file.toPath().toString(), linkResultJson);
         }
-        
+
         if (aopResultJson != null) {
             resultMap.put("aop", gson.fromJson(aopResultJson, Map.class));
+            File file = new File(outputDir,"aop.json");
+            new FileWriter(file, false).close();
+            writeOutput(file.toPath().toString(), aopResultJson);
         }
-        
+
         if (entryPointsJson != null) {
             resultMap.put("entryPoints", gson.fromJson(entryPointsJson, Map.class));
+            File file = new File(outputDir,"entryPoints.json");
+            new FileWriter(file, false).close();
+            writeOutput(file.toPath().toString(), entryPointsJson);
         }
-        
+
         if (sourcesJson != null) {
             resultMap.put("sources", gson.fromJson(sourcesJson, Map.class));
+            File file = new File(outputDir,"sources.json");
+            new FileWriter(file, false).close();
+            writeOutput(file.toPath().toString(), sourcesJson);
         }
-        
+
         if (sinksJson != null) {
             resultMap.put("sinks", gson.fromJson(sinksJson, Map.class));
+            File file = new File(outputDir,"sinks.json");
+            new FileWriter(file, false).close();
+            writeOutput(file.toPath().toString(), sinksJson);
         }
-        
-        // 添加统计信息
-        long end = System.currentTimeMillis();
-        stat.time = (end - start) / 1000d;
+
+
         Map<String, Object> statMap = new HashMap<>();
         statMap.put("beanDefinitionCount", stat.beanDefinitionCount);
         statMap.put("annoPointerCount", stat.annoPointerCount);
@@ -192,20 +208,21 @@ public class SimpleIntegration {
         statMap.put("sinkCount", stat.sinkCount);
         statMap.put("time", stat.time);
         resultMap.put("statistics", statMap);
-        
+
         // 将整个结果转换为JSON并写入输出文件
         String finalJson = gson.toJson(resultMap);
         // 保存最终JSON结果
         finalResultJson = finalJson;
+
+        File file = new File(outputDir,"all_model.json");
         // 清空文件内容
-        new FileWriter(outputPath, false).close();
+        new FileWriter(file, false).close();
         // 写入新内容
-        writeOutput(outputPath, finalJson);
-        
+        writeOutput(file.toPath().toString(), finalJson);
         System.out.println(stat);
     }
 
-    private static void iocLink(String outputPath) throws IOException {
+    private static void iocLink() throws IOException {
         var list = new ArrayList<BeanDefinitionModel>();
 
         var com = new SpringComponentAnnoBeanLoader();
@@ -319,7 +336,7 @@ public class SimpleIntegration {
         linkResultJson = gson.toJson(structuredLinkResult);
     }
 
-    private static void aop(String outputPath) throws IOException {
+    private static void aop() throws IOException {
 
         CachedElementFinder cachedElementFinder = CachedElementFinder.getInstance();
         var methods = cachedElementFinder.getCachedPublicMethod();
@@ -348,7 +365,7 @@ public class SimpleIntegration {
 
     }
 
-    private static void entryPoint(String outputPath) throws IOException {
+    private static void entryPoint() throws IOException {
 //        writeOutput(outputPath, "\n\n --- Entry point ---\n\n");
 
         // 创建临时文件
@@ -397,7 +414,7 @@ public class SimpleIntegration {
         stat.entryPointCount = entryPoints.size();
     }
 
-    private static void sourceSink(String outputPath) throws IOException {
+    private static void sourceSink() throws IOException {
 //        writeOutput(outputPath, "\n\n --- Source sink ---\n\n");
 
         // 创建临时文件
