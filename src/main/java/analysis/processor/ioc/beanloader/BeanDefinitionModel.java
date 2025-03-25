@@ -78,9 +78,8 @@ public class BeanDefinitionModel {
     private String name;
     private String type;
     private BeanScope scope = BeanScope.SINGLETON;
-    private List<ConstructorArgument> constructorArguments;
     private CtMethod<?> initializeMethod;
-    private CtConstructor<?> constructor;
+    private List<String> constructors;
     private List<CtField<?>> properties;
     private Map<String, Object> propertyValue;
     private boolean lazyInit = false;
@@ -111,13 +110,6 @@ public class BeanDefinitionModel {
         this.scope = scope;
     }
 
-    public List<ConstructorArgument> getConstructorArguments() {
-        return constructorArguments;
-    }
-
-    public void setConstructorArguments(List<ConstructorArgument> constructorArguments) {
-        this.constructorArguments = constructorArguments;
-    }
 
     public List<CtField<?>> getProperties() {
         return properties;
@@ -143,12 +135,12 @@ public class BeanDefinitionModel {
         this.initializeMethod = initializeMethod;
     }
 
-    public CtConstructor<?> getConstructor() {
-        return constructor;
+    public List<String> getConstructors() {
+        return constructors;
     }
 
-    public void setConstructor(CtConstructor<?> constructor) {
-        this.constructor = constructor;
+    public void setConstructors(List<String> constructors) {
+        this.constructors = constructors;
     }
 
     public FromSource getFromSource() {
@@ -182,21 +174,14 @@ public class BeanDefinitionModel {
             json.addProperty("fromSource", src.fromSource != null ? src.fromSource.name() : null);
             json.addProperty("lazyInit", src.lazyInit);
 
-            // 构造函数参数
-            if (src.constructorArguments != null && !src.constructorArguments.isEmpty()) {
-                json.add("constructorArguments", context.serialize(src.constructorArguments.stream()
-                        .map(ConstructorArgument::toJsonMap)
-                        .collect(Collectors.toList())));
-            }
-
             // 初始化方法
             if (src.initializeMethod != null) {
                 json.addProperty("initializeMethod", src.initializeMethod.getSimpleName());
             }
 
             // 构造函数
-            if (src.constructor != null) {
-                json.addProperty("constructor", src.constructor.getSignature());
+            if (src.constructors != null) {
+                json.add("constructors", context.serialize(src.constructors));
             }
 
             // 属性列表
@@ -250,21 +235,12 @@ public class BeanDefinitionModel {
         jsonMap.put("scope", scope != null ? scope.name() : null);
         jsonMap.put("fromSource", fromSource != null ? fromSource.name() : null);
 
-        // 构造函数参数
-        if (constructorArguments != null && !constructorArguments.isEmpty()) {
-            List<Map<String, Object>> argList = constructorArguments.stream()
-                    .map(ConstructorArgument::toJsonMap)
-                    .collect(Collectors.toList());
-            jsonMap.put("constructorArguments", argList);
-        } else {
-            jsonMap.put("constructorArguments", new ArrayList<>());
-        }
 
         // 初始化方法
         jsonMap.put("initializeMethod", initializeMethod != null ? initializeMethod.getSimpleName() : null);
 
         // 构造函数
-        jsonMap.put("constructor", constructor != null ? constructor.getSignature() : null);
+        jsonMap.put("constructor", constructors);
 
         // 属性列表
         if (properties != null && !properties.isEmpty()) {

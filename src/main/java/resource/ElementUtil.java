@@ -4,6 +4,7 @@ import spoon.reflect.code.CtLiteral;
 import spoon.reflect.declaration.*;
 import spoon.support.reflect.declaration.CtAnnotationImpl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -71,16 +72,16 @@ public class ElementUtil {
         return value != null && value;
     }
 
-    public static CtConstructor<?> getConstructorWithNoParams(CtElement element) {
+    public static List<String> getConstructors(CtElement element) {
         CtClass<?> clazz = (CtClass<?>) element;
-        final CtConstructor<?>[] result = new CtConstructor<?>[1];
-        clazz.getConstructors().stream()
-                .filter(constructor -> constructor.getParameters().isEmpty())
-                .findFirst()
-                .ifPresent(defaultConstructor ->
-                        result[0] = defaultConstructor
-                );
-        return result[0];
+        List<String> constructors = new ArrayList<>();
+        for (CtConstructor<?> c : clazz.getConstructors()) {
+            StringBuilder sb = new StringBuilder();
+            c.getModifiers().forEach(o -> sb.append(o.toString()).append(" "));
+            constructors.add(sb + c.getSignature() + c.getBody());
+        }
+        return constructors;
+
     }
 
     public static List<CtField<?>> getFields(CtElement element) {

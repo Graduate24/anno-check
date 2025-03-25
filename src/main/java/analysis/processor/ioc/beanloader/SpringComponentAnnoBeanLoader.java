@@ -26,7 +26,7 @@ public class SpringComponentAnnoBeanLoader extends AbstractBeanLoader {
         bd.setScope(bd.fromString(getScopeValue(currentResource)));
         bd.setType(((CtClass<?>) currentResource).getQualifiedName());
         bd.setLazyInit(getLazyValue(currentResource));
-        bd.setConstructor(getConstructorWithNoParams(currentResource));
+        bd.setConstructors(getConstructors(currentResource));
         bd.setProperties(getFields(currentResource));
         bd.setFromSource(BeanDefinitionModel.FromSource.COMPONENT_ANNOTATION);
         return bd;
