@@ -29,7 +29,7 @@ public class SpringValueAnnoBeanLoader extends AbstractBeanLoader {
 //        String name = field.getDeclaringType().getQualifiedName() + "#" + field.getSimpleName();
 //        bd.setName(name);
         bd.setName(field.getSimpleName());
-        bd.setType(field.getType().getTypeDeclaration());
+        bd.setType(field.getType().getQualifiedName());
 
         // ${ }
         String value = getAnnoValue(field, VALUE_ANNO);

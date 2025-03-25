@@ -76,7 +76,7 @@ public class BeanDefinitionModel {
     }
 
     private String name;
-    private CtType<?> type;
+    private String type;
     private BeanScope scope = BeanScope.SINGLETON;
     private List<ConstructorArgument> constructorArguments;
     private CtMethod<?> initializeMethod;
@@ -95,11 +95,11 @@ public class BeanDefinitionModel {
         this.name = name;
     }
 
-    public CtType<?> getType() {
+    public String getType() {
         return type;
     }
 
-    public void setType(CtType<?> type) {
+    public void setType(String type) {
         this.type = type;
     }
 
@@ -177,7 +177,7 @@ public class BeanDefinitionModel {
 
             // 基本属性
             json.addProperty("name", src.name);
-            json.addProperty("type", src.type != null ? src.type.getQualifiedName() : null);
+            json.addProperty("type", src.type);
             json.addProperty("scope", src.scope != null ? src.scope.name() : null);
             json.addProperty("fromSource", src.fromSource != null ? src.fromSource.name() : null);
             json.addProperty("lazyInit", src.lazyInit);
@@ -246,7 +246,7 @@ public class BeanDefinitionModel {
         Map<String, Object> jsonMap = new HashMap<>();
 
         jsonMap.put("name", name);
-        jsonMap.put("type", type != null ? type.getQualifiedName() : null);
+        jsonMap.put("type", type);
         jsonMap.put("scope", scope != null ? scope.name() : null);
         jsonMap.put("fromSource", fromSource != null ? fromSource.name() : null);
 

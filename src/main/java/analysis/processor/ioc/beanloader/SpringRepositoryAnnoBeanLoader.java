@@ -24,7 +24,7 @@ public class SpringRepositoryAnnoBeanLoader extends AbstractBeanLoader {
         String comName = getAnnoValue(currentResource, REPOSITORY);
         bd.setName(comName == null ? defaultBeanNameFromClass(currentResource) : comName);
         bd.setScope(bd.fromString(getScopeValue(currentResource)));
-        bd.setType((CtType<?>) currentResource);
+        bd.setType(((CtType<?>) currentResource).getQualifiedName());
         bd.setLazyInit(getLazyValue(currentResource));
         bd.setProperties(getFields(currentResource));
         bd.setFromSource(BeanDefinitionModel.FromSource.REPOSITORY_ANNOTATION);

@@ -24,7 +24,7 @@ public class SpringControllerAnnoBeanLoader extends AbstractBeanLoader {
         String comName = getAnnoValue(currentResource, CONTROLLER);
         bd.setName(comName == null ? defaultBeanNameFromClass(currentResource) : comName);
         bd.setScope(bd.fromString(getScopeValue(currentResource)));
-        bd.setType((CtClass<?>) currentResource);
+        bd.setType(((CtClass<?>) currentResource).getQualifiedName());
         bd.setLazyInit(getLazyValue(currentResource));
         bd.setConstructor(getConstructorWithNoParams(currentResource));
         bd.setProperties(getFields(currentResource));

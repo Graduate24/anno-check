@@ -16,7 +16,7 @@ public class BeanRegister {
     public static void register(BeanDefinitionModel beanDefinitionModel) {
         if (beanDefinitionModel != null) {
             IoCContainerModel.INSTANCE.addToNameToBeanMap(beanDefinitionModel.getName(), beanDefinitionModel);
-            IoCContainerModel.INSTANCE.addToTypeToBeanMap(beanDefinitionModel.getType().getQualifiedName(), beanDefinitionModel);
+            IoCContainerModel.INSTANCE.addToTypeToBeanMap(beanDefinitionModel.getType(), beanDefinitionModel);
         }
     }
 

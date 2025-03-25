@@ -146,7 +146,7 @@ public class SpringValueAnnoFieldLinker implements Linker {
             if (obj != null) {
                 BeanDefinitionModel bd = new BeanDefinitionModel();
                 bd.setName(beanName);
-                bd.setType(((CtField<?>) element).getType().getTypeDeclaration());
+                bd.setType(((CtField<?>) element).getType().getQualifiedName());
                 bd.setFromSource(BeanDefinitionModel.FromSource.VALUE_ANNOTATION);
                 Map<String, Object> pv = new HashMap<>();
                 pv.put(field.getSimpleName(), obj);

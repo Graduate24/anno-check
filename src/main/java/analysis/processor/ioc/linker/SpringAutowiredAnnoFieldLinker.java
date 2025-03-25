@@ -88,7 +88,7 @@ public class SpringAutowiredAnnoFieldLinker implements Linker {
                 link.put(element, bs);
             } else {
                 bs.stream().filter(b -> {
-                    return b.getType().getQualifiedName().equals(field.getType().getQualifiedName());
+                    return b.getType().equals(field.getType().getQualifiedName());
                 }).findFirst().ifPresent(b ->{
                     link.put(element, Collections.singleton(b));
                 });

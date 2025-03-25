@@ -24,7 +24,7 @@ public class SpringMongoRepoBeanLoader extends AbstractBeanLoader {
         String comName = getAnnoValue(currentResource, COMPONENT);
         bd.setName(comName == null ? defaultBeanNameFromClass(currentResource) : comName);
         bd.setScope(bd.fromString(getScopeValue(currentResource)));
-        bd.setType((CtInterface<?>) currentResource);
+        bd.setType(((CtInterface<?>) currentResource).getQualifiedName());
         bd.setLazyInit(getLazyValue(currentResource));
         bd.setProperties(getFields(currentResource));
         bd.setFromSource(BeanDefinitionModel.FromSource.MONGODB_REPOSITORY);

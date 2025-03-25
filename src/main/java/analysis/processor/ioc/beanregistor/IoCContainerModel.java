@@ -50,7 +50,7 @@ public enum IoCContainerModel {
         m.forEach((k, v) -> {
             System.out.println(k + " : ");
             v.forEach(b -> {
-                System.out.println("   [" + b.getName() + "," + b.getType().getQualifiedName() + "]");
+                System.out.println("   [" + b.getName() + "," + b.getType() + "]");
             });
             System.out.println();
         });
