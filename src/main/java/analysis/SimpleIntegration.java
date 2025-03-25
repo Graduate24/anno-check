@@ -17,6 +17,7 @@ import resource.ProjectResource;
 import spoon.reflect.declaration.CtField;
 import spoon.reflect.declaration.CtMethod;
 import spoon.reflect.declaration.ModifierKind;
+import spoon.support.reflect.declaration.CtMethodImpl;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -709,6 +710,7 @@ public class SimpleIntegration {
             adviceMethodInfo.put("declaringType", tracker.adviceMethod.getDeclaringType().getQualifiedName());
             adviceMethodInfo.put("signature", tracker.adviceMethod.getSignature());
             adviceMethodInfo.put("type", aspectType);
+            adviceMethodInfo.put("returnType",tracker.adviceMethod.getType().getQualifiedName());
             result.put("adviceMethod", adviceMethodInfo);
 
             // 添加目标方法列表
@@ -718,6 +720,7 @@ public class SimpleIntegration {
                 targetMethodInfo.put("name", targetMethod.getSimpleName());
                 targetMethodInfo.put("declaringType", targetMethod.getDeclaringType().getQualifiedName());
                 targetMethodInfo.put("signature", targetMethod.getSignature());
+                targetMethodInfo.put("returnType",targetMethod.getType().getQualifiedName());
                 targetMethodsInfo.add(targetMethodInfo);
             }
             result.put("targetMethods", targetMethodsInfo);
